@@ -1,0 +1,58 @@
+<header ng-switch on="$location.path().indexOf('/Configurations/new') > -1">
+    <h3 ng-switch-when="true">Create a new Configuration</h3>
+    <h3 ng-switch-when="false">View or edit Configuration</h3>
+</header>
+<form id="ConfigurationForm" name="ConfigurationForm" class="form-horizontal" role="form">
+    
+    <div class="form-group" ng-class="{'has-error': ConfigurationForm.idStr.$invalid}">
+        <label for="idStr" class="col-sm-2 control-label">Id Str</label>
+        <div id="idStrControls" class="col-sm-10">
+            <input id="idStr" name="idStr" type="text" class="form-control" ng-model="configuration.idStr" placeholder="Enter the Configuration Id Str"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group" ng-class="{'has-error': ConfigurationForm.role.$invalid}">
+        <label for="role" class="col-sm-2 control-label">Role</label>
+        <div id="roleControls" class="col-sm-10">
+        <select id="role" name="role" class="form-control" ng-model="configuration.role" ng-options="r for r in roleList"  >
+            <option value="">Choose a Role</option>
+        </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ConfigurationForm.type.$invalid}">
+        <label for="type" class="col-sm-2 control-label">Type</label>
+        <div id="typeControls" class="col-sm-10">
+        <select id="type" name="type" class="form-control" ng-model="configuration.type" ng-options="t for t in typeList" required >
+            <option value="">Choose a Type</option>
+        </select>
+        <span class="help-block error" ng-show="ConfigurationForm.type.$error.required">required</span> 
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ConfigurationForm.ckey.$invalid}">
+        <label for="ckey" class="col-sm-2 control-label">Ckey</label>
+        <div id="ckeyControls" class="col-sm-10">
+            <input id="ckey" name="ckey" type="text" ng-maxlength="64" class="form-control" ng-model="configuration.ckey" placeholder="Enter the Configuration Ckey"></input>
+            <span class="help-block error" ng-show="ConfigurationForm.ckey.$error.maxlength">maximum length is 64</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ConfigurationForm.cvalue.$invalid}">
+        <label for="cvalue" class="col-sm-2 control-label">Cvalue</label>
+        <div id="cvalueControls" class="col-sm-10">
+            <input id="cvalue" name="cvalue" type="text" ng-maxlength="4096" class="form-control" ng-model="configuration.cvalue" placeholder="Enter the Configuration Cvalue"></input>
+            <span class="help-block error" ng-show="ConfigurationForm.cvalue.$error.maxlength">maximum length is 4096</span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveConfiguration" name="saveConfiguration" class="btn btn-primary" ng-disabled="isClean() || ConfigurationForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteConfiguration" name="deleteConfiguration" class="btn btn-danger" ng-show="configuration.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        </div>
+    </div>
+</form>

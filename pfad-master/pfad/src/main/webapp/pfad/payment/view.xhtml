@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:forgeview="http://jboss.org/forge/view" template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{paymentBean.id}" />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction action="#{paymentBean.retrieve}" />
+	</f:metadata>
+
+	<ui:define name="header">
+		Zahlung
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:panelGroup rendered="#{paymentBean.viewAllowed}">
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+	
+				<h:outputLabel for="paymentBeanPaymentType" value="Typ:" />
+				<h:outputText id="paymentBeanPaymentType" value="#{paymentBean.payment.type}" />
+				<h:outputText />
+	
+				<h:outputLabel for="paymentBeanPaymentPayer" value="Zahler:" />
+				<h:panelGroup id="paymentBeanPaymentPayer">
+					<h:link id="paymentBeanPayer" value="#{paymentBean.payment.payer}" outcome="/pfad/member/view"
+						rendered="#{paymentBean.payment.payer != null}">
+						<f:param name="id" value="#{paymentBean.payment.payer.id}" />
+					</h:link>
+				</h:panelGroup>
+				<h:outputText />
+	
+				<h:outputLabel value="Betrag:" />
+				<h:outputText id="paymentBeanPaymentAmount" value="#{paymentBean.payment.amount}">
+					<f:convertNumber maxFractionDigits="2"/>
+				</h:outputText>
+				<h:outputText/>
+				
+				<h:outputLabel for="paymentBeanPaymentPaymentDate" value="Zahlungsdatum:" />
+				<h:panelGroup>
+					<p:calendar id="paymentBeanPaymentPaymentDate" value="#{paymentBean.payment.paymentDate}" 
+						datePattern="dd.MM.yyyy" disabled="true"/>
+					<h:message for="paymentBeanPaymentPaymentDate" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+					
+				<h:outputLabel for="paymentBeanPaymentBookings" value="Buchungen:" />
+				<h:panelGroup>
+					<ui:param name="_collection" value="#{paymentBean.payment.bookings}" />
+					<h:dataTable id="paymentBeanPaymentBookings" styleClass="data-table" value="#{forgeview:asList(_collection)}"
+						var="_item">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Aktivität" />
+							</f:facet>
+							<h:link outcome="view">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemActivity" value="#{_item.activity}" />
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Name" />
+							</f:facet>
+							<h:link outcome="view">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemName" value="#{_item.member.name}" />
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Vorname" />
+							</f:facet>
+							<h:link outcome="view">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemVorname" value="#{_item.member.vorname}" />
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Frei" />
+							</f:facet>
+							<h:link outcome="view">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemFree" value="#{_item.member.anyFree ? 'FREI' : ''}" />
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Geb.Jahr" />
+							</f:facet>
+							<h:link outcome="view">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemGebJahr" value="#{_item.member.gebJahr}" />
+							</h:link>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+				<h:outputText />
+	
+				<h:outputLabel for="paymentBeanPaymentIBAN" value="IBAN:" />
+				<h:inputText id="paymentBeanPaymentIBAN" value="#{paymentBean.payment.payerIBAN}" styleClass="fullwidth" readonly="true"/>
+				<h:outputText />
+	
+				<h:outputLabel for="paymentBeanPaymentComment" value="Bemerkung:" />
+				<h:inputTextarea id="paymentBeanPaymentComment" value="#{paymentBean.payment.comment}" rows="3" styleClass="fullwidth" readonly="true"/>
+				<h:outputText />
+	
+				<h:outputLabel for="paymentBeanPaymentAconto" value="Akonto:" />
+				<h:selectBooleanCheckbox id="paymentBeanPaymentAconto" value="#{paymentBean.payment.aconto}" disabled="true"/>
+				<h:outputText />
+					
+				<h:outputLabel for="paymentBeanPaymentFinished" value="Erledigt:" />
+				<h:selectBooleanCheckbox id="paymentBeanPaymentFinished" value="#{paymentBean.payment.finished}" disabled="true"/>
+				<h:outputText />
+					
+				<h:outputLabel for="paymentBeanPaymentRevision" value="Änderung:"/>
+				<h:panelGrid id="paymentBeanPaymentRevision" columns="8" >
+					<h:outputLabel value="Erstellt:" />
+					<h:outputText value="#{paymentBean.payment.created}" converter="javax.faces.DateTime" />
+					<h:outputLabel value="Von:" />
+					<h:outputText value="#{paymentBean.payment.createdBy}" />
+					<h:outputLabel value="Geändert:" />
+					<h:outputText value="#{paymentBean.payment.changed}" converter="javax.faces.DateTime" />
+					<h:outputLabel value="Von:" />
+					<h:outputText value="#{paymentBean.payment.changedBy}" />
+				</h:panelGrid>
+				<h:outputText />
+
+			</h:panelGrid>
+	
+			<div class="buttons">
+				<h:link value="View All" outcome="search" accesskey="c" title="Zurück [ALT]+[C]" styleClass="btn btn-primary" />
+				<h:link value="Edit" outcome="create" accesskey="e" title="Bearbeiten [ALT]+[E]" includeViewParams="true" styleClass="btn btn-primary" />
+				<h:link value="Neu" outcome="create" accesskey="n" title="Neueingabe [ALT]+[N]" styleClass="btn btn-primary" />
+			</div>
+		</h:panelGroup>
+	</ui:define>
+
+</ui:composition>

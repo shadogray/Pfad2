@@ -1,0 +1,51 @@
+<header ng-switch on="$location.path().indexOf('/Functions/new') > -1">
+    <h3 ng-switch-when="true">Create a new Function</h3>
+    <h3 ng-switch-when="false">View or edit Function</h3>
+</header>
+<form id="FunctionForm" name="FunctionForm" class="form-horizontal" role="form">
+    
+    <div class="form-group" ng-class="{'has-error': FunctionForm.idStr.$invalid}">
+        <label for="idStr" class="col-sm-2 control-label">Id Str</label>
+        <div id="idStrControls" class="col-sm-10">
+            <input id="idStr" name="idStr" type="text" class="form-control" ng-model="function.idStr" placeholder="Enter the Function Id Str"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group" ng-class="{'has-error': FunctionForm.function.$invalid}">
+        <label for="function" class="col-sm-2 control-label">Function</label>
+        <div id="functionControls" class="col-sm-10">
+            <input id="function" name="function" type="text" class="form-control" ng-model="function.function" placeholder="Enter the Function Function"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': FunctionForm.key.$invalid}">
+        <label for="key" class="col-sm-2 control-label">Key</label>
+        <div id="keyControls" class="col-sm-10">
+            <input id="key" name="key" type="text" class="form-control" ng-model="function.key" placeholder="Enter the Function Key"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': FunctionForm.exportReg.$invalid}">
+        <label for="exportReg" class="col-sm-2 control-label">Export Reg</label>
+        <div id="exportRegControls" class="col-sm-10">
+            <input id="exportReg" name="exportReg" type="checkbox" class="checkbox" ng-model="function.exportReg" placeholder="Enter the Function Export Reg"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': FunctionForm.free.$invalid}">
+        <label for="free" class="col-sm-2 control-label">Free</label>
+        <div id="freeControls" class="col-sm-10">
+            <input id="free" name="free" type="checkbox" class="checkbox" ng-model="function.free" placeholder="Enter the Function Free"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveFunction" name="saveFunction" class="btn btn-primary" ng-disabled="isClean() || FunctionForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteFunction" name="deleteFunction" class="btn btn-danger" ng-show="function.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        </div>
+    </div>
+</form>

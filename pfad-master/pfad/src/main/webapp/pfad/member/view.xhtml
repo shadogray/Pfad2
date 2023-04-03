@@ -1,0 +1,307 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:o="http://omnifaces.org/ui"
+	xmlns:forgeview="http://jboss.org/forge/view" template="/resources/scaffold/pageTemplate.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{memberBean.id}" />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction action="#{memberBean.retrieve}" />
+	</f:metadata>
+
+	<ui:define name="header">
+		Person
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:panelGrid columns="2" rendered="#{!empty memberBean.validationResults}">
+			<ui:repeat value="#{memberBean.validationResults}" var="vr">
+				<h:outputLabel value="ACHTUNG:" styleClass="error"/>
+				<h:outputText value="#{vr.message}" styleClass="error"/>
+			</ui:repeat>
+		</h:panelGrid>
+		<h:panelGrid columnClasses="label2,component2,label2,component2l" columns="4">
+		
+			<h:outputLabel for="memberBeanMemberBVKey" value="BV Key:" />
+			<h:outputText id="memberBeanMemberBVKey" value="#{memberBean.member.BVKey}" />
+			<h:outputText />
+			<h:outputText />
+
+			<h:outputLabel for="memberBeanMemberAnrede" value="Anrede:" />
+			<h:outputText id="memberBeanMemberAnrede" value="#{memberBean.member.anrede}" />
+
+			<h:outputLabel for="memberBeanMemberTitel" value="Titel:" />
+			<h:outputText id="memberBeanMemberTitel" value="#{memberBean.member.titel}" />
+
+			<h:outputLabel for="memberBeanMemberName" value="Name:" />
+			<h:outputText id="memberBeanMemberName" value="#{memberBean.member.name}" />
+
+			<h:outputLabel for="memberBeanMemberVorname" value="Vorname:" />
+			<h:outputText id="memberBeanMemberVorname" value="#{memberBean.member.vorname}" />
+
+			<h:outputLabel for="memberBeanMemberGebTag" value="Geb Tag:" />
+			<h:outputText id="memberBeanMemberGebTag" value="#{memberBean.member.gebTag}" />
+
+			<h:outputLabel for="memberBeanMemberGebMonat" value="Geb Monat:" />
+			<h:selectOneMenu id="memberBeanMemberGebMonat" value="#{memberBean.member.gebMonat}" title="Monat des Jahres, Zahl" disabled="true">
+				<f:selectItem itemLabel="undef.." itemValue="0"/>
+				<f:selectItems value="#{memberBean.months}" var="m" itemLabel="#{m}" itemValue="#{m.idx}"/>
+			</h:selectOneMenu>
+
+			<h:outputLabel for="memberBeanMemberGebJahr" value="Geb Jahr:" />
+			<h:outputText id="memberBeanMemberGebJahr" value="#{memberBean.member.gebJahr}" />
+
+			<h:outputLabel for="memberBeanMemberStrasse" value="Strasse:" />
+			<h:outputText id="memberBeanMemberStrasse" value="#{memberBean.member.strasse}" />
+
+			<h:outputLabel for="memberBeanMemberPLZ" value="PLZ:" />
+			<h:outputText id="memberBeanMemberPLZ" value="#{memberBean.member.PLZ}" />
+
+			<h:outputLabel for="memberBeanMemberOrt" value="Ort:" />
+			<h:outputText id="memberBeanMemberOrt" value="#{memberBean.member.ort}" />
+
+			<h:outputLabel for="memberBeanMemberGeschlecht" value="Geschlecht:" />
+			<h:outputText id="memberBeanMemberGeschlecht" value="#{memberBean.member.geschlecht}" />
+
+			<h:outputLabel for="memberBeanMemberEmail" value="Email:" />
+			<h:outputText id="memberBeanMemberEmail" value="#{memberBean.member.email}" />
+
+			<h:outputLabel for="memberBeanMemberTelefon" value="Telefon:" />
+			<h:outputText id="memberBeanMemberTelefon" value="#{memberBean.member.telefon}" />
+
+			<h:outputText />
+			<h:outputText />
+
+			<h:outputLabel for="memberBeanMemberTrupp" value="Trupp:" />
+			<h:link id="memberBeanMemberTrupp" outcome="/pfad/squad/view" rendered="#{!empty memberBean.member.trupp}"
+				value="#{memberBean.member.trupp}">
+				<f:param name="id" value="#{memberBean.member.trupp.id}" />
+			</h:link>
+			<h:outputText rendered="#{empty memberBean.member.trupp}" />
+			
+			<h:outputLabel for="memberBeanMemberFunktionen" value="Funktionen:" />
+			<h:dataTable id="memberBeanMemberFunktionen" styleClass="data-table"
+				value="#{forgeview:asList(memberBean.member.funktionen)}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Funktion" />
+					</f:facet>
+					<h:link outcome="/pfad/function/view">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText value="#{_item.function}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Key" />
+					</f:facet>
+					<h:link outcome="/pfad/function/view">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText value="#{_item.key}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<h:link outcome="/pfad/function/view">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText value="#{configurationBean.getValue(_item.key)}" />
+					</h:link>
+				</h:column>
+			</h:dataTable>
+
+			<h:outputLabel for="memberBeanMemberAssistantOf" value="Assistenz:" rendered="#{not empty memberBean.assistantOf}"/>
+			<h:dataTable id="memberBeanMemberAssistantOf" styleClass="data-table" value="#{memberBean.assistantOf}" var="_item" rendered="#{not empty memberBean.assistantOf}">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name" />
+					</f:facet>
+					<h:link outcome="/pfad/squad/view">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText value="#{_item.name}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Typ" />
+					</f:facet>
+					<h:link outcome="/pfad/squad/view">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText value="#{_item.type}" />
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<h:outputText rendered="#{empty memberBean.assistantOf}"/>
+			<h:outputText rendered="#{empty memberBean.assistantOf}"/>
+
+			<h:outputLabel for="memberBeanMemberLeaderOf" value="Führung:" rendered="#{not empty memberBean.leaderOf}"/>
+			<h:dataTable id="memberBeanMemberLeaderOf" styleClass="data-table" value="#{memberBean.leaderOf}" var="_item" rendered="#{not empty memberBean.leaderOf}">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name" />
+					</f:facet>
+					<h:link outcome="/pfad/squad/view">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText value="#{_item.name}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Typ" />
+					</f:facet>
+					<h:link outcome="/pfad/squad/view">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText value="#{_item.type}" />
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<h:outputText rendered="#{empty memberBean.leaderOf}"/>
+			<h:outputText rendered="#{empty memberBean.leaderOf}"/>
+
+			<h:outputLabel for="memberBeanMemberVollzahler" value="Vollzahler:" />
+			<h:link id="memberBeanMemberVollzahler" outcome="view" rendered="#{!empty memberBean.member.vollzahler}"
+				value="#{memberBean.member.vollzahler}">
+				<f:param name="id" value="#{memberBean.member.vollzahler.id}" />
+			</h:link>
+			<h:outputText rendered="#{empty memberBean.member.vollzahler}" />
+
+			<h:outputLabel for="memberBeanMemberSiblings" value="Kinder:" />
+			<h:panelGroup>
+				<ui:param name="_collection" value="#{memberBean.member.siblings}" />
+				<h:dataTable id="memberBeanMemberSiblings" styleClass="data-table" value="#{forgeview:asList(_collection)}"
+					var="_item">
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Name" />
+						</f:facet>
+						<h:link outcome="view">
+							<f:param name="id" value="#{_item.id}" />
+							<h:outputText id="itemFunction" value="#{_item.name}" />
+						</h:link>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Vorname" />
+						</f:facet>
+						<h:link outcome="view">
+							<f:param name="id" value="#{_item.id}" />
+							<h:outputText id="itemVorname" value="#{_item.vorname}" />
+						</h:link>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Geb.Jahr" />
+						</f:facet>
+						<h:link outcome="view">
+							<f:param name="id" value="#{_item.id}" />
+							<h:outputText id="itemGebJahr" value="#{_item.gebJahr}" />
+						</h:link>
+					</h:column>
+				</h:dataTable>
+			</h:panelGroup>
+
+			<h:outputLabel value="Registrierung:" for="memberBeanMemberRegistration" rendered="#{not empty memberBean.registration}" />
+			<h:link outcome="/pfad/registration/create" rendered="#{not empty memberBean.registration.shortString}" >
+				<f:param name="id" value="#{memberBean.registration.id}" />
+				<h:outputText value="#{memberBean.registration.vorname} #{memberBean.registration.name}, #{memberBean.registration.gebJahr}" />
+			</h:link>
+			<h:outputLabel rendered="#{empty memberBean.registration}"/>
+			<h:outputText rendered="#{empty memberBean.registration}"/>
+
+            <h:outputLabel for="memberBeanMemberParents" value="Eltern:" />
+            <h:panelGroup>
+                <ui:param name="_collection" value="#{memberBean.member.parents}" />
+                <h:dataTable id="memberBeanMemberParents" styleClass="data-table" value="#{forgeview:asList(_collection)}"
+                    var="_item">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Name" />
+                        </f:facet>
+                        <h:link outcome="view">
+                            <f:param name="id" value="#{_item.id}" />
+                            <h:outputText id="itemFunction" value="#{_item.name}" />
+                        </h:link>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Vorname" />
+                        </f:facet>
+                        <h:link outcome="view">
+                            <f:param name="id" value="#{_item.id}" />
+                            <h:outputText id="itemVorname" value="#{_item.vorname}" />
+                        </h:link>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Telefon" />
+                        </f:facet>
+                        <h:link outcome="view">
+                            <f:param name="id" value="#{_item.id}" />
+                            <h:outputText id="itemTelefon" value="#{_item.telefon}" />
+                        </h:link>
+                    </h:column>
+                </h:dataTable>
+            </h:panelGroup>
+
+		</h:panelGrid>
+		<h:panelGrid columns="4" style="width: 45em;">
+			<h:panelGroup>
+				<h:outputLabel value="Aktiv:" />
+				<h:outputText styleClass="#{memberBean.member.aktiv ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:outputLabel value="AktivExtern:" />
+				<h:outputText styleClass="#{memberBean.member.aktivExtern ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:outputLabel value="Trail:" />
+				<h:outputText styleClass="#{memberBean.member.trail ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:outputLabel value="Gilde:" />
+				<h:outputText styleClass="#{memberBean.member.gilde ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:outputLabel value="AltER:" />
+				<h:outputText styleClass="#{memberBean.member.altER ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:outputLabel value="InfoMail:" />
+				<h:outputText styleClass="#{memberBean.member.infoMail ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:outputLabel value="Mitarb:" />
+				<h:outputText styleClass="#{memberBean.member.support ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:outputLabel value="Frei:" />
+				<h:outputText styleClass="#{memberBean.member.free ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:outputLabel value="Verstorben:" />
+				<h:outputText styleClass="#{memberBean.member.dead ? 'boolean-true' : 'boolean-false'}" value="" />
+			</h:panelGroup>
+		</h:panelGrid>
+		<h:panelGrid columns="8" style="width: 40em;">
+			<h:outputLabel value="Erstellt:" />
+			<h:outputText value="#{memberBean.member.created}" converter="javax.faces.DateTime" />
+			<h:outputLabel value="Von:" />
+			<h:outputText value="#{memberBean.member.createdBy}" />
+			<h:outputLabel value="Geändert:" />
+			<h:outputText value="#{memberBean.member.changed}" converter="javax.faces.DateTime" />
+			<h:outputLabel value="Von:" />
+			<h:outputText value="#{memberBean.member.changedBy}" />
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search" styleClass="btn btn-primary" />
+			<h:link value="#{memberBean.updateAllowed ? 'Edit' : (memberBean.registrationEnd ? 'RegistrierungsSperre!' : 'Keine Berechtigung für '.concat(sessionBean.user).concat('!'))}" outcome="create"
+				includeViewParams="true" styleClass="btn btn-primary" disabled="#{!memberBean.updateAllowed}" />
+			<h:link value="#{memberBean.updateAllowed ? 'Neu' : (memberBean.registrationEnd ? 'RegistrierungsSperre!' : 'Keine Berechtigung für '.concat(sessionBean.user).concat('!'))}" outcome="create"
+				styleClass="btn btn-primary" disabled="#{!memberBean.updateAllowed}" />
+		</div>
+	</ui:define>
+
+</ui:composition>

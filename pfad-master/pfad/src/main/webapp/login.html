@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Pfad-DB</title>
+<meta http-equiv="X-UA-Compatible" content="IE=10" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link type="text/css" rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+<script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body style="text-align: center !important;">
+    <form id="login" name="login" method="post" action="j_security_check" enctype="application/x-www-form-urlencoded">
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a id="brandLink" name="brandLink" href="./pfad/member/search.xhtml" class="brand"></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container forgecontainer">
+            <div class="content">
+                <h3>Willkommen in der Pfadfinder-Datenbank</h3>
+                <h3></h3>
+                <h4 class="success">Bitte um Username/Passwort.. :-)</h4>
+                <div>
+                    <table style="margin: auto;">
+                        <tbody>
+                            <tr>
+                                <td><label>Username:</label></td>
+                                <td><input id="username" type="text" name="j_username" tabindex="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Passwort:</label></td>
+                                <td><input id="password" type="password" name="j_password" tabindex="2" /></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><input type="submit" name="submit" value="Login" tabindex="3" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+	<!--
+    try {
+        document.getElementById("username").focus();
+    } catch (e) {
+        console.log(e);
+    }
+	-->
+	</script>
+</body>
+</html>

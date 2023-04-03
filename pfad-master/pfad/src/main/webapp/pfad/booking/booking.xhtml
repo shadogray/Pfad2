@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Create Booking" />
+
+	<ui:define name="header">
+		Buchungen
+	</ui:define>
+
+	<ui:define name="subheader">
+		Buchungen erstellen
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+
+		<h:messages styleClass="error" />
+
+		<h:form id="createBookings">
+			<p:accordionPanel multiple="true" activeIndex="#{createBookingsBean.squadBookingActiveIndex}">
+				<p:ajax event="tabChange" listener="#{createBookingsBean.onTabChange}" />
+				<p:ajax event="tabClose" listener="#{createBookingsBean.onTabChange}" />
+				<p:tab id="squadBooking" title="Trupps/Auswahl Buchen Auf Aktivität" expanded="#{createBookingsBean.squadBookingVisible}"
+					closable="true">
+
+					<h:messages styleClass="error" />
+
+					<h:panelGrid columnClasses="label,component,required" columns="3">
+						<h:outputLabel for="createBookingsBeanBookingActivity" value="Aktivität:" />
+						<h:panelGroup>
+							<h:selectOneListbox id="createBookingsBeanBookingActivity" value="#{createBookingsBean.activity}"
+								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItems value="#{activityBean.active}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
+							</h:selectOneListbox>
+						</h:panelGroup>
+						<h:message for="createBookingsBeanBookingActivity" styleClass="error" />
+
+						<h:outputLabel for="createBookingsBeanBookingSquads" value="Trupp:" />
+						<h:panelGroup>
+							<h:selectManyListbox id="createBookingsBeanBookingSquads" value="#{createBookingsBean.squads}" converter="#{squadBean.converter}"
+								required="true" size="4">
+								<f:selectItems value="#{squadBean.all}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
+							</h:selectManyListbox>
+						</h:panelGroup>
+						<h:message for="createBookingsBeanBookingSquads" styleClass="error" />
+
+						<h:outputLabel for="createBookingsBeanBookingWithAssistants" value="Mit Assistenten:" />
+						<h:selectBooleanCheckbox id="createBookingsBeanBookingWithAssistants" value="#{createBookingsBean.withAssistants}" />
+						<h:message for="createBookingsBeanBookingWithAssistants" styleClass="error" />
+
+						<h:outputLabel value="Buchung durchführen:" />
+						<h:commandButton id="createBookingsBeanCreateBookings" action="#{createBookingsBean.createBookings()}" value="Buchen"
+							disabled="#{!bookingBean.updateAllowed}" />
+						<h:messages for="createBookingsBeanCreateBookings" />
+					</h:panelGrid>
+				</p:tab>
+			</p:accordionPanel>
+		</h:form>
+
+		<h:form id="createFromSource">
+			<p:accordionPanel multiple="true" activeIndex="#{createBookingsBean.sourceBookingActiveIndex}">
+				<p:ajax event="tabChange" listener="#{createBookingsBean.onTabChange}" />
+				<p:ajax event="tabClose" listener="#{createBookingsBean.onTabChange}" />
+				<p:tab id="sourceBooking" title="Auswahl Buchen Auf Aktivität" expanded="#{createBookingsBean.sourceBookingVisible}" closable="true">
+
+					<h:messages styleClass="error" />
+
+					<h:panelGrid columnClasses="label,component,required" columns="3">
+						<h:outputLabel for="createBookingsBeanBookingSourceActivity" value="Aktivität:" />
+						<h:panelGroup>
+							<h:selectOneListbox id="createBookingsBeanBookingSourceActivity" value="#{createBookingsBean.targetActivity}"
+								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItems value="#{activityBean.active}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
+							</h:selectOneListbox>
+						</h:panelGroup>
+						<h:message for="createBookingsBeanBookingSourceActivity" styleClass="error" />
+
+						<h:outputLabel for="createBookingsBeanBookingSource" value="Auswahl:" />
+						<h:panelGroup>
+							<h:selectOneListbox id="createBookingsBeanBookingSource" value="#{createBookingsBean.dataSourceKey}" required="true" size="4">
+								<f:selectItems value="#{createBookingsBean.dataSourceKeys}" />
+							</h:selectOneListbox>
+						</h:panelGroup>
+						<h:message for="createBookingsBeanBookingSource" styleClass="error" />
+
+						<h:outputLabel value="Buchung durchführen:" />
+						<h:commandButton id="createBookingsBeanCreateFromSource" action="#{createBookingsBean.createFromSource()}" value="Buchen"
+							disabled="#{!bookingBean.updateAllowed}" />
+						<h:messages for="createBookingsBeanCreateFromSource" />
+					</h:panelGrid>
+				</p:tab>
+			</p:accordionPanel>
+		</h:form>
+
+		<h:form id="createBookingsForAllActive">
+			<p:accordionPanel multiple="true" activeIndex="#{createBookingsBean.allBookingActiveIndex}">
+				<p:ajax event="tabChange" listener="#{createBookingsBean.onTabChange}" />
+				<p:ajax event="tabClose" listener="#{createBookingsBean.onTabChange}" />
+				<p:tab id="allBooking" title="Alle Aktiven Auf Aktivität Buchen" expanded="#{createBookingsBean.allBookingVisible}" closable="true">
+					<h:messages styleClass="error" />
+					<h:panelGrid columnClasses="label,component,required" columns="3">
+
+						<h:outputLabel for="createBookingsBeanBookingActivityAllActive" value="Aktivität:" />
+						<h:panelGroup>
+							<h:selectOneListbox id="createBookingsBeanBookingActivityAllActive" value="#{createBookingsBean.activity}"
+								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItems value="#{activityBean.active}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
+							</h:selectOneListbox>
+						</h:panelGroup>
+						<h:message for="createBookingsBeanBookingActivityAllActive" styleClass="error" />
+
+						<h:outputLabel value="Buchung durchführen:" />
+						<h:commandButton id="createBookingsBeanCreateBookingsAllActive" action="#{createBookingsBean.createBookingsForAllActive()}"
+							value="Alle Aktiven Pfadfinder Buchen" disabled="#{!bookingBean.createAllAllowed}" />
+						<h:messages for="createBookingsBeanCreateBookingsAllActive" />
+
+					</h:panelGrid>
+				</p:tab>
+			</p:accordionPanel>
+		</h:form>
+
+		<h:form id="createBookingsFromSource">
+			<p:accordionPanel multiple="true" activeIndex="#{createBookingsBean.fromToActiveIndex}">
+				<p:ajax event="tabChange" listener="#{createBookingsBean.onTabChange}" />
+				<p:ajax event="tabClose" listener="#{createBookingsBean.onTabChange}" />
+				<p:tab id="fromTo" title="Neu Buchen Von/Auf Aktivität" expanded="#{createBookingsBean.fromToVisible}" closable="true">
+					<h:messages styleClass="error" />
+					<h:panelGrid columnClasses="label,component,required" columns="3">
+
+						<h:outputLabel for="createBookingsBeanBookingActivitySource" value="Quell-Aktivität:" />
+						<h:panelGroup>
+							<h:selectOneListbox id="createBookingsBeanBookingActivitySource" value="#{createBookingsBean.sourceActivity}"
+								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItems value="#{activityBean.all}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
+								<f:ajax render="createBookingsFromSource" />
+							</h:selectOneListbox>
+						</h:panelGroup>
+						<h:message for="createBookingsBeanBookingActivitySource" styleClass="error" />
+
+						<h:outputLabel for="createBookingsBeanBookingActivitySourceTarget" value="Ziel-Aktivität:" />
+						<h:panelGroup>
+							<h:selectOneListbox id="createBookingsBeanBookingActivitySourceTarget" value="#{createBookingsBean.targetActivity}"
+								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItems value="#{activityBean.active}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
+								<f:ajax render="createBookingsFromSource" />
+							</h:selectOneListbox>
+						</h:panelGroup>
+						<h:message for="createBookingsBeanBookingActivitySourceTarget" styleClass="error" />
+
+						<h:outputLabel value="Buchung Neu:" />
+						<h:commandButton id="createBookingsBeanCreateBookingsSource" action="#{createBookingsBean.createBookingsFromSource()}"
+							value="Von #{createBookingsBean.sourceActivity.name} auf #{createBookingsBean.targetActivity.name} Neu Buchen"
+							disabled="#{!bookingBean.createAllAllowed}" />
+						<h:messages for="createBookingsBeanCreateBookingsSource" />
+
+					</h:panelGrid>
+				</p:tab>
+			</p:accordionPanel>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

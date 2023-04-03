@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="id" value='#{registrationBean.id}' />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewParam name="registrationBeanExampleName" value="#{registrationBean.example.name}" />
+		<f:viewParam name="registrationBeanExampleVorname" value="#{registrationBean.example.vorname}" />
+		<f:viewParam name="registrationBeanExampleTelefon" value="#{registrationBean.example.telefon}" />
+		<f:viewParam name="registrationBeanExampleEmail" value="#{registrationBean.example.email}" />
+		<f:viewParam name="registrationBeanExampleStrasse" value="#{registrationBean.example.strasse}" />
+		<f:viewParam name="registrationBeanExamplePLZ" value="#{registrationBean.example.PLZ}" />
+		<f:viewParam name="registrationBeanExampleGeschlecht" value="#{registrationBean.example.geschlecht}" />
+		<f:viewParam name="registrationBeanExampleGebJahr" value="#{registrationBean.example.gebJahr}" />
+		<f:viewParam name="registrationBeanExampleSchoolEntry" value="#{registrationBean.example.schoolEntry}" />
+		<f:viewParam name="regStornoBox" value="#{registrationBean.storno}" converter="#{triStateConverter}" />
+		<f:viewParam name="regAktivBox" value="#{registrationBean.aktiv}" converter="#{triStateConverter}" />
+		<f:viewAction action="#{registrationBean.retrieve}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Anmeldung bearbeiten" />
+
+	<ui:define name="header">
+	</ui:define>
+
+	<ui:define name="subheader">
+		Anmeldung bearbeiten
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+
+		<h:form id="create">
+		
+			<p:messages id="messages" globalOnly="true" styleClass="error" />
+
+			<p:focus for="Vorname"/>
+
+			<h:panelGrid columnClasses="label2,component2,required,label2,component2,required" columns="6">
+
+				<h:outputLabel for="regBeanRegCreated" value="Erstellung:" />
+				<h:panelGroup>
+					<p:calendar id="regBeanRegCreated" value="#{registrationBean.registration.created}" pattern="dd.MM.yyyy" mask="true" navigator="true">
+						<f:convertDateTime pattern="dd.MM.yyyy"/>
+					</p:calendar>
+					<h:message for="regBeanRegCreated" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputText />
+				<h:outputText />
+				<h:outputText />
+				
+				<h:outputLabel for="regBeanRegGeschlecht" value="Geschlecht:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="regBeanRegGeschlecht" value="#{registrationBean.registration.geschlecht}" required="true">
+						<f:selectItems value="#{memberBean.sexes}" />
+					</h:selectOneMenu>
+					<h:message for="regBeanRegGeschlecht" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegAnrede" value="Anrede:" />
+				<h:panelGroup>
+					<p:autoComplete id="regBeanRegAnrede" value="#{registrationBean.registration.anrede}"
+						completeMethod="#{memberBean.getDistinctAnredeLike}" cache="true" maxResults="20" />
+					<h:message for="regBeanRegAnrede" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="Vorname" value="Vorname:" />
+				<h:panelGroup>
+					<p:autoComplete id="Vorname" value="#{registrationBean.registration.vorname}"
+						completeMethod="#{memberBean.getDistinctVornameLike}" cache="true" maxResults="20">
+						<f:validateLength minimum="2" />
+					</p:autoComplete>
+					<h:message for="Vorname" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="Name" value="Name:" />
+				<h:panelGroup>
+					<p:autoComplete id="Name" value="#{registrationBean.registration.name}"
+						completeMethod="#{memberBean.getDistinctNameLike}" cache="true" maxResults="20">
+						<f:validateLength minimum="2" />
+					</p:autoComplete>
+					<h:message for="Name" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegSchoolEntry" value="Schuleintritt:" />
+				<h:panelGroup>
+					<h:inputText id="regBeanRegSchoolEntry" value="#{registrationBean.registration.schoolEntry}"
+						pt:placeholder="numerisch" title="Jahr des Schuleintritts">
+						<f:validateLongRange minimum="2000" maximum="3000" />
+					</h:inputText>
+					<h:message for="regBeanRegSchoolEntry" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegGebTag" value="Geb Tag:" />
+				<h:panelGroup>
+					<h:inputText id="regBeanRegGebTag" value="#{registrationBean.registration.gebTag}" pt:placeholder="numerisch"
+						title="Tag des Monats, Zahl">
+						<f:validateLongRange minimum="0" maximum="31" />
+					</h:inputText>
+					<h:message for="regBeanRegGebTag" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegGebMonat" value="Geb Monat:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="regBeanRegGebMonat" value="#{registrationBean.registration.gebMonat}"
+						title="Monat des Jahres, Zahl">
+						<f:selectItem itemLabel="undef.." itemValue="0" />
+						<f:selectItems value="#{memberBean.months}" var="m" itemLabel="#{m}" itemValue="#{m.idx}" />
+					</h:selectOneMenu>
+					<h:message for="regBeanRegGebMonat" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegGebJahr" value="Geb Jahr:" />
+				<h:panelGroup>
+					<h:inputText id="regBeanRegGebJahr" value="#{registrationBean.registration.gebJahr}" pt:placeholder="numerisch"
+						title="Jahr, Zahl">
+						<f:validateRequired />
+						<f:validator validatorId="gebJahrValidator" />
+					</h:inputText>
+					<h:message for="regBeanRegGebJahr" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="ParentVorname" value="ElternVorname:" />
+				<h:panelGroup>
+					<p:autoComplete id="ParentVorname" value="#{registrationBean.registration.parentVorname}"
+						completeMethod="#{memberBean.getDistinctVornameLike}" cache="true" maxResults="20">
+						<f:validateLength minimum="2" />
+					</p:autoComplete>
+					<h:message for="ParentVorname" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="ParentName" value="ElternName:" />
+				<h:panelGroup>
+					<p:autoComplete id="ParentName" value="#{registrationBean.registration.parentName}"
+						completeMethod="#{memberBean.getDistinctNameLike}" cache="true" maxResults="20">
+						<f:validateLength minimum="2" />
+					</p:autoComplete>
+					<h:message for="ParentName" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegStrasse" value="Strasse:" />
+				<h:panelGroup>
+					<p:autoComplete id="regBeanRegStrasse" value="#{registrationBean.registration.strasse}"
+						completeMethod="#{memberBean.getDistinctStrasseLike}" cache="true" maxResults="20" />
+					<h:message for="regBeanRegStrasse" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegPLZ" value="PLZ:" />
+				<h:panelGroup>
+					<p:autoComplete id="regBeanRegPLZ" value="#{registrationBean.registration.PLZ}"
+						completeMethod="#{memberBean.getDistinctPLZLike}" cache="true" maxResults="20" />
+					<h:message for="regBeanRegPLZ" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegOrt" value="Ort:" />
+				<h:panelGroup>
+					<p:autoComplete id="regBeanRegOrt" value="#{registrationBean.registration.ort}"
+						completeMethod="#{memberBean.getDistinctOrtLike}" cache="true" maxResults="20" />
+					<h:message for="regBeanRegOrt" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputText />
+				<h:outputText />
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegEmail" value="Email:" />
+				<h:panelGroup>
+					<h:inputText id="regBeanRegEmail" value="#{registrationBean.registration.email}" />
+					<h:message for="regBeanRegEmail" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegTelefon" value="Telefon:" />
+				<h:panelGroup>
+					<h:inputText id="regBeanRegTelefon" value="#{registrationBean.registration.telefon}" />
+					<h:message for="regBeanRegTelefon" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegParent" value="Eltern:" />
+				<h:panelGroup>
+					<p:autoComplete id="regBeanRegParent" value="#{registrationBean.registration.parent}"
+						completeMethod="#{members.filtered}" cache="true" maxResults="20" var="m" itemLabel="#{m}" itemValue="#{m.idStr}"
+						converter="#{memberBean.converter}" />
+					<h:message for="regBeanRegParent" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="regBeanRegMember" value="Mitglied:" />
+				<h:panelGroup>
+					<h:link outcome="/pfad/member/view" rendered="#{not empty registrationBean.registration.member}">
+						<f:param name="id" value="#{registrationBean.registration.member.id}" />
+						<h:outputText id="regBeanRegMember" value="#{registrationBean.registration.member.toShortString()}" />
+					</h:link>
+					<h:outputText rendered="#{empty registrationBean.registration.member}" />
+				</h:panelGroup>
+				<h:outputText />
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" width="100em" columnClasses="label2,component90">
+				<h:outputLabel for="regBeanRegComment" value="Kommentar:" />
+				<h:panelGroup>
+					<h:inputTextarea id="regBeanRegComment" value="#{registrationBean.registration.comment}" rows="5" cols="120"
+						styleClass="width70" />
+					<h:message for="regBeanRegComment" styleClass="error" />
+				</h:panelGroup>
+			</h:panelGrid>
+
+			<h:outputStylesheet>
+			.boolean { width: 15%; }
+			</h:outputStylesheet>
+			<h:panelGrid columns="6" style="width: 30%;" columnClasses="boolean,boolean,boolean,boolean" styleClass="#{registrationBean.registration.status}">
+
+				<h:outputLabel for="regBeanRegStatus" value="Satus:" />
+				<h:panelGroup styleClass="#{registrationBean.registration.status}">
+					<p:selectOneMenu id="regBeanRegStatus" value="#{registrationBean.registration.status}">
+						<f:selectItems value="#{registrationBean.stati}" />
+					</p:selectOneMenu>
+				</h:panelGroup>
+
+				<h:outputLabel for="regBeanRegAktiv" value="Aktiv:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="regBeanRegAktiv" value="#{registrationBean.registration.aktiv}" />
+					<h:message for="regBeanRegAktiv" styleClass="error" />
+				</h:panelGroup>
+				<h:outputLabel for="regBeanRegStorno" value="Storno:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="regBeanRegStorno" value="#{registrationBean.registration.storno}" />
+					<h:message for="regBeanRegStorno" styleClass="error" />
+				</h:panelGroup>
+				<h:panelGroup />
+				<h:panelGroup />
+			</h:panelGrid>
+
+			<h:panelGrid columns="8" style="width: 100%;">
+				<h:outputLabel value="Erstellt:" />
+				<h:outputText value="#{registrationBean.registration.created}" converter="javax.faces.DateTime" />
+				<h:outputLabel value="Von:" />
+				<h:outputText value="#{registrationBean.registration.createdBy}" />
+				<h:outputLabel value="Geändert:" />
+				<h:outputText value="#{registrationBean.registration.changed}" converter="javax.faces.DateTime" />
+				<h:outputLabel value="Von:" />
+				<h:outputText value="#{registrationBean.registration.changedBy}" />
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink id="save" value="Speichern" action='#{registrationBean.update}' styleClass="btn btn-primary"
+					disabled="#{!registrationBean.updateAllowed}" >
+				</h:commandLink>
+				<h:commandLink id="convert" value="Aufnehmen" action='#{registrationBean.convertToMember}'
+					styleClass="btn btn-primary"
+					disabled="#{registrationBean.registration.member != null || !registrationBean.updateAllowed}" >
+				</h:commandLink>
+				<h:link value="Cancel" outcome="search" styleClass="btn btn-primary" />
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

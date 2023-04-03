@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:forgeview="http://jboss.org/forge/view" template="/resources/scaffold/pageTemplate.xhtml">
+
+	<ui:define name="header">
+		Import von Zahlungen
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+
+		<h:form id="form" enctype="multipart/form-data">
+			<h:panelGrid columns="2">
+
+				<h:outputLabel value="" />
+				<h:messages />
+
+				<h:outputLabel value="Aktivität:" />
+				<h:selectOneMenu value="#{paymentImportBean.activity}" converter="#{activityBean.converter}" required="true">
+					<f:selectItems value="#{activityBean.all}" var="a" itemLabel="#{a}" itemValue="#{a}" />
+				</h:selectOneMenu>
+
+				<h:outputLabel value="BetragsStufen:" />
+				<h:inputText value="#{paymentImportBean.amountGrades}" />
+
+				<h:outputLabel value="AkontoStufen:" />
+				<h:inputText value="#{paymentImportBean.accontoGrades}" />
+
+				<h:outputLabel value="ImportFile:" />
+				<h:inputFile value="#{paymentImportBean.fileContentPart}" disabled="#{!paymentBean.updateAllowed}" 
+					required="#{paymentImportBean.fileContent == null}" requiredMessage="Datei muss gewählt werden!">
+					<f:ajax execute="@form" listener="#{paymentImportBean.test()}" render="@form dataTable" />
+				</h:inputFile>
+				
+				<h:outputLabel value="Aktuelles File:" rendered="#{paymentImportBean.fileName != null}"/>
+				<h:outputText value="#{paymentImportBean.fileName}" />
+				
+				<h:outputLabel value="TestImport:" />
+				<h:commandButton value="Test-Only" disabled="#{!paymentBean.updateAllowed || paymentImportBean.fileContent == null}">
+					<f:ajax listener="#{paymentImportBean.test()}" render="@form" />
+				</h:commandButton>
+
+				<h:outputLabel value="DatenUpdate:" />
+				<h:commandButton value="UpdateData" disabled="#{!paymentBean.updateAllowed || paymentImportBean.fileContent == null}">
+					<f:ajax listener="#{paymentImportBean.updateData()}" render="@form" />
+				</h:commandButton>
+
+				<h:outputLabel value="Download Ergebnis:" />
+				<h:commandButton value="Download" actionListener="#{paymentImportBean.download()}" immediate="true" disabled="#{paymentImportBean.resultContent == null}"/>
+
+				<h:outputLabel value="ImportUndSpeichern:" />
+				<h:commandButton value="ImportAndSave" disabled="#{!paymentBean.updateAllowed || paymentImportBean.fileContent == null}">
+					<f:ajax listener="#{paymentImportBean.execute()}" render="@form" />
+				</h:commandButton>
+
+			</h:panelGrid>
+
+			<h:panelGroup id="dataTable">
+				<h:dataTable value="#{paymentImportBean.results}" var="r" border="1" rendered="#{not empty paymentImportBean.results}">
+					<h:column>
+						<h:outputText value="#{r.val0}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val1}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val2}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val3}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val4}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val5}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val6}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val7}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val8}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val9}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val10}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val11}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val12}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val13}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val14}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val15}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val16}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val17}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val18}" />
+					</h:column>
+					<h:column>
+						<h:outputText value="#{r.val19}" />
+					</h:column>
+				</h:dataTable>
+			</h:panelGroup>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

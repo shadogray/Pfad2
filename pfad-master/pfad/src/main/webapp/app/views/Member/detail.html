@@ -1,0 +1,271 @@
+<header ng-switch on="$location.path().indexOf('/Members/new') > -1">
+    <h3 ng-switch-when="true">Mitglied anlegen</h3>
+    <h3 ng-switch-when="false">Mitglied bearbeiten</h3>
+</header>
+<form id="MemberForm" name="MemberForm" class="form-horizontal" role="form">
+    
+    <div class="form-group" ng-class="{'has-error': MemberForm.BVKey.$invalid}">
+        <label for="BVKey" class="col-sm-2 control-label">BV Key:</label>
+        <div id="BVKeyControls" class="col-sm-10">
+            <input id="BVKey" name="BVKey" type="text" class="form-control" ng-model="member.bvkey" placeholder="Nur wenn schon vorhanden!!"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.titel.$invalid}">
+        <label for="titel" class="col-sm-2 control-label">Titel</label>
+        <div id="titelControls" class="col-sm-10">
+			<md-autocomplete id="titel" name="titel" md-selected-item="member.titel" md-search-text="titelFilter" md-items="item in distinct('titel', titelFilter)" 
+				md-item-text="item" placeholder="Titel..(optional)" >
+				<span md-highlight-text="titelFilter">{{item}}</span>
+			</md-autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.name.$invalid}">
+        <label for="name" class="col-sm-2 control-label">Name</label>
+        <div id="nameControls" class="col-sm-10">
+			<md-autocomplete id="name" name="name" md-selected-item="member.name" md-search-text="nameFilter" md-items="item in distinct('name', nameFilter)" 
+				md-item-text="item" placeholder="Familienname.." >
+				<span md-highlight-text="nameFilter">{{item}}</span>
+			</md-autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.vorname.$invalid}">
+        <label for="vorname" class="col-sm-2 control-label">Vorname</label>
+        <div id="vornameControls" class="col-sm-10">
+			<md-autocomplete id="vorname" name="vorname" md-selected-item="member.vorname" md-search-text="vornameFilter" md-items="item in distinct('vorname', vornameFilter)" 
+				md-item-text="item" placeholder="Vorname.." >
+				<span md-highlight-text="vornameFilter">{{item}}</span>
+			</md-autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.anrede.$invalid}">
+        <label for="anrede" class="col-sm-2 control-label">Anrede</label>
+        <div id="anredeControls" class="col-sm-10">
+			<md-autocomplete id="anrede" name="anrede" md-selected-item="member.anrede" md-search-text="anredeFilter" md-items="item in distinct('anrede', anredeFilter)" 
+				md-item-text="item" placeholder="Anrede..(optional)" >
+				<span md-highlight-text="anredeFilter">{{item}}</span>
+			</md-autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.gebTag.$invalid}">
+        <label for="gebTag" class="col-sm-2 control-label">Geburtstag</label>
+        <div id="gebTagControls" class="col-sm-10">
+	        <md-input-container>
+	        	<label>Jahr</label>
+		        <md-select ng-model="member.gebJahr">
+					<md-option ng-repeat="j in gebJahr" ng-value="j" >{{j}}</md-option>            
+		        </md-select>
+		    </md-input-container>
+	        <span style="padding-left:20px;">
+		        <md-input-container >
+		        	<label>Monat</label>
+			        <md-select ng-model="member.gebMonat">
+						<md-option ng-repeat="m in gebMonat" ng-value="m.index" >{{m.name}}</md-option>            
+			        </md-select>
+			    </md-input-container>
+			</span>
+	        <span style="padding-left:20px;">
+		        <md-input-container>
+		        	<label>Tag</label>
+			        <md-select ng-model="member.gebTag">
+						<md-option ng-repeat="t in gebTag" ng-value="t" >{{t}}</md-option>            
+			        </md-select>
+			    </md-input-container>
+			</span>
+            <span style="padding-left:20px;">
+                <md-input-container>
+                    <label>Geschlecht</label>
+                    <md-select ng-model="member.geschlecht">
+                        <md-option ng-repeat="t in geschlechtList" ng-value="t" >{{t}}</md-option>            
+                    </md-select>
+                </md-input-container>
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.strasse.$invalid}">
+        <label for="strasse" class="col-sm-2 control-label">Strasse</label>
+        <div id="strasseControls" class="col-sm-10">
+			<md-autocomplete id="strasse" name="strasse" md-selected-item="member.strasse" md-search-text="strasseFilter" md-items="item in distinct('strasse', strasseFilter)" 
+				md-item-text="item" placeholder="Strasse.." >
+				<span md-highlight-text="strasseFilter">{{item}}</span>
+			</md-autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.plz.$invalid}">
+        <label for="plz" class="col-sm-2 control-label">PLZ</label>
+        <div id="PLZControls" class="col-sm-10">
+			<md-autocomplete id="plz" name="plz" md-selected-item="member.plz" md-search-text="plzFilter" md-items="item in distinct('plz', plzFilter)" 
+				md-item-text="item" placeholder="Postleitzahl.." >
+				<span md-highlight-text="plzFilter">{{item}}</span>
+			</md-autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.ort.$invalid}">
+        <label for="ort" class="col-sm-2 control-label">Ort</label>
+        <div id="ortControls" class="col-sm-10">
+			<md-autocomplete id="ort" name="ort" md-selected-item="member.ort" md-search-text="ortFilter" md-items="item in distinct('ort', ortFilter)" 
+				md-item-text="item" placeholder="Ort.." >
+				<span md-highlight-text="ortFilter">{{item}}</span>
+			</md-autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.email.$invalid}">
+        <label for="email" class="col-sm-2 control-label">Email</label>
+        <div id="emailControls" class="col-sm-10">
+            <input id="email" name="email" type="text" class="form-control" ng-model="member.email" 
+            	placeholder="Email..(optional)"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.religion.$invalid}">
+        <label for="religion" class="col-sm-2 control-label">Religion</label>
+        <div id="religionControls" class="col-sm-10">
+            <input id="religion" name="religion" type="text" class="form-control" ng-model="member.religion" 
+            	placeholder="Religion..(optional)"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.telefon.$invalid}">
+        <label for="telefon" class="col-sm-2 control-label">Telefon</label>
+        <div id="telefonControls" class="col-sm-10">
+            <input id="telefon" name="telefon" type="text" class="form-control" ng-model="member.telefon" placeholder="Telefon"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.rolle.$invalid}">
+        <label for="rolle" class="col-sm-2 control-label">Rolle</label>
+        <div id="rolleControls" class="col-sm-10">
+	        <select id="rolle" name="rolle" class="form-control" ng-model="member.rolle" ng-options="r for r in rolleList"  >
+	            <option value="">Rolle..</option>
+	        </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.trupp.$invalid}">
+        <label for="trupp" class="col-sm-2 control-label">Trupp</label>
+        <div id="truppControls" class="col-sm-10">
+        <select id="trupp" name="trupp" class="form-control" ng-model="truppSelection" ng-options="t.text for t in truppSelectionList"  >
+            <option value="">Trupp des Kindes..</option>
+        </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.Vollzahler.$invalid}">
+        <label for="Vollzahler" class="col-sm-2 control-label">Vollzahler</label>
+        <div id="VollzahlerControls" class="col-sm-10">
+			<md-autocomplete id="Vollzahler" name="Vollzahler" md-selected-item="member.vollzahler" md-search-text="VollzahlerFilter" md-items="item in filteredMembers(VollzahlerFilter)" 
+				md-item-text="item.shortName" placeholder="Vollzahler für das Kind.." >
+				<span md-highlight-text="VollzahlerFilter">{{item.shortName}}</span>
+			</md-autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.funktionen.$invalid}">
+        <label for="funktionen" class="col-sm-2 control-label">Funktionen</label>
+        <div id="funktionenControls" class="col-sm-10">
+			<md-chips ng-model="member.funktionen" md-on-remove="memberChanged($chip, $index)" md-on-add="memberChanged($chip, $index)">
+				<md-chip-template>
+		        	<span><strong>{{$chip.shortName}}</strong></span>
+			    </md-chip-template>
+				<md-autocomplete md-search-text="funktionenFilter" md-items="item in (functions | filter:funktionenFilter)" md-item-text="item.shortName"
+					placeholder="Funktionen..(optional)" >
+					<span md-highlight-text="funktionenFilter">{{item.shortName}}</span>
+				</md-autocomplete> 
+			</md-chips>
+        </div>
+    </div>
+
+    <div class="form-group" >
+        <label for="assisting" class="col-sm-2 control-label">Leitg/Ass</label>
+        <div id="assistingControls" class="col-sm-10">
+			<md-chips ng-model="member.responsible" md-removable="false">
+				<md-chip-template>
+		        	<span>
+                        <a href="#/Members/edit/{{$chip.id}}"><strong>{{$chip.shortName}}</strong></a>
+                    </span>
+			    </md-chip-template>
+			</md-chips>
+        </div>
+    </div>
+
+	
+    <div class="form-group" ng-class="{'has-error': MemberForm.siblings.$invalid}">
+        <label for="siblings" class="col-sm-2 control-label">Eltern</label>
+        <div id="siblingsControls" class="col-sm-10">
+			<md-chips ng-model="member.parents" md-on-remove="memberChanged($chip, $index)" md-on-add="memberChanged($chip, $index)">
+				<md-chip-template>
+		        	<span>
+                        <a href="#/Members/edit/{{$chip.id}}">
+                            <strong>{{$chip.shortName}}</strong>
+                        </a>
+                        <span ng-repeat="c in $chip.contacts">
+                            <a href="{{c.type}}:{{c.value}}">{{c.value}}</a>
+                        </span>
+                    </span>
+			    </md-chip-template>
+				<md-autocomplete md-search-text="parentsFilter" md-items="item in filteredMembers(parentsFilter)" md-item-text="item.shortName"
+					placeholder="Eltern des Mitglieds.." >
+					<span md-highlight-text="siblingsFilter">{{item.shortName}}</span>
+				</md-autocomplete> 
+			</md-chips>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': MemberForm.siblings.$invalid}">
+        <label for="siblings" class="col-sm-2 control-label">Kinder</label>
+        <div id="siblingsControls" class="col-sm-10">
+            <md-chips ng-model="member.siblings" md-on-remove="memberChanged($chip, $index)" md-on-add="memberChanged($chip, $index)">
+                <md-chip-template>
+                    <span>
+                        <a href="#/Members/edit/{{$chip.id}}"><strong>{{$chip.shortName}}</strong></a>
+                    </span>
+                </md-chip-template>
+                <md-autocomplete md-search-text="siblingsFilter" md-items="item in filteredMembers(siblingsFilter)" md-item-text="item.shortName"
+                    placeholder="Kind des Mitglieds.." >
+                    <span md-highlight-text="siblingsFilter">{{item.shortName}}</span>
+                </md-autocomplete> 
+            </md-chips>
+        </div>
+    </div>
+
+
+    <div class="row" ng-class="{'has-error': MemberForm.aktiv.$invalid}">
+        <label for="Diverse" class="col-sm-2 control-label">Diverse</label>
+        <div id="siblingsControls" class="col-sm-10">
+            <div class="col-sm-4">
+    	            <md-checkbox id="aktiv" name="aktiv" type="checkbox" ng-model="member.aktiv" >Aktiv</md-checkbox>
+            </div>
+            <div class="col-sm-4">
+    	            <md-checkbox id="aktivExtern" name="aktivExtern" ng-model="member.aktivExtern" >Aktiv Extern</md-checkbox>
+            </div>
+            <div class="col-sm-4">
+    	            <md-checkbox id="trail" name="trail" ng-model="member.trail" >Trail</md-checkbox>
+    	    </div>
+
+            <div class="col-sm-4">
+                    <md-checkbox id="infoMail" name="infoMail" ng-model="member.infoMail" >InfoMail</md-checkbox>
+            </div>
+            <div class="col-sm-4">
+                    <md-checkbox id="support" name="support" ng-model="member.support" >Support</md-checkbox>
+            </div>
+            <div class="col-sm-4">
+                    <md-checkbox id="free" name="free" ng-model="member.free" >Frei</md-checkbox>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveMember" name="saveMember" class="btn btn-primary" ng-disabled="isClean() || MemberForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+        </div>
+    </div>
+</form>

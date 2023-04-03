@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	 xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+	<ui:param name="pageTitle" value="Pfad" />
+
+	<ui:define name="header">
+		Willkommen in der Pfadfinder-Datenbank
+	</ui:define>
+
+	<ui:define name="main">
+		<h:messages />
+		<h2 class="success">Bitte um Login/Passwort.. :-)</h2>
+		<h:form>
+			<p:focus/>
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Username:" />
+				<h:inputText id="usernameInput" value="#{loginBean.username}" required="true" />
+				<h:outputLabel value="Passwort:" />
+				<h:inputSecret id="passwordInput" value="#{loginBean.password}" required="true" />
+				<h:outputText value="" />
+				<h:commandButton value="Login" action="#{loginBean.login}" />
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

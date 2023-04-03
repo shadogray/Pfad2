@@ -1,0 +1,166 @@
+<div class="form-horizontal">
+    <h3>Create a new Payment</h3>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-sm-2">
+            <a id="Create" name="Create" class="btn btn-primary" href="#/Payments/new"><span class="glyphicon glyphicon-plus-sign"></span> Create</a>
+        </div>
+    </div>
+</div>
+<hr/>
+<div>
+    <h3>Search for Payments</h3>
+    <form id="PaymentSearch" class="form-horizontal">
+        
+    <div class="form-group">
+        <label for="idStr" class="col-sm-2 control-label">Id Str</label>
+        <div class="col-sm-10">
+            <input id="idStr" name="idStr" class="form-control" type="text" ng-model="search.idStr" placeholder="Enter the Payment Id Str"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="payer" class="col-sm-2 control-label">Payer</label>
+        <div class="col-sm-10">
+            <select id="payer" name="payer" class="form-control" ng-model="search.payer" ng-options="p as p.id for p in payerList">
+                <option value="">Choose a Payer</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="amount" class="col-sm-2 control-label">Amount</label>
+        <div class="col-sm-10">
+            <input id="amount" name="amount" class="form-control" type="text" ng-model="search.amount" placeholder="Enter the Payment Amount"></input>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="finished" class="col-sm-2 control-label">Finished</label>
+        <div class="col-sm-10">
+            <select id="finished" name="finished" class="form-control" ng-model="search.finished" ng-options="f as f for f in finishedList">
+                <option value="">Choose a Finished</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="aconto" class="col-sm-2 control-label">Aconto</label>
+        <div class="col-sm-10">
+            <select id="aconto" name="aconto" class="form-control" ng-model="search.aconto" ng-options="a as a for a in acontoList">
+                <option value="">Choose a Aconto</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="comment" class="col-sm-2 control-label">Comment</label>
+        <div class="col-sm-10">
+            <input id="comment" name="comment" class="form-control" type="text" ng-model="search.comment" placeholder="Enter the Payment Comment"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="bookingsIds" class="col-sm-2 control-label">Bookings Ids</label>
+        <div class="col-sm-10">
+            <input id="bookingsIds" name="bookingsIds" class="form-control" type="text" ng-model="search.bookingsIds" placeholder="Enter the Payment Bookings Ids"></input>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="sortedBookings" class="col-sm-2 control-label">Sorted Bookings</label>
+        <div class="col-sm-10">
+            <input id="sortedBookings" name="sortedBookings" class="form-control" type="text" ng-model="search.sortedBookings" placeholder="Enter the Payment Sorted Bookings"></input>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="type" class="col-sm-2 control-label">Type</label>
+        <div class="col-sm-10">
+            <select id="type" name="type" class="form-control" ng-model="search.type" ng-options="t as t for t in typeList">
+                <option value="">Choose a Type</option>
+            </select>
+        </div>
+    </div>
+
+
+
+
+    <div class="form-group">
+        <label for="changedBy" class="col-sm-2 control-label">Changed By</label>
+        <div class="col-sm-10">
+            <input id="changedBy" name="changedBy" class="form-control" type="text" ng-model="search.changedBy" placeholder="Enter the Payment Changed By"></input>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="createdBy" class="col-sm-2 control-label">Created By</label>
+        <div class="col-sm-10">
+            <input id="createdBy" name="createdBy" class="form-control" type="text" ng-model="search.createdBy" placeholder="Enter the Payment Created By"></input>
+        </div>
+    </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-sm-10">
+                <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><span class="glyphicon glyphicon-search"></span> Search</a>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="search-results">
+        <div class="table-responsive">
+        <table class="table table-responsive table-bordered table-striped clearfix">
+            <thead>
+                <tr>
+                    <th>Id Str</th>
+                    <th>Payer</th>
+                    <th>Amount</th>
+                    <th>Finished</th>
+                    <th>Aconto</th>
+                    <th>Comment</th>
+                    <th>Bookings Ids</th>
+                    <th>Sorted Bookings</th>
+                    <th>Type</th>
+                    <th>Payment Date</th>
+                    <th>Changed</th>
+                    <th>Created</th>
+                    <th>Changed By</th>
+                    <th>Created By</th>
+                </tr>
+            </thead>
+            <tbody id="search-results-body">
+                <tr ng-repeat="result in filteredResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.idStr}}</a></td>
+                        <td><a href="#/Payments/edit/{{result.id}}">{{result.payer.id}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.amount}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.finished}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.aconto}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.comment}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.bookingsIds}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.sortedBookings}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.type}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.paymentDate| date:'yyyy-MM-dd HH:mm:ss Z'}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.changed| date:'yyyy-MM-dd HH:mm:ss Z'}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.created| date:'yyyy-MM-dd HH:mm:ss Z'}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.changedBy}}</a></td>
+                    <td><a href="#/Payments/edit/{{result.id}}">{{result.createdBy}}</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+        <ul class="pagination pagination-centered">
+        <li ng-class="{disabled:currentPage == 0}">
+            <a id="prev" href ng-click="previous()">«</a>
+        </li>
+        <li ng-repeat="n in pageRange" ng-class="{active:currentPage == n}" ng-click="setPage(n)">
+            <a href ng-bind="n + 1">1</a>
+        </li>
+        <li ng-class="{disabled: currentPage == (numberOfPages() - 1)}">
+            <a id="next" href ng-click="next()">»</a>
+        </li>
+    </ul>
+
+</div>

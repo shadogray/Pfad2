@@ -1,0 +1,71 @@
+<div>
+	<h3>Mitglieder</h3>
+	<form id="MemberSearch" class="form-horizontal">
+
+		<div class="form-group">
+			<label for="name" class="col-sm-2 control-label">Name</label>
+			<div class="col-sm-10">
+					<input id="name" name="name" class="form-control" ng-model="filter" ng-change="filtered(filter,trupp)"
+						placeholder="einfach tippen.."></input>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="trupp" class="col-sm-2 control-label">Trupp</label>
+			<div class="col-sm-10">
+				<select id="trupp" name="trupp" class="form-control" ng-model="trupp"
+					ng-options="t as t.name for t in truppList" ng-change="filtered(filter,trupp)">
+					<option value="">Trupp wählen</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div>
+				<span class="col-xs-8 col-md-6">
+					<a id="Create" name="Create" class="btn btn-primary" href="#/Members/new"><span
+						class="glyphicon glyphicon-plus-sign"></span>Neues Mitglied erstellen</a>
+				</span>
+				<span class="col-xs-4 col-md-3">
+					<a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()">
+						<span class="glyphicon glyphicon-search"></span>Suchen</a>
+				</span>
+			</div>
+		</div>
+	</form>
+</div>
+<div id="search-results">
+	<div class="table-responsive">
+		<table class="table table-responsive table-bordered table-striped clearfix">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Vorname</th>
+					<th>W/M</th>
+					<th>GebJahr</th>
+					<th>PLZ</th>
+					<th>Ort</th>
+					<th>Strasse</th>
+					<th>Trupp</th>
+				</tr>
+			</thead>
+			<tbody id="search-results-body">
+				<tr ng-repeat="result in filteredResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+					<td><a href="#/Members/edit/{{result.id}}">{{result.name}}</a></td>
+					<td><a href="#/Members/edit/{{result.id}}">{{result.vorname}}</a></td>
+					<td><a href="#/Members/edit/{{result.id}}">{{result.geschlecht}}</a></td>
+					<td><a href="#/Members/edit/{{result.id}}">{{result.gebJahr}}</a></td>
+					<td><a href="#/Members/edit/{{result.id}}">{{result.PLZ}}</a></td>
+					<td><a href="#/Members/edit/{{result.id}}">{{result.ort}}</a></td>
+					<td><a href="#/Members/edit/{{result.id}}">{{result.strasse}}</a></td>
+					<td><a href="#/Members/edit/{{result.id}}">{{result.trupp.name}}</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<script type="text/javascript">
+		$().ready(function() { $('#name').focus(); });
+	</script>
+
+</div>

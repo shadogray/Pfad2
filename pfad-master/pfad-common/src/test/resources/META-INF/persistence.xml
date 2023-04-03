@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="pfadTest" transaction-type="RESOURCE_LOCAL">
+		<description>Forge Persistence Unit</description>
+		<class>at.tfr.pfad.model.Member</class>
+		<class>at.tfr.pfad.model.Payment</class>
+		<class>at.tfr.pfad.model.Booking</class>
+		<class>at.tfr.pfad.model.Function</class>
+		<class>at.tfr.pfad.model.Configuration</class>
+		<class>at.tfr.pfad.model.Activity</class>
+		<class>at.tfr.pfad.model.Squad</class>
+		<class>at.tfr.pfad.model.Registration</class>
+		<class>at.tfr.pfad.model.Training</class>
+		<class>at.tfr.pfad.model.Participation</class>
+		<class>at.tfr.pfad.model.Registration</class>
+		<class>at.tfr.pfad.model.MailTemplate</class>
+		<class>at.tfr.pfad.model.MailMessage</class>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
+			<property name="javax.persistence.jdbc.user" value="sa" />
+			<property name="javax.persistence.jdbc.password" value="" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:h2:${project.build.directory}/testPfad" />
+
+			<property name="hibernate.transaction.flush_before_completion" value="true" />
+
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+
+			<property name="org.hibernate.envers.revision_on_collection_change" value="false" />
+		</properties>
+	</persistence-unit>
+</persistence>

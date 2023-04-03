@@ -1,0 +1,142 @@
+<header ng-switch on="$location.path().indexOf('/Activities/new') > -1">
+    <h3 ng-switch-when="true">Create a new Activity</h3>
+    <h3 ng-switch-when="false">View or edit Activity</h3>
+</header>
+<form id="ActivityForm" name="ActivityForm" class="form-horizontal" role="form">
+    
+    <div class="form-group" ng-class="{'has-error': ActivityForm.idStr.$invalid}">
+        <label for="idStr" class="col-sm-2 control-label">Id Str</label>
+        <div id="idStrControls" class="col-sm-10">
+            <input id="idStr" name="idStr" type="text" class="form-control" ng-model="activity.idStr" placeholder="Enter the Activity Id Str"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.bookings.$invalid}">
+        <label for="bookings" class="col-sm-2 control-label">Bookings</label>
+        <div id="bookingsControls" class="col-sm-10">
+            <select id="bookings" name="bookings" multiple class="form-control" ng-model="bookingsSelection" ng-options="b.text for b in bookingsSelectionList">
+                <option value="">Choose a Bookings</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.start.$invalid}">
+        <label for="start" class="col-sm-2 control-label">Start</label>
+        <div id="startControls" class="col-sm-10">
+            <date id="start" name="start" ng-model="activity.start" placeholder="Enter the Activity Start"></date>
+            <span class="help-block error" ng-show="ActivityForm.start.$error.dateFormat">does not match format "yyyy-MM-dd" (e.g. 2013-12-01)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.startString.$invalid}">
+        <label for="startString" class="col-sm-2 control-label">Start String</label>
+        <div id="startStringControls" class="col-sm-10">
+            <input id="startString" name="startString" type="text" class="form-control" ng-model="activity.startString" placeholder="Enter the Activity Start String"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.end.$invalid}">
+        <label for="end" class="col-sm-2 control-label">End</label>
+        <div id="endControls" class="col-sm-10">
+            <date id="end" name="end" ng-model="activity.end" placeholder="Enter the Activity End"></date>
+            <span class="help-block error" ng-show="ActivityForm.end.$error.dateFormat">does not match format "yyyy-MM-dd" (e.g. 2013-12-01)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.endString.$invalid}">
+        <label for="endString" class="col-sm-2 control-label">End String</label>
+        <div id="endStringControls" class="col-sm-10">
+            <input id="endString" name="endString" type="text" class="form-control" ng-model="activity.endString" placeholder="Enter the Activity End String"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.name.$invalid}">
+        <label for="name" class="col-sm-2 control-label">Name</label>
+        <div id="nameControls" class="col-sm-10">
+            <input id="name" name="name" type="text" class="form-control" ng-model="activity.name" placeholder="Enter the Activity Name"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.type.$invalid}">
+        <label for="type" class="col-sm-2 control-label">Type</label>
+        <div id="typeControls" class="col-sm-10">
+        <select id="type" name="type" class="form-control" ng-model="activity.type" ng-options="t for t in typeList" required >
+            <option value="">Choose a Type</option>
+        </select>
+        <span class="help-block error" ng-show="ActivityForm.type.$error.required">required</span> 
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.status.$invalid}">
+        <label for="status" class="col-sm-2 control-label">Status</label>
+        <div id="statusControls" class="col-sm-10">
+        <select id="status" name="status" class="form-control" ng-model="activity.status" ng-options="s for s in statusList" required >
+            <option value="">Choose a Status</option>
+        </select>
+        <span class="help-block error" ng-show="ActivityForm.status.$error.required">required</span> 
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.amount.$invalid}">
+        <label for="amount" class="col-sm-2 control-label">Amount</label>
+        <div id="amountControls" class="col-sm-10">
+            <input id="amount" name="amount" type="number" class="form-control" ng-model="activity.amount" placeholder="Enter the Activity Amount"></input>
+            <span class="help-block error" ng-show="ActivityForm.amount.$error.number">not a number</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.aconto.$invalid}">
+        <label for="aconto" class="col-sm-2 control-label">Aconto</label>
+        <div id="acontoControls" class="col-sm-10">
+            <input id="aconto" name="aconto" type="number" class="form-control" ng-model="activity.aconto" placeholder="Enter the Activity Aconto"></input>
+            <span class="help-block error" ng-show="ActivityForm.aconto.$error.number">not a number</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.comment.$invalid}">
+        <label for="comment" class="col-sm-2 control-label">Comment</label>
+        <div id="commentControls" class="col-sm-10">
+            <input id="comment" name="comment" type="text" class="form-control" ng-model="activity.comment" placeholder="Enter the Activity Comment"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.changed.$invalid}">
+        <label for="changed" class="col-sm-2 control-label">Changed</label>
+        <div id="changedControls" class="col-sm-10">
+            <datetime id="changed" name="changed" ng-model="activity.changed" placeholder="Enter the Activity Changed"></datetime>
+            <span class="help-block error" ng-show="ActivityForm.changed.$error.datetimeFormat">does not match format "yyyy-MM-dd hh:mm:ss" (e.g. 2013-12-01 22:00:00)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.created.$invalid}">
+        <label for="created" class="col-sm-2 control-label">Created</label>
+        <div id="createdControls" class="col-sm-10">
+            <datetime id="created" name="created" ng-model="activity.created" placeholder="Enter the Activity Created"></datetime>
+            <span class="help-block error" ng-show="ActivityForm.created.$error.datetimeFormat">does not match format "yyyy-MM-dd hh:mm:ss" (e.g. 2013-12-01 22:00:00)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.changedBy.$invalid}">
+        <label for="changedBy" class="col-sm-2 control-label">Changed By</label>
+        <div id="changedByControls" class="col-sm-10">
+            <input id="changedBy" name="changedBy" type="text" class="form-control" ng-model="activity.changedBy" placeholder="Enter the Activity Changed By"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ActivityForm.createdBy.$invalid}">
+        <label for="createdBy" class="col-sm-2 control-label">Created By</label>
+        <div id="createdByControls" class="col-sm-10">
+            <input id="createdBy" name="createdBy" type="text" class="form-control" ng-model="activity.createdBy" placeholder="Enter the Activity Created By"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveActivity" name="saveActivity" class="btn btn-primary" ng-disabled="isClean() || ActivityForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteActivity" name="deleteActivity" class="btn btn-danger" ng-show="activity.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        </div>
+    </div>
+</form>

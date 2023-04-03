@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:o="http://omnifaces.org/ui"
+	template="/resources/scaffold/pageTemplate.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+	<f:metadata>
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewParam name="page" value='#{functionBean.page}' />
+		<f:viewAction action="#{functionBean.paginate}" onPostback="true"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Funktion" />
+
+	<ui:define name="header">
+		Funktion
+	</ui:define>
+
+	<ui:define name="subheader">
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="search">
+			<f:validateBean disabled="true">
+				<h:panelGroup styleClass="search">
+				
+					<p:focus/>
+
+					<h:panelGrid columnClasses="label2,component2,required,label2,component2,required" columns="6">
+						<h:outputLabel for="functionBeanExampleFunction" value="Function:" />
+						<h:panelGroup>
+							<h:inputText id="functionBeanExampleFunction" value="#{functionBean.example.function}" >
+								<f:ajax delay="250" event="keyup" listener="#{functionBean.search()}" render="functionBeanPageItems"/>
+							</h:inputText>
+							<h:message for="functionBeanExampleFunction" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+						<h:outputLabel for="functionBeanExampleKey" value="Key:" />
+						<h:panelGroup>
+							<h:inputText id="functionBeanExampleKey" value="#{functionBean.example.key}" >
+								<f:ajax delay="250" event="keyup" listener="#{functionBean.search()}" render="functionBeanPageItems"/>
+							</h:inputText>
+							<h:message for="functionBeanExampleKey" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+					</h:panelGrid>
+					<h:panelGroup styleClass="buttons">
+						<h:commandLink value="Suchen" action='#{functionBean.search}' styleClass="btn btn-primary" />
+						<h:commandLink value="Neu" action='#{functionBean.create}' styleClass="btn btn-primary" />
+					</h:panelGroup>
+				</h:panelGroup>
+			</f:validateBean>
+
+			<h:dataTable id="functionBeanPageItems" styleClass="data-table" value="#{functionBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Function" />
+					</f:facet>
+					<h:link outcome="view" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemFunction" value="#{_item.function}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Key" />
+					</f:facet>
+					<h:link outcome="view" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemKey" value="#{_item.key}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="ExportReg" />
+					</f:facet>
+					<h:link outcome="view" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemExportReg" value="#{_item.exportReg}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Geschlecht" />
+					</f:facet>
+					<h:link outcome="view" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemSex" value="#{_item.sex}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Frei" />
+					</f:facet>
+					<h:link outcome="view" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemFree" value="#{_item.free}" />
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value='#{functionBean}' />
+			</ui:include>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

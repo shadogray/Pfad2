@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Zahlungen" />
+
+	<ui:define name="header">
+	</ui:define>
+
+	<ui:define name="subheader">
+		Zahlungen
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		
+		<p:log rendered="false"/>
+		<p:focus/>
+		
+		<h:form id="list" rendered="#{paymentBean.viewAllowed}">
+			<h:messages globalOnly="true" styleClass="error" />
+
+			<p:dataTable id="payments" widgetVar="payments" var="record" value="#{paymentTableBean.dataModel}"
+				paginator="true" rows="#{paymentTableBean.dataModel.rows}" paginatorTemplate="{paginator}" paginatorPosition="top"
+				rowIndexVar="rowIndex" tableStyle="width:auto" styleClass="smsplus-management-table">
+					<f:facet name="{paginator}" >
+						<h:outputText value="Max. Anzahl Zahlungen:" />
+						<h:selectOneMenu value="#{paymentTableBean.dataModel.rows}">
+							<f:selectItem itemLabel="20" itemValue="20"/>
+							<f:selectItem itemLabel="50" itemValue="50"/>
+							<f:selectItem itemLabel="100" itemValue="100"/>
+							<f:selectItem itemLabel="200" itemValue="200"/>
+							<f:selectItem itemLabel="500" itemValue="500"/>
+							<f:selectItem itemLabel="10000" itemValue="10000"/>
+							<p:ajax process="@this" listener="#{paymentTableBean.dataModel.reload}" update="payments" />
+						</h:selectOneMenu>
+					</f:facet>
+
+				<p:column style="width:2em">
+					<f:facet name="header">
+						<h:outputText value="Nr" />
+					</f:facet>
+					<h:outputText value="#{rowIndex+1}" />
+				</p:column>
+
+				<p:column style="width:2em">
+					<f:facet name="header">Edit</f:facet>
+					<p:commandLink value="">
+						<h:graphicImage name="edit.jpeg" alt="Edit" style="width: 1.5em; height:1.5em;" />
+						<p:ajax process="@this" listener="#{paymentBean.retrieve(record.id)}" update=":editPayment:popupPanelEditPayment" oncomplete="PF('popupPanelEditPayment').show()"/>
+					</p:commandLink>
+				</p:column>
+
+				<p:columns value="#{paymentTableBean.columns}" var="col">
+					<f:facet name="header">
+						<p:outputLabel value="#{col.value}">
+							<f:attribute name="column" value="#{col}" />
+						</p:outputLabel>
+						<p:inputText value="#{col.filter}" placeholder="suche.." style="min-width:4em;#{col.evalHeaderStyle(col.filter)}"
+							rendered="#{col.search and empty col.items}">
+							<f:attribute name="column" value="#{col}" />
+							<p:ajax event="keyup" delay="500" onstart="return filterKey(event)" listener="#{paymentTableBean.dataModel.filter}" 
+								update="@this" oncomplete="PF('payments').filter()"/>
+						</p:inputText>
+						<p:selectOneMenu value="#{col.filter}" valueChangeListener="#{paymentTableBean.dataModel.reload}"
+							style="min-width:4em;#{col.evalHeaderStyle(col.filter)}" rendered="#{col.search and ! empty col.items}">
+							<f:attribute name="column" value="#{col}" />
+							<f:selectItem noSelectionOption="true" />
+							<f:selectItems value="#{col.itemEntries}" var="e" itemValue="#{e.value}" itemLabel="#{e.key}" />
+							<p:ajax listener="#{paymentTableBean.dataModel.filter}" update="@this" oncomplete="PF('payments').filter()"/>
+						</p:selectOneMenu>
+					</f:facet>
+					<h:outputText value="#{record[col.key]}"  style="#{col.fieldStyle}"/>
+				</p:columns>
+
+			</p:dataTable>
+		</h:form>
+
+		<h:form id="editPayment">
+			<p:dialog id="popupPanelEditPayment" widgetVar="popupPanelEditPayment" modal="true" closeOnEscape="true"
+				onHide="PF('payments').filter();" width="650" >
+				<h:panelGroup id="panelGroupEditPayment" rendered="#{paymentBean.payment != null}">
+					<h:messages errorClass="error" style="text-align:center;"/>
+					<h:panelGrid id="popupPanelEditPaymentGrid" columnClasses="label,component,required" columns="3">
+
+						<h:outputLabel value="Typ:" />
+						<h:outputText value="#{paymentBean.payment.type}" />
+						<h:outputText />
+
+						<h:outputLabel value="Zahler:" />
+						<h:outputText value="#{paymentBean.payment.payer}" />
+						<h:outputText />
+
+						<h:outputLabel value="Betrag:" />
+						<h:inputText value="#{paymentBean.payment.amount}" required="true" requiredMessage="Betrag fehlt!" 
+							validatorMessage="Betrag ungültig!">
+							<f:convertNumber maxFractionDigits="2" />
+						</h:inputText>
+						<h:outputText />
+
+						<h:outputLabel value="Zahlungsdatum:" />
+						<h:outputText value="#{paymentBean.payment.paymentDate}">
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+						</h:outputText>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanPaymentBookings" value="Buchungen:" />
+						<h:panelGroup id="bookingsPanel">
+							<h:dataTable id="paymentBeanPaymentBookings" styleClass="data-table" value="#{paymentBean.payment.bookings}"
+								var="_item">
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Aktivität" />
+									</f:facet>
+									<h:outputText id="itemActivity" value="#{_item.activity}" style="white-space: nowrap;" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Name" />
+									</f:facet>
+									<h:outputText id="itemName" value="#{_item.member.name}" style="white-space: nowrap;" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Vorname" />
+									</f:facet>
+									<h:outputText id="itemVorname" value="#{_item.member.vorname}" style="white-space: nowrap;" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Geb.Jahr" />
+									</f:facet>
+									<h:outputText id="itemGebJahr" value="#{_item.member.gebJahr}" style="white-space: nowrap;" />
+								</h:column>
+								<h:column footerClass="remove-column" headerClass="remove-column">
+									<h:commandLink actionListener="#{paymentBean.deleteBooking(_item.id)}" styleClass="remove-button">
+										<h:graphicImage name="remove.png" alt="Löschen" />
+										<f:ajax render=":editPayment:bookingsPanel"/>
+									</h:commandLink>
+								</h:column>
+							</h:dataTable>
+							<p:autoComplete id="paymentBeanBookingSelect" value="#{paymentBean.bookingToAdd}" style="width:100%;" 
+								styleClass="manual" converter="#{bookingBean.converter}" minQueryLength="1" forceSelection="true"
+								dropdown="true" completeMethod="#{paymentBean.filterBookings}" var="b" itemLabel="#{b}" itemValue="#{b.id}"
+								placeholder="Buchung hinzufügen.." maxListHeight="100" listWidth="35em" showButton="false">
+								<f:ajax event="itemSelect" listener="#{paymentBean.addPaymentBooking}" render=":editPayment:bookingsPanel" />
+							</p:autoComplete>
+							<h:message for="paymentBeanBookingSelect" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanPaymentComment" value="Bemerkung:" />
+						<h:panelGroup>
+							<h:inputTextarea id="paymentBeanPaymentComment" value="#{paymentBean.payment.comment}" rows="3"
+								styleClass="fullwidth" />
+							<h:message for="paymentBeanPaymentComment" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanPaymentAconto" value="Akonto:" />
+						<h:panelGroup>
+							<h:selectBooleanCheckbox id="paymentBeanPaymentAconto" value="#{paymentBean.payment.aconto}" />
+							<h:message for="paymentBeanPaymentAconto" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanPaymentFinished" value="Erledigt:" />
+						<h:panelGroup>
+							<h:selectBooleanCheckbox id="paymentBeanPaymentFinished" value="#{paymentBean.payment.finished}" />
+							<h:message for="paymentBeanPaymentFinished" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+					</h:panelGrid>
+
+					<h:messages errorClass="error" style="text-align:center;"/>
+					<h:panelGrid columns="4" width="100%">
+						<h:outputText value="" style="width:30em;display:inline-block;"/>
+						<h:commandLink value="Delete" actionListener="#{paymentBean.delete}" styleClass="btn btn-primary"
+							disabled="#{!paymentBean.deleteAllowed}">
+							<f:ajax render="@form" />
+						</h:commandLink>
+						<h:commandLink value="Save" styleClass="btn btn-primary"
+							disabled="#{!paymentBean.updateAllowed}">
+							<f:ajax execute="@form" listener="#{paymentBean.update}" render=":editPayment:panelGroupEditPayment"/>
+						</h:commandLink>
+						<p:link value="Schließen" styleClass="btn btn-primary">
+							<p:ajax listener="#{paymentTableBean.dataModel.reloadRowData}" onsuccess="PF('popupPanelEditPayment').hide();" />
+						</p:link>
+					</h:panelGrid>
+				</h:panelGroup>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

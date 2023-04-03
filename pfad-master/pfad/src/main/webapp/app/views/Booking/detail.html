@@ -1,0 +1,121 @@
+<header ng-switch on="$location.path().indexOf('/Bookings/new') > -1">
+    <h3 ng-switch-when="true">Create a new Booking</h3>
+    <h3 ng-switch-when="false">View or edit Booking</h3>
+</header>
+<form id="BookingForm" name="BookingForm" class="form-horizontal" role="form">
+    
+    <div class="form-group" ng-class="{'has-error': BookingForm.idStr.$invalid}">
+        <label for="idStr" class="col-sm-2 control-label">Id Str</label>
+        <div id="idStrControls" class="col-sm-10">
+            <input id="idStr" name="idStr" type="text" class="form-control" ng-model="booking.idStr" placeholder="Enter the Booking Id Str"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.payments.$invalid}">
+        <label for="payments" class="col-sm-2 control-label">Payments</label>
+        <div id="paymentsControls" class="col-sm-10">
+            <select id="payments" name="payments" multiple class="form-control" ng-model="paymentsSelection" ng-options="p.text for p in paymentsSelectionList">
+                <option value="">Choose a Payments</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.paymentsIds.$invalid}">
+        <label for="paymentsIds" class="col-sm-2 control-label">Payments Ids</label>
+        <div id="paymentsIdsControls" class="col-sm-10">
+            <input id="paymentsIds" name="paymentsIds" type="text" class="form-control" ng-model="booking.paymentsIds" placeholder="Enter the Booking Payments Ids"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.sortedPayments.$invalid}">
+        <label for="sortedPayments" class="col-sm-2 control-label">Sorted Payments</label>
+        <div id="sortedPaymentsControls" class="col-sm-10">
+            <input id="sortedPayments" name="sortedPayments" type="text" class="form-control" ng-model="booking.sortedPayments" placeholder="Enter the Booking Sorted Payments"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.member.$invalid}">
+        <label for="member" class="col-sm-2 control-label">Member</label>
+        <div id="memberControls" class="col-sm-10">
+        <select id="member" name="member" class="form-control" ng-model="memberSelection" ng-options="m.text for m in memberSelectionList" required >
+            <option value="">Choose a Member</option>
+        </select>
+        <span class="help-block error" ng-show="BookingForm.member.$error.required">required</span> 
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.activity.$invalid}">
+        <label for="activity" class="col-sm-2 control-label">Activity</label>
+        <div id="activityControls" class="col-sm-10">
+        <select id="activity" name="activity" class="form-control" ng-model="activitySelection" ng-options="a.text for a in activitySelectionList"  >
+            <option value="">Choose a Activity</option>
+        </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.squad.$invalid}">
+        <label for="squad" class="col-sm-2 control-label">Squad</label>
+        <div id="squadControls" class="col-sm-10">
+        <select id="squad" name="squad" class="form-control" ng-model="squadSelection" ng-options="s.text for s in squadSelectionList"  >
+            <option value="">Choose a Squad</option>
+        </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.status.$invalid}">
+        <label for="status" class="col-sm-2 control-label">Status</label>
+        <div id="statusControls" class="col-sm-10">
+        <select id="status" name="status" class="form-control" ng-model="booking.status" ng-options="s for s in statusList" required >
+            <option value="">Choose a Status</option>
+        </select>
+        <span class="help-block error" ng-show="BookingForm.status.$error.required">required</span> 
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.comment.$invalid}">
+        <label for="comment" class="col-sm-2 control-label">Comment</label>
+        <div id="commentControls" class="col-sm-10">
+            <input id="comment" name="comment" type="text" class="form-control" ng-model="booking.comment" placeholder="Enter the Booking Comment"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.changed.$invalid}">
+        <label for="changed" class="col-sm-2 control-label">Changed</label>
+        <div id="changedControls" class="col-sm-10">
+            <datetime id="changed" name="changed" ng-model="booking.changed" placeholder="Enter the Booking Changed"></datetime>
+            <span class="help-block error" ng-show="BookingForm.changed.$error.datetimeFormat">does not match format "yyyy-MM-dd hh:mm:ss" (e.g. 2013-12-01 22:00:00)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.created.$invalid}">
+        <label for="created" class="col-sm-2 control-label">Created</label>
+        <div id="createdControls" class="col-sm-10">
+            <datetime id="created" name="created" ng-model="booking.created" placeholder="Enter the Booking Created"></datetime>
+            <span class="help-block error" ng-show="BookingForm.created.$error.datetimeFormat">does not match format "yyyy-MM-dd hh:mm:ss" (e.g. 2013-12-01 22:00:00)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.changedBy.$invalid}">
+        <label for="changedBy" class="col-sm-2 control-label">Changed By</label>
+        <div id="changedByControls" class="col-sm-10">
+            <input id="changedBy" name="changedBy" type="text" class="form-control" ng-model="booking.changedBy" placeholder="Enter the Booking Changed By"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': BookingForm.createdBy.$invalid}">
+        <label for="createdBy" class="col-sm-2 control-label">Created By</label>
+        <div id="createdByControls" class="col-sm-10">
+            <input id="createdBy" name="createdBy" type="text" class="form-control" ng-model="booking.createdBy" placeholder="Enter the Booking Created By"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveBooking" name="saveBooking" class="btn btn-primary" ng-disabled="isClean() || BookingForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteBooking" name="deleteBooking" class="btn btn-danger" ng-show="booking.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+	xmlns:p="http://primefaces.org/ui">
+
+<cc:interface />
+<cc:implementation>
+	<h:panelGroup id="navigation" styleClass="leftNavigation"  rendered="#{sessionBean.userSession.callerPrincipal != 'anonymous'}">
+		<h:form id="navigationForm">
+			<h:link id="homeLink" outcome="/pfad/index.xhtml">
+				<img style="width:100%;" src='#{resource["gruppe.gif"]}' alt="Pfad-DB" border="0" />
+			</h:link>
+			<ul>
+				<li><a href="/pfad/app/app.html#Members"><b>MOBILE</b></a></li>
+				<li class="#{pfadUI.isMenuSelected('member')}">
+					<h:link outcome="/pfad/member/search?menu=member" value="Personen" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('squad')}">
+					<h:link outcome="/pfad/squad/search?menu=squad" value="Trupps" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('activity')}">
+					<h:link outcome="/pfad/activity/search?menu=activity" value="Aktivitäten" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('booking')}">
+					<h:link outcome="/pfad/booking/search?menu=booking" value="Buchungen" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('booking.list')}">
+					<h:link outcome="/pfad/booking/list?menu=booking.list" value="BuchgsListe" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('payment')}">
+					<h:link outcome="/pfad/payment/search?menu=payment" value="Zahlungen" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('payment.list')}">
+					<h:link outcome="/pfad/payment/list?menu=payment.list" value="ZahlgsListe" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('function')}">
+					<h:link outcome="/pfad/function/search?menu=function" value="Funktionen"/>
+				</li>
+				<li class="#{pfadUI.isMenuSelected('registration')}">
+					<h:link outcome="/pfad/registration/search?menu=registration" value="Anmeldungen" />
+				</li>
+				<c:if test="#{sessionBean.trainingAllowed}">
+					<li class="#{pfadUI.isMenuSelected('training')}">
+						<h:link outcome="/pfad/training/search?menu=training" value="Trainings" />
+					</li>
+					<li class="#{pfadUI.isMenuSelected('participation')}">
+						<h:link outcome="/pfad/participation/search?menu=participation" value="Teilnahmen" />
+					</li>
+				</c:if>
+				<li class="#{pfadUI.isMenuSelected('configuration')}">
+					<h:link outcome="/pfad/configuration/search?menu=configuration" value="Konfig" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('actions')}">
+					<h:link outcome="/pfad/actions?menu=actions" value="Aktionen" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('mailer')}">
+					<h:link outcome="/pfad/mailer?menu=mailer" value="Mails" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('mail.template')}">
+					<h:link outcome="/pfad/mail/mailtemplate?menu=mail.template" value="Vorlagen" />
+				</li>
+				<li class="#{pfadUI.isMenuSelected('mail.message')}">
+					<h:link outcome="/pfad/mail/mailmessage?menu=mail.message" value="Gesendet" />
+				</li>
+				<li ><a href="#{configurationBean.getValue('handbuchUrl')}">Handbuch</a></li>
+				<li ><h:commandLink action="#{loginBean.logout()}" value="Beenden"/></li>
+				<li><h:outputLink value="#{request.contextPath}/apidocs/" target="apidocs">API</h:outputLink></li>
+			</ul>
+		</h:form>
+	</h:panelGroup>
+</cc:implementation>
+</html>

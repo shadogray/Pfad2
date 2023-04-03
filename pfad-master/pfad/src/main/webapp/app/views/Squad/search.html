@@ -1,0 +1,27 @@
+<hr />
+<div>
+	<h3>Trupps</h3>
+
+	<div id="search-results">
+		<div class="table-responsive">
+			<table class="table table-responsive table-bordered table-striped clearfix">
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Name</th>
+						<th>Leiter M</th>
+						<th>Leiter W</th>
+					</tr>
+				</thead>
+				<tbody id="search-results-body">
+					<tr ng-repeat="result in filteredResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+						<td><a href="#/Squads/edit/{{result.id}}">{{result.type}}</a></td>
+						<td><a href="#/Squads/edit/{{result.id}}">{{result.name}}</a></td>
+						<td><a href="#/Squads/edit/{{result.id}}">{{result.leaderMale.name}}</a></td>
+						<td><a href="#/Squads/edit/{{result.id}}">{{result.leaderFemale.name}}</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

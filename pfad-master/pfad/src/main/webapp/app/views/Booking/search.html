@@ -1,0 +1,154 @@
+<div class="form-horizontal">
+    <h3>Create a new Booking</h3>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-sm-2">
+            <a id="Create" name="Create" class="btn btn-primary" href="#/Bookings/new"><span class="glyphicon glyphicon-plus-sign"></span> Create</a>
+        </div>
+    </div>
+</div>
+<hr/>
+<div>
+    <h3>Search for Bookings</h3>
+    <form id="BookingSearch" class="form-horizontal">
+        
+    <div class="form-group">
+        <label for="idStr" class="col-sm-2 control-label">Id Str</label>
+        <div class="col-sm-10">
+            <input id="idStr" name="idStr" class="form-control" type="text" ng-model="search.idStr" placeholder="Enter the Booking Id Str"></input>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <label for="paymentsIds" class="col-sm-2 control-label">Payments Ids</label>
+        <div class="col-sm-10">
+            <input id="paymentsIds" name="paymentsIds" class="form-control" type="text" ng-model="search.paymentsIds" placeholder="Enter the Booking Payments Ids"></input>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="sortedPayments" class="col-sm-2 control-label">Sorted Payments</label>
+        <div class="col-sm-10">
+            <input id="sortedPayments" name="sortedPayments" class="form-control" type="text" ng-model="search.sortedPayments" placeholder="Enter the Booking Sorted Payments"></input>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="member" class="col-sm-2 control-label">Member</label>
+        <div class="col-sm-10">
+            <select id="member" name="member" class="form-control" ng-model="search.member" ng-options="m as m.id for m in memberList">
+                <option value="">Choose a Member</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="activity" class="col-sm-2 control-label">Activity</label>
+        <div class="col-sm-10">
+            <select id="activity" name="activity" class="form-control" ng-model="search.activity" ng-options="a as a.id for a in activityList">
+                <option value="">Choose a Activity</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="squad" class="col-sm-2 control-label">Squad</label>
+        <div class="col-sm-10">
+            <select id="squad" name="squad" class="form-control" ng-model="search.squad" ng-options="s as s.id for s in squadList">
+                <option value="">Choose a Squad</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="status" class="col-sm-2 control-label">Status</label>
+        <div class="col-sm-10">
+            <select id="status" name="status" class="form-control" ng-model="search.status" ng-options="s as s for s in statusList">
+                <option value="">Choose a Status</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="comment" class="col-sm-2 control-label">Comment</label>
+        <div class="col-sm-10">
+            <input id="comment" name="comment" class="form-control" type="text" ng-model="search.comment" placeholder="Enter the Booking Comment"></input>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <label for="changedBy" class="col-sm-2 control-label">Changed By</label>
+        <div class="col-sm-10">
+            <input id="changedBy" name="changedBy" class="form-control" type="text" ng-model="search.changedBy" placeholder="Enter the Booking Changed By"></input>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="createdBy" class="col-sm-2 control-label">Created By</label>
+        <div class="col-sm-10">
+            <input id="createdBy" name="createdBy" class="form-control" type="text" ng-model="search.createdBy" placeholder="Enter the Booking Created By"></input>
+        </div>
+    </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-sm-10">
+                <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><span class="glyphicon glyphicon-search"></span> Search</a>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="search-results">
+        <div class="table-responsive">
+        <table class="table table-responsive table-bordered table-striped clearfix">
+            <thead>
+                <tr>
+                    <th>Id Str</th>
+                    <th>Payments Ids</th>
+                    <th>Sorted Payments</th>
+                    <th>Member</th>
+                    <th>Activity</th>
+                    <th>Squad</th>
+                    <th>Status</th>
+                    <th>Comment</th>
+                    <th>Changed</th>
+                    <th>Created</th>
+                    <th>Changed By</th>
+                    <th>Created By</th>
+                </tr>
+            </thead>
+            <tbody id="search-results-body">
+                <tr ng-repeat="result in filteredResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.idStr}}</a></td>
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.paymentsIds}}</a></td>
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.sortedPayments}}</a></td>
+                        <td><a href="#/Bookings/edit/{{result.id}}">{{result.member.id}}</a></td>
+                        <td><a href="#/Bookings/edit/{{result.id}}">{{result.activity.id}}</a></td>
+                        <td><a href="#/Bookings/edit/{{result.id}}">{{result.squad.id}}</a></td>
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.status}}</a></td>
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.comment}}</a></td>
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.changed| date:'yyyy-MM-dd HH:mm:ss Z'}}</a></td>
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.created| date:'yyyy-MM-dd HH:mm:ss Z'}}</a></td>
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.changedBy}}</a></td>
+                    <td><a href="#/Bookings/edit/{{result.id}}">{{result.createdBy}}</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+        <ul class="pagination pagination-centered">
+        <li ng-class="{disabled:currentPage == 0}">
+            <a id="prev" href ng-click="previous()">«</a>
+        </li>
+        <li ng-repeat="n in pageRange" ng-class="{active:currentPage == n}" ng-click="setPage(n)">
+            <a href ng-bind="n + 1">1</a>
+        </li>
+        <li ng-class="{disabled: currentPage == (numberOfPages() - 1)}">
+            <a id="next" href ng-click="next()">»</a>
+        </li>
+    </ul>
+
+</div>

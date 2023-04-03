@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{bookingBean.id}" />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction action="#{bookingBean.retrieve}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Buchung erstellen/bearbeiten" />
+
+	<ui:define name="header">
+		<c:choose>
+			<c:when test='#{!empty bookingBean.id}'>
+				Buchung ändern
+			</c:when>
+			<c:otherwise>
+				Buchung erstellen
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="subheader">
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="create">
+
+			<p:focus ajaxRendered="false" />
+
+			<h:messages globalOnly="true" styleClass="error" />
+
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+
+				<h:outputLabel value="Abgeschl. Aktivitäten:" />
+				<h:selectBooleanCheckbox value="#{bookingBean.showFinished}">
+					<f:ajax render="create" />
+				</h:selectBooleanCheckbox>
+				<h:outputText />
+
+				<h:outputLabel for="bookingBeanBookingActivity" value="Aktivität:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="bookingBeanBookingActivity" tabindex="0" styleClass="fullwidth"
+						value="#{bookingBean.booking.activity}" converter="#{activityBean.converter}" 
+						p:placeholder="Aktivität.." title="Aktivität.." required="true" immediate="true">
+						<f:selectItem noSelectionOption="true"/>
+						<f:selectItems value="#{bookingBean.activities}" var="a" itemLabel="#{a}" itemValue="#{a.idStr}" />
+					</h:selectOneMenu>
+					<h:message for="bookingBeanBookingActivity" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="bookingBeanBookingMember" value="Teilnehmer:" />
+				<h:panelGroup id="bookingBeanBookingMemberPanel">
+					<h:selectOneMenu id="bookingBeanBookingMemberSelect" tabindex="0" value="#{bookingBean.booking.member}" converter="#{memberBean.converter}" rendered="#{bookingBean.booking.member != null}">
+						<f:selectItem noSelectionOption="true"/>
+						<f:selectItem itemLabel="#{bookingBean.booking.member}" itemValue="#{bookingBean.booking.member}"/>
+						<f:ajax render="bookingBeanBookingMemberPanel"/>						
+					</h:selectOneMenu>
+					<p:autoComplete id="bookingBeanBookingMember" tabindex="0" rendered="#{bookingBean.booking.member == null}" 
+						styleClass="fullwidth manual" p:placeholder="Teilnehmer.."
+						value="#{bookingBean.booking.member}" minQueryLength="3"
+						completeMethod="#{bookingBean.filterMembers}" var="m" itemValue="#{m.idStr}" itemLabel="#{m}" converter="#{memberBean.converter}"
+						>
+						<!-- f:ajax event="itemSelect" execute="@this" listener="#{bookingBean.selectBookingMember}"
+							render="bookingBeanBookingMemberPanel" /-->
+					</p:autoComplete>
+					<h:message for="bookingBeanBookingMember" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="bookingBeanBookingSquad" value="Trupp:" />
+				<h:selectOneMenu id="bookingBeanBookingSquad" value="#{bookingBean.booking.squad}" converter="#{squadBean.converter}">
+					<f:selectItem noSelectionOption="true"/>
+					<f:selectItems value="#{squadBean.all}" var="s" itemLabel="#{s}" itemValue="#{s}"/>
+				</h:selectOneMenu>
+				<h:outputText />
+
+				<h:outputLabel for="bookingBeanBookingStatus" value="Status:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="bookingBeanBookingStatus" value="#{bookingBean.booking.status}" required="true">
+						<f:selectItems value="#{bookingBean.stati}" />
+					</h:selectOneMenu>
+					<h:message for="bookingBeanBookingStatus" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="bookingBeanBookingComment" value="Bemerkung:" />
+				<h:panelGroup>
+					<h:inputText id="bookingBeanBookingComment" value="#{bookingBean.booking.comment}" />
+					<h:message for="bookingBeanBookingComment" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="bookingBeanBookingRegistered" value="Registriert:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="bookingBeanBookingRegistered" value="#{bookingBean.booking.registered}" />
+					<h:message for="bookingBeanBookingRegistered" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="bookingBeanBookingRevision" value="Änderung:"/>
+				<h:panelGrid id="bookingBeanBookingRevision" columns="8" >
+					<h:outputLabel value="Erstellt:" />
+					<h:outputText value="#{bookingBean.booking.created}" converter="javax.faces.DateTime" />
+					<h:outputLabel value="Von:" />
+					<h:outputText value="#{bookingBean.booking.createdBy}" />
+					<h:outputLabel value="Geändert:" />
+					<h:outputText value="#{bookingBean.booking.changed}" converter="javax.faces.DateTime" />
+					<h:outputLabel value="Von:" />
+					<h:outputText value="#{bookingBean.booking.changedBy}" />
+				</h:panelGrid>
+				<h:outputText />
+	
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action='#{bookingBean.update}' styleClass="btn btn-primary"
+					disabled="#{!bookingBean.updateAllowed}" />
+				<c:choose>
+					<c:when test='#{!empty bookingBean.id}'>
+						<h:link value="Cancel" outcome="view" styleClass="btn btn-primary">
+							<f:param name="id" value='#{bookingBean.id}' />
+						</h:link>
+						<h:commandLink value="Delete" action='#{bookingBean.delete}' styleClass="btn btn-primary"
+							disabled="#{!bookingBean.deleteAllowed}" />
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary" />
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

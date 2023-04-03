@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:o="http://omnifaces.org/ui"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{functionBean.id}" />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction action="#{functionBean.retrieve}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Funktion" />
+
+	<ui:define name="header">
+		<c:choose>
+			<c:when test='#{!empty functionBean.id}'>
+				Funktion ändern
+			</c:when>
+			<c:otherwise>
+				Funktion erstellen
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="subheader">
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error" />
+
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+				<h:outputLabel for="functionBeanFunctionFunction" value="Function:" />
+				<h:panelGroup>
+					<h:inputText id="functionBeanFunctionFunction" value="#{functionBean.function.function}" />
+					<h:message for="functionBeanFunctionFunction" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="functionBeanFunctionKey" value="Key:" />
+				<h:panelGroup>
+					<h:inputText id="functionBeanFunctionKey" value="#{functionBean.function.key}" />
+					<h:message for="functionBeanFunctionKey" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="functionBeanFunctionExportReg" value="ExportReg:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="functionBeanFunctionExportReg" value="#{functionBean.function.exportReg}" />
+					<h:message for="functionBeanFunctionExportReg" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="functionBeanFunctionFree" value="Frei:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="functionBeanFunctionFree" title="Zahlungsbefreit" value="#{functionBean.function.free}" />
+					<h:message for="functionBeanFunctionFree" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="functionBeanFunctionLeitung" value="Leitung:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="functionBeanFunctionLeitung" title="Leitung" value="#{functionBean.function.leader}" />
+					<h:message for="functionBeanFunctionLeitung" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="functionBeanFunctionNoFunction" value="Nicht in Spalte Funktion exportieren:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="functionBeanFunctionNoFunction" title="Nicht in Spalte Funktion exportieren" value="#{functionBean.function.noFunction}" />
+					<h:message for="functionBeanFunctionNoFunction" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="functionBeanFunctionSex" value="Sex:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="functionBeanFunctionSex" title="Geschlecht" value="#{functionBean.function.sex}" >
+						<f:selectItem noSelectionOption="true"/>
+						<f:selectItems value="#{memberBean.sexes}"/>
+					</h:selectOneMenu>
+					<h:message for="functionBeanFunctionSex" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action='#{functionBean.update}' styleClass="btn btn-primary"
+					disabled="#{!functionBean.updateAllowed}" />
+				<c:choose>
+					<c:when test='#{!empty functionBean.id}'>
+						<h:link value="Cancel" outcome="view" styleClass="btn btn-primary">
+							<f:param name="id" value='#{functionBean.id}' />
+						</h:link>
+						<h:commandLink value="Delete" action='#{functionBean.delete}' styleClass="btn btn-primary"
+							disabled="#{!functionBean.deleteAllowed}" />
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary" />
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

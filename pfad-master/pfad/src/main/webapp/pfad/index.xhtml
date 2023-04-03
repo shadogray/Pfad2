@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<ui:param name="pageTitle" value="Pfadfinder Baden" />
+
+	<ui:define name="header">
+		Willkommen #{sessionBean.userSession.callerPrincipal} in der Pfadfinder Registrierungsdatenbank
+	</ui:define>
+
+	<ui:define name="main">
+
+		<h:outputScript target="body">
+			//<![CDATA[
+			console.log('found width='+window.innerWidth);
+			if (window.innerWidth < 1024) {
+				window.location = '../app/index.html';
+			} else {
+				window.location = './member/search.xhtml';
+			}
+			//]]>
+		</h:outputScript>
+
+		<h2 class="success">Die Datenbank is aktiv.</h2>
+		<p></p>
+	</ui:define>
+
+</ui:composition>

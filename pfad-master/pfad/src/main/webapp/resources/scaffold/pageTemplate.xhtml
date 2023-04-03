@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:ds="http://deltaspike.apache.org/jsf" xmlns:pfad="http://xmlns.jcp.org/jsf/composite/pfad">
+
+<h:head>
+	<f:facet name="first">
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=10" />
+		<title>Pfad-DB #{empty pageTitle ? 'Pfad' : pageTitle}</title>
+	</f:facet>
+	<link rel="icon" href='#{resource["favicon.ico"]}' />
+	<h:outputStylesheet name="bootstrap.css" />
+	<h:outputStylesheet name="forge-style.css" />
+	<h:outputScript name="scripts.js" target="head"/>
+</h:head>
+
+<h:body>
+	<ui:debug hotkey="f"/>
+	<ds:windowId />
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<h:link id="brandLink" outcome="/pfad/index.xhtml" styleClass="brand">
+					<h:outputText value="Willkommen in der Pfad-DB" rendered="#{request.userPrincipal !=null}" />
+					<h:outputText value=",  #{request.userPrincipal}" rendered="#{request.userPrincipal != null}" />
+					<h:panelGroup rendered="#{sessionBean.registrationEndDate != null}" style="white-space: nowrap;">
+						<h:outputText value="  --  Registrierung Ende: " />
+						<h:outputText value="#{sessionBean.registrationEndDate}" converter="javax.faces.DateTime" />
+					</h:panelGroup>
+					<f:ajax listener="#{sessionBean.toggleLog()}" />
+				</h:link>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container forgecontainer">
+
+		<h:panelGrid columns="2" style="width:100%;" columnClasses="menu-top,top">
+		
+			<pfad:navigation />
+
+			<h:panelGroup id="content" styleClass="content">
+				<h2>
+					<ui:insert name="header" />
+				</h2>
+				<h3>
+					<ui:insert name="subheader" />
+				</h3>
+
+				<ui:insert name="main" />
+			</h:panelGroup>
+		</h:panelGrid>
+	</div>
+
+	<footer>
+		<div id="footer-wrapper">
+			<p>
+				Powered by <a href="http://jboss.org/forge">Forge</a>
+			</p>
+		</div>
+	</footer>
+
+</h:body>
+</html>

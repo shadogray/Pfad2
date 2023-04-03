@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:o="http://omnifaces.org/ui" xmlns:p="http://primefaces.org/ui"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+	</f:metadata>
+	
+	<ui:param name="pageTitle" value="Actions" />
+
+	<ui:define name="header">
+	</ui:define>
+	<ui:define name="subheader">Aktionen</ui:define>
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+
+		<p:log id="pfLog" rendered="false"/>
+		<h:outputScript target="body">
+		//<![CDATA[
+			function log(elmnt, event) {
+				//console.log('Pfad: '+event.ctrlKey+'/'+event.code+' On: '+elmnt);
+				if (event.ctrlKey && event.code=='Enter') {
+					var el = $('#query\\:#ExecuteQuery');
+					el = document.getElementById('query:ExecuteQuery');
+					console.log('calling:  '+el);
+					try {
+						el.click();
+						console.log("clicked: "+el);
+					} catch(err) {
+						console.log("fail: "+err);
+					}
+				}
+			}
+		//]]>
+		</h:outputScript>
+
+		<h:form id="download">
+			<h:messages />
+			<h:panelGrid styleClass="buttons" columns="6" rendered="#{sessionBean.kassier}">
+                <h:panelGroup>
+					<h:outputLabel value="NurAktive:"/>
+					<h:selectBooleanCheckbox value="#{downloadBean.activeOnly}" />
+				</h:panelGroup>
+				<h:panelGroup>
+	                <h:outputLabel value="Nur NeuReg:" />
+	                <h:selectBooleanCheckbox value="#{downloadBean.notRegisteredOnly}" immediate="true" disabled="#{!sessionBean.regActionsAllowed}"/>
+				</h:panelGroup>
+				<h:panelGroup>
+	                <h:outputLabel value="Mit RegUpdate:" />
+	                <h:selectBooleanCheckbox value="#{downloadBean.updateRegistered}" immediate="true" disabled="#{!sessionBean.regActionsAllowed}"/>
+				</h:panelGroup>
+				<h:panelGroup>
+					<h:outputLabel value="Aktivität: "/>
+					<p:selectOneMenu value="#{downloadBean.payedActivity}" converter="#{activityBean.converter}" styleClass="width10"
+						filter="true" filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true"/>
+						<f:selectItems value="#{activityBean.all}" var="a" itemLabel="#{a}" itemValue="#{a}"/>
+						<p:ajax process="@this" update="@this"/>
+					</p:selectOneMenu>
+				</h:panelGroup>
+				<h:panelGroup/>
+				<h:panelGroup/>
+				<h:commandLink value="Download Gesamt" action="#{downloadBean.downloadAll()}" styleClass="btn btn-primary"
+					disabled="#{!downloadBean.downloadAllowed}" />
+				<h:commandLink value="Download Vor-Registrierung" action="#{downloadBean.downloadVorRegistrierung()}"
+					styleClass="btn btn-primary" disabled="#{!downloadBean.downloadAllowed}" />
+                <h:commandLink value="Download Registrierung" action="#{downloadBean.downloadRegistrierung()}"
+                    styleClass="btn btn-primary" disabled="#{!downloadBean.downloadAllowed}" />
+                <h:commandLink value="Download Nach-Registrierung" action="#{downloadBean.downloadNachRegistrierung()}"
+                    styleClass="btn btn-primary" disabled="#{!downloadBean.downloadAllowed}" />
+				<h:panelGroup>
+					<h:commandLink value="Download MitBuchgn" action="#{downloadBean.downloadAllWithBookings()}" styleClass="btn btn-primary"
+						disabled="#{!downloadBean.downloadAllowed}" />
+				</h:panelGroup>
+			</h:panelGrid>
+
+		</h:form>
+
+		<h:form id="query">
+			<p:hotkey id="hotKey" bind="ctrl+x" handler="alert($('#ExecuteQuery')); $('#ExecuteQuery').click()"/>
+			<p:messages />
+			<h:panelGroup id="queryPanel">
+				<h:panelGroup layout="block" id="actionsQueries">
+					<ui:repeat value="#{downloadBean.queries}" var="query">
+						<h:commandLink actionListener="#{downloadBean.executeQuery(query.id)}" value="#{query.uiName}"
+							styleClass="btn btn-primary" title="#{query.toTitle()}">
+							<f:ajax execute="@this" render="@form" />
+						</h:commandLink>
+					</ui:repeat>
+				</h:panelGroup>
+				<h:panelGrid columns="4" rendered="#{not empty downloadBean.results}">
+					<h:outputLabel value="Query:" />
+					<h:outputText value="#{downloadBean.configuration.uiName}" />
+					<h:commandLink action="#{downloadBean.downloadResults()}" value="Download" styleClass="btn btn-primary"
+						title="Download von: #{downloadBean.configuration.uiName}"/>
+					<h:outputText value="" />
+				</h:panelGrid>
+
+				<f:ajax>
+					<h:panelGroup layout="block" rendered="#{memberBean.admin}">
+						<h:panelGrid columns="4">
+							<h:outputLabel value="Query" />
+							<h:panelGroup>
+								<h:outputLabel value="NativeQuery" />
+								<h:selectBooleanCheckbox value="#{downloadBean.nativeQuery}" immediate="true" />
+							</h:panelGroup>
+							<h:commandLink id="ExecuteQuery" actionListener="#{downloadBean.executeQuery()}" value="Query" styleClass="btn btn-primary" title="Abfrage: #{downloadBean.query}">
+								<f:ajax execute="@form" render="results messages" />
+							</h:commandLink>
+							<h:outputText value="" />
+						</h:panelGrid>
+						<h:panelGroup>
+							<h:inputTextarea id="queryQuery" value="#{downloadBean.query}" style="width:80%;height:5em;" immediate="true" onkeyup="log(this, event)"/>
+							<h:message for="queryQuery" />
+							<h:outputText value="" />
+						</h:panelGroup>
+					</h:panelGroup>
+					<h:messages id="messages" />
+
+					<h:panelGroup id="results" layout="block" rendered="#{not empty downloadBean.results}">
+						<p:dataTable value="#{downloadBean.results}" var="row" rowIndexVar="rowIndex" resizableColumns="true">
+							<p:column width="15">
+								<f:facet name="header">Nr</f:facet>
+								<h:outputText value="#{rowIndex+1}" />
+							</p:column>
+							<p:columns var="c" value="#{downloadBean.columns}" sortable="true" sortBy="#{row[c.index].value}">
+								<f:facet name="header">#{c.value}</f:facet>
+								<h:outputText value="#{row[c.index].value}" />
+							</p:columns>
+						</p:dataTable>
+					</h:panelGroup>
+				</f:ajax>
+			</h:panelGroup>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

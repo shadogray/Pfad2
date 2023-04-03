@@ -1,0 +1,367 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:o="http://omnifaces.org/ui"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewParam name="all" value="#{registrationBean.all}" />
+		<f:viewParam name="registrationBeanExampleName" value="#{registrationBean.example.name}" />
+		<f:viewParam name="registrationBeanExampleVorname" value="#{registrationBean.example.vorname}" />
+		<f:viewParam name="registrationBeanExampleTelefon" value="#{registrationBean.example.telefon}" />
+		<f:viewParam name="registrationBeanExampleEmail" value="#{registrationBean.example.email}" />
+		<f:viewParam name="registrationBeanExampleStrasse" value="#{registrationBean.example.strasse}" />
+		<f:viewParam name="registrationBeanExamplePLZ" value="#{registrationBean.example.PLZ}" />
+		<f:viewParam name="registrationBeanExampleGeschlecht" value="#{registrationBean.example.geschlecht}" />
+		<f:viewParam name="registrationBeanExampleGebJahr" value="#{registrationBean.example.gebJahr}" />
+		<f:viewParam name="registrationBeanExampleSchoolEntry" value="#{registrationBean.example.schoolEntry}" />
+		<f:viewParam name="regStornoBox" value="#{registrationBean.storno}" converter="#{triStateConverter}" />
+		<f:viewParam name="regAktivBox" value="#{registrationBean.aktiv}" converter="#{triStateConverter}" />
+		<f:viewAction action="#{registrationBean.paginate()}"/>
+	</f:metadata>
+
+	<ui:define name="header">
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+
+		<h:form id="search">
+
+			<p:growl id="messages" showDetail="true" />
+			<p:focus />
+
+			<f:ajax execute="@form" listener="#{registrationBean.paginate()}" render=":table:regBeanItemTable">
+				<h:panelGrid columnClasses="label3,component3,label3,component3,label3,component3,label3,component3" columns="10">
+				
+					<p:outputLabel value="Name:"/>
+					<p:inputText id="registrationBeanExampleName" value="#{registrationBean.example.name}" style="width:10em;" />
+	
+					<p:outputLabel value="Vorname:"/>
+					<p:inputText id="registrationBeanExampleVorname" value="#{registrationBean.example.vorname}" style="width:10em;"/>
+	
+					<p:outputLabel value="Telefon:"/>
+					<p:inputText id="registrationBeanExampleTelefon" value="#{registrationBean.example.telefon}" style="width:10em;"/>
+	
+					<p:outputLabel value="Email:"/>
+					<p:inputText id="registrationBeanExampleEmail" value="#{registrationBean.example.email}" style="width:10em;"/>
+	
+					<p:outputLabel value="Strasse:"/>
+					<p:inputText id="registrationBeanExampleStrasse" value="#{registrationBean.example.strasse}" style="width:10em;"/>
+	
+					<p:outputLabel value="PLZ:"/>
+					<p:inputText id="registrationBeanExamplePLZ" value="#{registrationBean.example.PLZ}" style="width:10em;"/>
+	
+					<p:outputLabel value="Geschlecht:"/>
+					<p:selectOneMenu id="registrationBeanExampleGeschlecht" value="#{registrationBean.example.geschlecht}" style="width:5em">
+						<f:selectItem noSelectionOption="true" />
+						<f:selectItems value="#{memberBean.sexes}" />
+					</p:selectOneMenu>
+	
+					<p:outputLabel value="Bis GebJahr:"/>
+					<p:selectOneMenu id="registrationBeanExampleGebJahr" value="#{registrationBean.example.gebJahr}" style="width:5em">
+						<f:selectItem noSelectionOption="true" />
+						<f:selectItems value="#{registrationBean.distinctGebJahr}" />
+					</p:selectOneMenu>
+	
+					<p:outputLabel value="Bis SchulEintritt:"/>
+					<p:selectOneMenu id="registrationBeanExampleSchoolEntry" value="#{registrationBean.example.schoolEntry}" style="width:5em">
+						<f:selectItem noSelectionOption="true" />
+						<f:selectItems value="#{registrationBean.distinctSchoolEntry}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Opts:"/>
+					<h:panelGrid columns="4">
+						<p:outputLabel value="Aktiv"/>
+						<p:triStateCheckbox id="regAktivBox" value="#{registrationBean.aktiv}" label="Aktiv" converter="#{triStateConverter}" />
+						
+						<p:outputLabel value="Storno"/>
+						<p:triStateCheckbox id="regStornoBox" value="#{registrationBean.storno}" label="Storno" converter="#{triStateConverter}" />
+					</h:panelGrid>
+					
+				</h:panelGrid>
+			</f:ajax>
+		</h:form>
+		
+		<h:form id="table">
+			<h:panelGrid styleClass="buttons" columns="8">
+				<p:commandButton id="search" widgetVar="search" value="Suchen" action="#{registrationBean.paginate}" update="regBeanItemTable" styleClass="btn btn-primary">
+					<f:param name="all" value="false" />
+				</p:commandButton>
+				<p:commandButton id="all" widgetVar="all" value="Alle" action="#{registrationBean.paginate}" update="regBeanItemTable" styleClass="btn btn-primary">
+					<f:param name="all" value="true" />
+				</p:commandButton>
+				<h:button id="create" value="Anlegen" outcome="create?faces-redirect=true" styleClass="btn btn-primary"
+					disabled="#{!registrationBean.updateAllowed}">
+					<f:param name="id" value="" />
+				</h:button>
+				<p:outputLabel value="Status:"/>
+				<p:selectCheckboxMenu value="#{registrationBean.filterStati}"  multiple="true" panelStyle="width:250px">
+					<f:selectItems value="#{registrationBean.stati}" />
+					<f:ajax listener="#{registrationBean.paginate}" render="regBeanItemTable"/>
+					<f:ajax event="toggleSelect" listener="#{registrationBean.paginate}" render="regBeanItemTable"/>
+				</p:selectCheckboxMenu>
+			</h:panelGrid>
+
+
+			<p:dataTable id="regBeanItemTable" widgetVar="regItemTable" styleClass="data-table" paginatorAlwaysVisible="true"
+				value="#{registrationBean.dataModel}" var="r" editable="true" rows="20" rowIndexVar="rowIndex"
+				sortMode="multiple" rowStyleClass="#{r.status}" paginator="true" rowsPerPageLabel="Anzahl:" rowsPerPageTemplate="20,50,10000">
+
+				<p:ajax event="rowEdit" listener="#{registrationBean.onRowEdit}" update=":search:messages" />
+				<p:ajax event="rowEditCancel" listener="#{registrationBean.onRowCancel}" update=":search:messages" />
+
+				<p:column headerText="Nr" style="width:2em">
+					<h:outputText value="#{rowIndex+1}" />
+				</p:column>
+				<p:column headerText="ID" style="width:2em">
+					<h:outputText name="id" value="#{r.id}" />
+				</p:column>
+				<p:column style="width:32px">
+					<p:rowEditor />
+				</p:column>
+				<p:column headerText="RegDatum" sortBy="#{r.created}">
+					<p:commandLink action="#{registrationBean.show(r.id)}" ajax="false">
+						<h:outputText value="#{r.created}">
+							<f:convertDateTime patten="dd.mm.yyyy" />
+						</h:outputText>
+					</p:commandLink>
+				</p:column>
+				<p:column headerText="Änderung" sortBy="#{r.changed}" rendered="false">
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{r.id}" />
+						<h:outputText value="#{r.changed}">
+							<f:convertDateTime patten="dd.mm.yyyy" />
+						</h:outputText>
+					</h:link>
+				</p:column>
+				<p:column headerText="Stat" sortBy="#{r.status}" >
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:panelGroup styleClass="#{r.status}">
+								<p:selectOneMenu value="#{r.status}" >
+									<f:selectItems value="#{registrationBean.stati}" />
+									<f:ajax listener="#{registrationBean.updateStatus}" execute="@this" render=":search:messages"/>
+									<f:attribute name="regId" value="#{r.id}"/>
+								</p:selectOneMenu>
+							</h:panelGroup>
+						</f:facet>
+						<f:facet name="input">
+							<h:panelGroup styleClass="#{r.status}">
+								<p:selectOneMenu value="#{r.status}">
+									<f:selectItems value="#{registrationBean.stati}" />
+								</p:selectOneMenu>
+							</h:panelGroup>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="M/W" sortBy="#{r.geschlecht}" rendered="false">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.geschlecht}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<h:selectOneMenu id="geschlect" value="#{r.geschlecht}" required="true">
+								<f:selectItems value="#{memberBean.sexes}" />
+							</h:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Name" sortBy="#{r.name}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.name}" title="#{r.toPrettyLines()}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<p:autoComplete id="name" value="#{r.name}" completeMethod="#{memberBean.getDistinctNameLike}" cache="true"
+								maxResults="20">
+								<f:validateLength minimum="2" />
+							</p:autoComplete>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Vorname" sortBy="#{r.vorname}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.vorname}" title="#{r.toPrettyLines()}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<p:autoComplete id="vorname" value="#{r.vorname}" completeMethod="#{memberBean.getDistinctVornameLike}"
+								cache="true" maxResults="20">
+								<f:validateLength minimum="2" />
+							</p:autoComplete>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="GebJahr" sortBy="#{r.gebJahr}" >
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.gebJahr}" title="#{r.toPrettyLines()}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<h:inputText id="gebJahr" value="#{r.gebJahr}" pt:placeholder="numerisch" title="Jahr, Zahl">
+								<f:validateRequired />
+								<f:validator validatorId="gebJahrValidator" />
+							</h:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Schuleintr." sortBy="#{r.schoolEntry}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.schoolEntry}" title="#{r.toPrettyLines()}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<h:inputText id="schoolEntry" value="#{r.schoolEntry}" pt:placeholder="numerisch"
+								title="Jahr des Schuleintritts">
+								<f:validateLongRange minimum="2000" maximum="3000" />
+							</h:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Telefon" sortBy="#{r.telefon}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.telefon}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<h:inputText id="telefon" value="#{r.telefon}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Email" sortBy="#{r.email}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.email}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<h:inputText id="email" value="#{r.email}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="PLZ" sortBy="#{r.PLZ}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.PLZ}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<p:autoComplete id="plz" value="#{r.PLZ}" completeMethod="#{memberBean.getDistinctPLZLike}" cache="true"
+								maxResults="20" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Ort" sortBy="#{r.ort}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.ort}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<p:autoComplete id="ort" value="#{r.ort}" completeMethod="#{memberBean.getDistinctOrtLike}" cache="true"
+								maxResults="20" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Aktiv" sortBy="#{r.aktiv}" rendered="#{registrationBean.all}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.aktiv}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<p:selectBooleanCheckbox value="#{r.aktiv}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Storno" sortBy="#{r.storno}" rendered="#{registrationBean.all}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:link outcome="create" includeViewParams="true">
+								<f:param name="id" value="#{r.id}" />
+								<h:outputText value="#{r.storno}" />
+							</h:link>
+						</f:facet>
+						<f:facet name="input">
+							<p:selectBooleanCheckbox value="#{r.storno}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Person" rendered="#{registrationBean.all}" >
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{r.id}" />
+						<h:outputText value="#{r.member.toShortString()}" />
+					</h:link>
+				</p:column>
+				<p:column headerText="Eltern" rendered="#{registrationBean.all}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:panelGroup rendered="#{r.parent != null}">
+								<h:link outcome="/pfad/member/view" includeViewParams="true">
+									<f:param name="id" value="#{r.id}" />
+									<h:outputText value="#{r.parent.toShortString()}" />
+								</h:link>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{r.parent == null}">
+								<h:link outcome="create" includeViewParams="true">
+									<f:param name="id" value="#{r.id}" />
+									<h:outputText value="#{r.parentName} #{r.parentVorname}" />
+								</h:link>
+							</h:panelGroup>
+						</f:facet>
+						<f:facet name="input">
+							<h:panelGroup rendered="#{r.parent != null}">
+								<h:link outcome="/pfad/member/view" includeViewParams="true">
+									<f:param name="id" value="#{r.id}" />
+									<h:outputText value="#{r.parent.toShortString()}" />
+								</h:link>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{r.parent == null}">
+								<p:autoComplete id="parentName" value="#{r.parentName}" completeMethod="#{memberBean.getDistinctNameLike}"
+									cache="true" maxResults="20">
+									<f:validateLength minimum="2" />
+								</p:autoComplete>
+								<p:autoComplete id="parentVorname" value="#{r.parentVorname}"
+									completeMethod="#{memberBean.getDistinctVornameLike}" cache="true" maxResults="20">
+									<f:validateLength minimum="2" />
+								</p:autoComplete>
+							</h:panelGroup>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

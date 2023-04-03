@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewParam name="page" value="#{paymentBean.page}" />
+		<f:viewParam name="paymentBeanExampleType" value="#{paymentBean.example.type}" />
+		<f:viewParam name="paymentBeanExamplePayer" value="#{paymentBean.memberExample}" converter="#{memberBean.converter}" />
+		<f:viewParam name="paymentBeanAmountFrom" value="#{paymentBean.amountFrom}" />
+		<f:viewParam name="paymentBeanAmountTo" value="#{paymentBean.amountTo}" />
+		<f:viewParam name="paymentBeanPaymentPaymentDateStart" value="#{paymentBean.examplePaymentDateStart}">
+			<f:convertDateTime pattern="dd.MM.yyyy" />
+		</f:viewParam>
+		<f:viewParam name="paymentBeanPaymentPaymentDateEnd" value="#{paymentBean.examplePaymentDateEnd}">
+			<f:convertDateTime pattern="dd.MM.yyyy" />
+		</f:viewParam>
+		<f:viewParam name="paymentBeanActivity" value="#{paymentBean.activityExample}" converter="#{activityBean.converter}" />
+		<f:viewParam name="paymentBeanBookingComment" value="#{paymentBean.bookingExample.comment}" />
+		<f:viewParam name="paymentBeanExampleComment" value="#{paymentBean.example.comment}" />
+		<f:viewParam name="paymentBeanExampleFinished" value="#{paymentBean.exampleFinished}" />
+		<f:viewParam name="paymentBeanExampleAconto" value="#{paymentBean.exampleAconto}" />
+		<f:viewParam name="paymentBeanExampleIBAN" value="#{paymentBean.example.payerIBAN}" />
+
+		<f:viewAction action="#{paymentBean.paginate}" onPostback="true" />
+	</f:metadata>
+
+	<ui:define name="header">
+		Zahlungen
+	</ui:define>
+
+	<ui:define name="subheader">
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="search">
+
+			<p:focus />
+
+			<f:validateBean disabled="true">
+				<h:panelGroup styleClass="search">
+
+					<h:panelGrid
+						columnClasses="label2,component2,required,label2,component2,required,label2,component2,required,label2,component2,required"
+						columns="12">
+
+						<h:outputLabel value="Buchung:" />
+						<h:panelGroup id="paymentBeanBookingPanel">
+							<p:inputText id="paymentBeanBookingComment" value="#{paymentBean.bookingExample.comment}">
+								<p:ajax delay="250" event="keyup" onstart="return filterKey(event)" update="paymentBeanPageItems" />
+							</p:inputText>
+							<h:message for="paymentBeanBooking" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanExampleType" value="Typ:" />
+						<h:panelGroup>
+							<h:selectOneMenu id="paymentBeanExampleType" value="#{paymentBean.example.type}" style="width:10em;">
+								<f:selectItem noSelectionOption="true" />
+								<f:selectItems value="#{paymentBean.types}" />
+								<f:ajax render="paymentBeanPageItems" />
+							</h:selectOneMenu>
+							<h:message for="paymentBeanExampleType" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanAmountFrom" value="Betrag-Von:" />
+						<h:inputText id="paymentBeanAmountFrom" value="#{paymentBean.amountFrom}" style="width: 10em;">
+							<f:convertNumber maxFractionDigits="2" />
+							<f:ajax render="paymentBeanPageItems" />
+						</h:inputText>
+						<h:message for="paymentBeanAmountFrom" />
+
+						<h:outputLabel for="paymentBeanAmountTo" value="Betrag-Bis: " />
+						<h:inputText id="paymentBeanAmountTo" value="#{paymentBean.amountTo}" style="width: 10em;">
+							<f:convertNumber maxFractionDigits="2" />
+							<f:ajax render="paymentBeanPageItems" />
+						</h:inputText>
+						<h:message for="paymentBeanAmountTo" />
+
+						<h:outputLabel for="paymentBeanPaymentPaymentDateStart" value="Datum-Von:" />
+						<p:calendar id="paymentBeanPaymentPaymentDateStart" value="#{paymentBean.examplePaymentDateStart}" pattern="dd.MM.yyyy">
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+							<f:ajax event="dateSelect" render="paymentBeanPageItems" />
+						</p:calendar>
+						<h:outputText />
+						<h:outputLabel for="paymentBeanPaymentPaymentDateEnd" value="Datum-Bis:" />
+						<p:calendar id="paymentBeanPaymentPaymentDateEnd" value="#{paymentBean.examplePaymentDateEnd}" pattern="dd.MM.yyyy">
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+							<f:ajax event="dateSelect" render="paymentBeanPageItems" />
+						</p:calendar>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanActivity" value="Aktivität:" />
+						<h:panelGroup>
+							<p:selectOneMenu id="paymentBeanActivity" style="min-width:10em;" p:placeholder="Aktivität.." value="#{paymentBean.activitySearch}"
+								converter="#{activityBean.converter}" title="Aktivität..">
+								<f:selectItem noSelectionOption="true" />
+								<f:selectItems value="#{activityBean.all}" var="a" itemLabel="#{a}" itemValue="#{a.idStr}" />
+								<f:ajax render="paymentBeanPageItems" />
+							</p:selectOneMenu>
+							<h:message for="paymentBeanActivity" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanExamplePayer" value="Zahler:" />
+						<h:panelGroup id="paymentBeanExamplePayerPanel">
+							<p:autoComplete id="paymentBeanExamplePayer" value="#{paymentBean.memberSearch}" completeMethod="#{members.filtered}" var="p"
+								itemLabel="#{p}" itemValue="#{p.idStr}" converter="#{memberBean.converter}" style="min-width=10em; max-width=20em;">
+								<f:ajax delay="250" render="paymentBeanPageItems" />
+							</p:autoComplete>
+							<h:message for="paymentBeanExamplePayer" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanExampleIBAN" value="IBAN:" />
+						<h:panelGroup>
+							<h:inputText id="paymentBeanExampleIBAN" value="#{paymentBean.example.payerIBAN}">
+								<f:ajax delay="250" event="keyup" render="paymentBeanPageItems" />
+							</h:inputText>
+							<h:message for="paymentBeanExampleIBAN" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanExampleComment" value="Bemerkung:" />
+						<h:panelGroup>
+							<h:inputText id="paymentBeanExampleComment" value="#{paymentBean.example.comment}">
+								<f:ajax delay="250" event="keyup" render="paymentBeanPageItems" />
+							</h:inputText>
+							<h:message for="paymentBeanExampleComment" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanExampleFinished" value="Erledigt:" />
+						<h:panelGroup>
+							<p:selectOneMenu id="paymentBeanExampleFinished" value="#{paymentBean.exampleFinished}" style="min-width=5em;"
+								placeholder="Erledigt..">
+								<f:selectItem noSelectionOption="true" />
+								<f:selectItem itemLabel="Ja" itemValue="true" />
+								<f:selectItem itemLabel="Nein" itemValue="false" />
+								<f:ajax render="paymentBeanPageItems" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+						<h:outputText />
+
+						<h:outputLabel for="paymentBeanExampleAconto" value="Akonto:" />
+						<h:panelGroup>
+							<p:selectOneMenu id="paymentBeanExampleAconto" value="#{paymentBean.exampleAconto}" style="min-width=5em;" placeholder="Aconto..">
+								<f:selectItem noSelectionOption="true" />
+								<f:selectItem itemLabel="Ja" itemValue="true" />
+								<f:selectItem itemLabel="Nein" itemValue="false" />
+								<f:ajax render="paymentBeanPageItems" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+						<h:outputText />
+
+					</h:panelGrid>
+					<h:panelGroup styleClass="buttons">
+						<h:commandLink id="search" value="Suchen" action="#{paymentBean.paginate}" styleClass="btn btn-primary">
+							<f:ajax execute="@all" render="paymentBeanPageItems" />
+						</h:commandLink>
+						<h:link id="list" value="Liste" outcome="list" styleClass="btn btn-primary" />
+						<h:link id="create" value="Neu" outcome="create" styleClass="btn btn-primary" />
+						<h:link id="import" value="Import" outcome="import" styleClass="btn btn-primary" disabled="#{!paymentBean.updateAllowed}" />
+					</h:panelGroup>
+				</h:panelGroup>
+			</f:validateBean>
+
+			<h:dataTable id="paymentBeanPageItems" styleClass="data-table" value="#{paymentBean.dataModel}" var="_item" columnClasses=",,width30,">
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Nr" />
+					</f:facet>
+					<h:outputText name="id" value="#{paymentBean.dataModel.rowIndex+1}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Typ" />
+					</f:facet>
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemPaymentType" value="#{_item.type}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Buchung" />
+					</f:facet>
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemPaymentBooking" value="#{_item.booking}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Aktivität" />
+					</f:facet>
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemPaymentActivities" value="#{_item.activitiesLines}" escape="false" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Betrag" />
+					</f:facet>
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemPaymentPaymentAmount" value="#{_item.amount}">
+							<f:convertNumber maxFractionDigits="2" />
+						</h:outputText>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Akonto" />
+					</f:facet>
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemPaymentAconto" value="#{_item.aconto ? 'JA' : 'NEIN'}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Bezahlt" />
+					</f:facet>
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemPaymentFinished" value="#{_item.finished ? 'JA' : 'NEIN'}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Datum" />
+					</f:facet>
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemPaymentPaymentDate" value="#{_item.paymentDate}" converter="javax.faces.DateTime" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Zahler" />
+					</f:facet>
+					<h:link outcome="create" includeViewParams="true">
+						<f:param name="id" value="#{_item.id}" />
+						<h:outputText id="itemPaymentPayer" value="#{_item.payer != null ? _item.payerName : 'kein Zahler..'}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="IBAN" />
+					</f:facet>
+					<h:link outcome="create">
+						<f:param name="id" value="#{_item.id}" includeViewParams="true" />
+						<h:outputText id="itemPaymentIBAN" value="#{_item.payerIBAN}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Comment" />
+					</f:facet>
+					<h:link outcome="create">
+						<f:param name="id" value="#{_item.id}" includeViewParams="true" />
+						<h:outputText id="itemPaymentComment" value="#{_item.comment}" />
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value='#{paymentBean}' />
+			</ui:include>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

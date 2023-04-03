@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="id" value='#{paymentBean.id}' />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction action="#{paymentBean.retrieve}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Zahlung erstellen/bearbeiten" />
+
+	<ui:define name="header">
+		<c:choose>
+			<c:when test='#{!empty paymentBean.id}'>
+				Zahlung bearbeiten
+			</c:when>
+			<c:otherwise>
+				Zahlung erstellen
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="create" rendered="#{paymentBean.viewAllowed}">
+		
+			<p:focus for="paymentBeanPaymentAmount" rendered="#{empty paymentBean.focusId}"/>
+			<p:focus id="focus" for="#{paymentBean.focusId}" rendered="#{!empty paymentBean.focusId}"/>
+			
+			<h:messages globalOnly="true" styleClass="error" />
+
+			<h:panelGrid columnClasses="width10,width50,required" columns="3">
+
+				<h:outputLabel for="paymentBeanPaymentType" value="Typ:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="paymentBeanPaymentType" value="#{paymentBean.payment.type}" styleClass="fullwidth">
+						<f:selectItem noSelectionOption="true" />
+						<f:selectItems value="#{paymentBean.types}" />
+					</h:selectOneMenu>
+					<h:message for="paymentBeanPaymentType" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="paymentBeanPaymentPayerPanel" value="Zahler:" />
+				<h:panelGroup id="paymentBeanPaymentPayerPanel">
+					<h:selectOneMenu id="paymentBeanPaymentPayer" value="#{paymentBean.payment.payer}" converter="#{memberBean.converter}" 
+						rendered="#{paymentBean.payment.payer != null}">
+						<f:selectItem itemLabel="löschen.." noSelectionOption="true"/>
+						<f:selectItem itemLabel="#{paymentBean.payment.payer}" itemValue="#{paymentBean.payment.payer.idStr}" />
+						<f:ajax execute="@this" render="paymentBeanPaymentPayerPanel" />
+					</h:selectOneMenu>
+					<p:autoComplete id="paymentBeanPaymentPayerSelect" rendered="#{paymentBean.payment.payer == null}" 
+						styleClass="fullwidth manual" placeholder="Der Zahler oder das Mitglied.." 
+						value="#{paymentBean.memberToAdd}" completeMethod="#{paymentBean.filterMembers}" minQueryLength="3"  
+						var="p" itemValue="#{p.idStr}" itemLabel="#{p}" converter="#{memberBean.converter}" 
+						forceSelection="true" dropdownMode="true" size="40">
+						<f:ajax event="itemSelect" listener="#{paymentBean.selectPaymentPayer}"
+							render="@form" />
+					</p:autoComplete>
+					<h:message for="paymentBeanPaymentPayer" styleClass="error" />
+					<h:message for="paymentBeanPaymentPayerSelect" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel value="Betrag:" />
+				<p:inputText id="paymentBeanPaymentAmount" value="#{paymentBean.payment.amount}" required="true"
+					 requiredMessage="Betrag fehlt!" validatorMessage="Betrag ungültig!" styleClass="fullwidth">
+					<f:convertNumber maxFractionDigits="2" />
+					<f:ajax />
+				</p:inputText>
+				<h:message for="paymentBeanPaymentAmount" />
+
+				<h:outputLabel for="paymentBeanPaymentPaymentDate" value="Zahlungsdatum:" />
+				<h:panelGroup>
+					<p:calendar id="paymentBeanPaymentPaymentDate" value="#{paymentBean.payment.paymentDate}"
+						datePattern="dd.MM.yyyy" styleClass="fullwidth" />
+					<h:message for="paymentBeanPaymentPaymentDate" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="paymentBeanPaymentBookings" value="Buchungen:" />
+				<h:panelGroup id="paymentBeanPaymentBookingsPanel">
+					<h:dataTable id="paymentBeanPaymentBookings" styleClass="data-table" value="#{paymentBean.payment.bookings}"
+						var="_item">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Aktivität" />
+							</f:facet>
+							<h:link outcome="view" tabindex="-1">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemActivity" value="#{_item.activity}" />
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Name" />
+							</f:facet>
+							<h:link outcome="view" tabindex="-1">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemName" value="#{_item.member.name}" />
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Vorname" />
+							</f:facet>
+							<h:link outcome="view" tabindex="-1">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemVorname" value="#{_item.member.vorname}" />
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Frei" />
+							</f:facet>
+							<h:link outcome="view" tabindex="-1">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemFree" value="#{_item.member.anyFree ? 'FREI' : ''}" />
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Geb.Jahr" />
+							</f:facet>
+							<h:link outcome="view" tabindex="-1">
+								<f:param name="id" value="#{_item.id}" />
+								<h:outputText id="itemGebJahr" value="#{_item.member.gebJahr}" />
+							</h:link>
+						</h:column>
+						<h:column footerClass="remove-column" headerClass="remove-column">
+							<h:commandLink styleClass="remove-button" >
+								<f:ajax listener="#{paymentBean.deleteBooking(_item.id)}" render=":create:paymentBeanPaymentBookingsPanel"/>
+							</h:commandLink>
+						</h:column>
+					</h:dataTable>
+					<h:panelGrid columnClasses=",remove-column" columns="2" styleClass="data-table-footer">
+						<p:autoComplete id="paymentBeanBookingSelect" styleClass="fullwidth manual"
+							value="#{paymentBean.bookingToAdd}" completeMethod="#{paymentBean.filterBookings}" minQueryLength="3" 
+							var="b" itemLabel="#{b}" itemValue="#{b.idStr}" converter="#{bookingBean.converter}"
+							forceSelection="true" placeholder="Buchung wählen.." size="40">
+							<f:ajax event="itemSelect" listener="#{paymentBean.addPaymentBooking}" 
+								render="@form" />
+						</p:autoComplete>
+						<h:message for="paymentBeanBookingSelect" styleClass="error" />
+					</h:panelGrid>
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="paymentBeanPaymentIBAN" value="IBAN:" />
+				<h:panelGroup>
+					<h:inputText id="paymentBeanPaymentIBAN" value="#{paymentBean.payment.payerIBAN}" styleClass="fullwidth" />
+					<h:message for="paymentBeanPaymentIBAN" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="paymentBeanPaymentComment" value="Bemerkung:" />
+				<h:panelGroup>
+					<h:inputTextarea id="paymentBeanPaymentComment" value="#{paymentBean.payment.comment}" rows="3"
+						styleClass="fullwidth" />
+					<h:message for="paymentBeanPaymentComment" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="paymentBeanPaymentAconto" value="Akonto:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="paymentBeanPaymentAconto" value="#{paymentBean.payment.aconto}" />
+					<h:message for="paymentBeanPaymentAconto" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="paymentBeanPaymentFinished" value="Erledigt:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="paymentBeanPaymentFinished" value="#{paymentBean.payment.finished}" />
+					<h:message for="paymentBeanPaymentFinished" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="paymentBeanPaymentRevision" value="Änderung:"/>
+				<h:panelGrid id="paymentBeanPaymentRevision" columns="8" >
+					<h:outputLabel value="Erstellt:" />
+					<h:outputText value="#{paymentBean.payment.created}" converter="javax.faces.DateTime" />
+					<h:outputLabel value="Von:" />
+					<h:outputText value="#{paymentBean.payment.createdBy}" />
+					<h:outputLabel value="Geändert:" />
+					<h:outputText value="#{paymentBean.payment.changed}" converter="javax.faces.DateTime" />
+					<h:outputLabel value="Von:" />
+					<h:outputText value="#{paymentBean.payment.changedBy}" />
+				</h:panelGrid>
+				<h:outputText />
+
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action='#{paymentBean.save}' accesskey="s" title="Speichern [ALT]+[S]"
+					styleClass="btn btn-primary" disabled="#{!paymentBean.updateAllowed}" />
+				<h:commandLink value="SaveAndSearch" action='#{paymentBean.update}' accesskey="r"
+					title="Speichern und Zurück [ALT]+[R]" styleClass="btn btn-primary" disabled="#{!paymentBean.updateAllowed}" />
+				<h:commandLink value="SaveAndNew" action='#{paymentBean.createAndNew}' accesskey="n"
+					title="Speichern und Neueingabe [ALT]+[N]" styleClass="btn btn-primary" disabled="#{!paymentBean.updateAllowed}" />
+				<c:choose>
+					<c:when test='#{!empty paymentBean.id}'>
+						<h:link value="Cancel" outcome="view" styleClass="btn btn-primary">
+							<f:param name="id" value='#{paymentBean.id}' />
+						</h:link>
+						<h:commandLink value="Delete" action='#{paymentBean.delete}' onclick="return confirm('Zahlung wird gelöscht');"
+							accesskey="n" title="Löschen und Zurück [SHIFT]+[ALT]+[D]" styleClass="btn btn-primary"
+							disabled="#{!paymentBean.deleteAllowed}" />
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search" accesskey="c" title="Cancel [ALT]+[C]" styleClass="btn btn-primary" />
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

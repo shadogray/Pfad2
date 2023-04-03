@@ -1,0 +1,113 @@
+<header ng-switch on="$location.path().indexOf('/Squads/new') > -1">
+	<h3 ng-switch-when="true">Trupp Erstellen</h3>
+	<h3 ng-switch-when="false">Trupp Bearbeiten</h3>
+</header>
+<form id="SquadForm" name="SquadForm" class="form-horizontal" role="form">
+
+	<div class="form-group" ng-class="{'has-error': SquadForm.name.$invalid}">
+		<label for="name" class="col-sm-2 control-label">Name</label>
+		<div id="nameControls" class="col-sm-10">
+			<input id="name" name="name" type="text" class="form-control" ng-model="squad.name"
+				placeholder="Enter the Squad Name"></input>
+		</div>
+	</div>
+
+	<div class="form-group" ng-class="{'has-error': SquadForm.login.$invalid}">
+		<label for="login" class="col-sm-2 control-label">Login</label>
+		<div id="loginControls" class="col-sm-10">
+			<input id="login" name="login" type="text" class="form-control" ng-model="squad.login" disabled="disabled"></input>
+		</div>
+	</div>
+
+	<div class="form-group" ng-class="{'has-error': SquadForm.leaderFemale.$invalid}">
+		<label for="leaderFemale" class="col-sm-2 control-label">Leiterin</label>
+		<div id="leaderFemaleControls" class="col-sm-10">
+			<md-autocomplete id="leaderFemale" name="leaderFemale" md-selected-item="squad.leaderFemale" md-search-text="leaderFemaleFilter" md-items="item in filteredMembers(leaderFemaleFilter)" 
+            md-item-text="item.shortName" placeholder="Leiterin.." >
+				<span md-highlight-text="leaderFemaleFilter">{{item.shortName}}</span>
+                <span ng-repeat="c in item.contacts">
+                    <a href="{{c.type}}:{{c.value}}">{{c.value}}</a>
+                </span>
+			</md-autocomplete>
+            <span ng-repeat="c in squad.leaderFemale.contacts">
+                <a href="{{c.type}}:{{c.value}}">{{c.value}}</a>
+            </span>
+		</div>
+	</div>
+
+	<div class="form-group" ng-class="{'has-error': SquadForm.leaderMale.$invalid}">
+		<label for="leaderMale" class="col-sm-2 control-label">Leiter</label>
+		<div id="leaderMaleControls" class="col-sm-10">
+			<md-autocomplete id="leaderMale" name="leaderMale" md-selected-item="squad.leaderMale" md-search-text="leaderMaleFilter" md-items="item in filteredMembers(leaderMaleFilter)" md-item-text="item.shortName"
+				placeholder="Leiter.." >
+				<span md-highlight-text="leaderMaleFilter">{{item.shortName}}</span>
+                <span ng-repeat="c in item.contacts">
+                    <a href="{{c.type}}:{{c.value}}">{{c.value}}</a>
+                </span>
+			</md-autocomplete>
+            <span ng-repeat="c in squad.leaderMale.contacts">
+                <a href="{{c.type}}:{{c.value}}">{{c.value}}</a>
+            </span>
+		</div>
+	</div>
+
+	<div class="form-group" ng-class="{'has-error': SquadForm.assistants.$invalid}">
+		<label for="assistants" class="col-sm-2 control-label">Assistenten</label>
+		<md-chips ng-model="squad.assistants" md-on-remove="removeAssistant($chip, $index)" md-on-add="addAssistant($chip, $index)">
+			<md-chip-template>
+	        	<span><strong>{{$chip.shortName}}</strong></span>
+                <span ng-repeat="c in $chip.contacts">
+                    <a href="{{c.type}}:{{c.value}}">{{c.value}}</a>
+                </span>
+		    </md-chip-template>
+			<md-autocomplete md-search-text="memberFilter" md-items="item in filteredMembers(memberFilter)" md-item-text="item.name"
+				placeholder="Assistent.." >
+				<span md-highlight-text="memberFilter">{{item.shortName}}</span>
+			</md-autocomplete> 
+		</md-chips>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button id="saveSquad" name="saveSquad" class="btn btn-primary" ng-disabled="isClean() || SquadForm.$invalid"
+				ng-click="save()">
+				<span class="glyphicon glyphicon-ok-sign"></span> Save
+			</button>
+			<button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()">
+				<span class="glyphicon glyphicon-remove-sign"></span> Cancel
+			</button>
+		</div>
+	</div>
+
+	<div id="search-results">
+		<div class="table-responsive">
+			<table class="table table-responsive table-bordered table-striped clearfix">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Vorname</th>
+						<th>W/M</th>
+						<th>GebJahr</th>
+						<th>PLZ</th>
+						<th>Ort</th>
+						<th>Strasse</th>
+						<th>Trupp</th>
+					</tr>
+				</thead>
+				<tbody id="search-results-body">
+					<tr ng-repeat="m in scouts">
+						<td><a href="#/Members/edit/{{m.id}}">{{m.name}}</a></td>
+						<td><a href="#/Members/edit/{{m.id}}">{{m.vorname}}</a></td>
+						<td><a href="#/Members/edit/{{m.id}}">{{m.geschlecht}}</a></td>
+						<td><a href="#/Members/edit/{{m.id}}">{{m.gebJahr}}</a></td>
+						<td><a href="#/Members/edit/{{m.id}}">{{m.PLZ}}</a></td>
+						<td><a href="#/Members/edit/{{m.id}}">{{m.ort}}</a></td>
+						<td><a href="#/Members/edit/{{m.id}}">{{m.strasse}}</a></td>
+						<td><a href="#/Members/edit/{{m.id}}">{{m.trupp.name}}</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</form>

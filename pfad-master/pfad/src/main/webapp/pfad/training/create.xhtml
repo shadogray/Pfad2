@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:o="http://omnifaces.org/ui"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="id" value='#{trainingBean.id}' />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction action="#{trainingBean.retrieve}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Training" />
+
+	<ui:define name="header">
+		<c:choose>
+			<c:when test='#{!empty trainingBean.id}'>
+				Training ändern
+			</c:when>
+			<c:otherwise>
+				Training erstellen
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="subheader">
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error" />
+
+			<h:panelGrid columnClasses="label2,component2,required,label2,component2,required" columns="6">
+				<h:outputLabel for="trainingBeanTrainingName" value="Name:" />
+				<h:panelGroup>
+					<h:inputText id="trainingBeanTrainingName" value="#{trainingBean.training.name}" />
+					<h:message for="trainingBeanTrainingName" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="trainingBeanTrainingForm" value="Form:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="trainingBeanTrainingForm" value="#{trainingBean.training.form}" >
+						<f:selectItems value="#{trainingBean.forms}"/>
+					</h:selectOneMenu>
+					<h:message for="trainingBeanTrainingForm" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="trainingBeanTrainingPhase" value="Phase:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="trainingBeanTrainingPhase" value="#{trainingBean.training.phase}" >
+						<f:selectItems value="#{trainingBean.phases}"/>
+					</h:selectOneMenu>
+					<h:message for="trainingBeanTrainingPhase" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" width="100em" columnClasses="label2,component90">
+				<h:outputLabel for="trainingBeanTrainingDescription" value="Beschreibung:" />
+				<h:panelGroup>
+					<h:inputTextarea id="trainingBeanTrainingDescription" value="#{trainingBean.training.description}" rows="5" cols="120" styleClass="width70"/>
+					<h:message for="trainingBeanTrainingDescription" styleClass="error" />
+				</h:panelGroup>
+			</h:panelGrid>
+
+			<h:panelGrid columns="8" style="width: 100%;">
+				<h:outputLabel value="Erstellt:" />
+				<h:outputText value="#{trainingBean.training.created}" converter="javax.faces.DateTime" />
+				<h:outputLabel value="Von:" />
+				<h:outputText value="#{trainingBean.training.createdBy}" />
+				<h:outputLabel value="Geändert:" />
+				<h:outputText value="#{trainingBean.training.changed}" converter="javax.faces.DateTime" />
+				<h:outputLabel value="Von:" />
+				<h:outputText value="#{trainingBean.training.changedBy}" />
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action='#{trainingBean.update}' styleClass="btn btn-primary"
+					disabled="#{!trainingBean.updateAllowed}" />
+				<c:choose>
+					<c:when test='#{!empty trainingBean.id}'>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary" />
+						<h:commandLink value="Delete" action='#{trainingBean.delete}' styleClass="btn btn-primary"
+							disabled="#{!trainingBean.deleteAllowed}" />
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary" />
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

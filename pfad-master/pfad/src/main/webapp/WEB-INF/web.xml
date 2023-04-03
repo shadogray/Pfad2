@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+	<display-name>pfad</display-name>
+	<context-param>
+		<param-name>javax.faces.VALIDATE_EMPTY_FIELDS</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.CLIENT_WINDOW_MODE</param-name>
+		<param-value>NONE</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>primefaces.UPLOADER</param-name>
+		<param-value>auto</param-value>
+	</context-param>
+	<filter>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>/faces/*</url-pattern>
+        <url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+	<mime-mapping>
+		<extension>ico</extension>
+		<mime-type>image/x-icon</mime-type>
+	</mime-mapping>
+	<security-constraint>
+		<display-name>pfad</display-name>
+		<web-resource-collection>
+			<web-resource-name>pfad</web-resource-name>
+			<url-pattern>/pfad/*</url-pattern>
+			<url-pattern>/faces/pfad/*</url-pattern>
+            <url-pattern>/app/views/*</url-pattern>
+            <url-pattern>/rest/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>gruppe</role-name>
+			<role-name>leiter</role-name>
+			<role-name>kassier</role-name>
+			<role-name>vorstand</role-name>
+			<role-name>registrierung</role-name>
+			<role-name>anmeldung</role-name>
+			<role-name>training</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<description>SSL</description>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+    <security-constraint>
+        <display-name>apidocs</display-name>
+        <web-resource-collection>
+            <web-resource-name>apidocs</web-resource-name>
+            <url-pattern>/apidocs/*</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+	<login-config>
+		<auth-method>BASIC?silent=true,FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/login.xhtml</form-login-page>
+			<form-error-page>/login-error.html</form-error-page>
+		</form-login-config>
+	</login-config>
+	<security-role>
+		<description>Administrator</description>
+		<role-name>admin</role-name>
+	</security-role>
+	<security-role>
+		<description>Gruppe</description>
+		<role-name>gruppe</role-name>
+	</security-role>
+	<security-role>
+		<description>Leiter</description>
+		<role-name>leiter</role-name>
+	</security-role>
+	<security-role>
+		<description>Kassier</description>
+		<role-name>kassier</role-name>
+	</security-role>
+    <security-role>
+        <description>Vorstand</description>
+        <role-name>vorstand</role-name>
+    </security-role>
+    <security-role>
+    	<description>Registrierung</description>
+    	<role-name>registrierung</role-name>
+    </security-role>
+    <security-role>
+    	<description>Anmeldung</description>
+    	<role-name>anmeldung</role-name>
+    </security-role>
+
+	<welcome-file-list>
+		<welcome-file>/index.html</welcome-file>
+	</welcome-file-list>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/faces/error.xhtml</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/faces/error.xhtml</location>
+	</error-page>
+</web-app>

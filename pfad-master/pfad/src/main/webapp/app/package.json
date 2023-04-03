@@ -1,0 +1,30 @@
+{
+	"name": "pfad",
+	"version": "1.0.0",
+	"dependencies": {
+		"angular": "^1.5.8",
+		"angular-material": "^1.1.0",
+		"angular-resource": "^1.5.8",
+		"angular-route": "^1.5.8",
+		"angular2": "^2.0.0-beta.17",
+		"bootstrap": "^3.3.7",
+		"jquery": "^3.1.0",
+		"modernizr": "^3.3.1"
+	},
+	"scripts": {
+		"start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
+		"docker-build": "docker build -t ng2-quickstart .",
+		"docker": "npm run docker-build && docker run -it --rm -p 3000:3000 -p 3001:3001 ng2-quickstart",
+		"pree2e": "npm run webdriver:update",
+		"e2e": "tsc && concurrently \"http-server -s\" \"protractor protractor.config.js\" --kill-others --success first",
+		"lint": "tslint ./**/*.ts -t verbose",
+		"lite": "lite-server",
+		"postinstall": "typings install",
+		"test": "tsc && concurrently \"tsc -w\" \"karma start karma.conf.js\"",
+		"test-once": "tsc && karma start karma.conf.js --single-run",
+		"tsc": "tsc",
+		"tsc:w": "tsc -w",
+		"typings": "typings",
+		"webdriver:update": "webdriver-manager update"
+	}
+}

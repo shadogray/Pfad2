@@ -1,0 +1,132 @@
+<header ng-switch on="$location.path().indexOf('/Payments/new') > -1">
+    <h3 ng-switch-when="true">Create a new Payment</h3>
+    <h3 ng-switch-when="false">View or edit Payment</h3>
+</header>
+<form id="PaymentForm" name="PaymentForm" class="form-horizontal" role="form">
+    
+    <div class="form-group" ng-class="{'has-error': PaymentForm.idStr.$invalid}">
+        <label for="idStr" class="col-sm-2 control-label">Id Str</label>
+        <div id="idStrControls" class="col-sm-10">
+            <input id="idStr" name="idStr" type="text" class="form-control" ng-model="payment.idStr" placeholder="Enter the Payment Id Str"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.payer.$invalid}">
+        <label for="payer" class="col-sm-2 control-label">Payer</label>
+        <div id="payerControls" class="col-sm-10">
+        <select id="payer" name="payer" class="form-control" ng-model="payerSelection" ng-options="p.text for p in payerSelectionList"  >
+            <option value="">Choose a Payer</option>
+        </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.amount.$invalid}">
+        <label for="amount" class="col-sm-2 control-label">Amount</label>
+        <div id="amountControls" class="col-sm-10">
+            <input id="amount" name="amount" type="number" class="form-control" ng-model="payment.amount" placeholder="Enter the Payment Amount"></input>
+            <span class="help-block error" ng-show="PaymentForm.amount.$error.number">not a number</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.finished.$invalid}">
+        <label for="finished" class="col-sm-2 control-label">Finished</label>
+        <div id="finishedControls" class="col-sm-10">
+            <input id="finished" name="finished" type="checkbox" class="checkbox" ng-model="payment.finished" placeholder="Enter the Payment Finished"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.aconto.$invalid}">
+        <label for="aconto" class="col-sm-2 control-label">Aconto</label>
+        <div id="acontoControls" class="col-sm-10">
+            <input id="aconto" name="aconto" type="checkbox" class="checkbox" ng-model="payment.aconto" placeholder="Enter the Payment Aconto"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.comment.$invalid}">
+        <label for="comment" class="col-sm-2 control-label">Comment</label>
+        <div id="commentControls" class="col-sm-10">
+            <input id="comment" name="comment" type="text" class="form-control" ng-model="payment.comment" placeholder="Enter the Payment Comment"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.bookings.$invalid}">
+        <label for="bookings" class="col-sm-2 control-label">Bookings</label>
+        <div id="bookingsControls" class="col-sm-10">
+            <select id="bookings" name="bookings" multiple class="form-control" ng-model="bookingsSelection" ng-options="b.text for b in bookingsSelectionList">
+                <option value="">Choose a Bookings</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.bookingsIds.$invalid}">
+        <label for="bookingsIds" class="col-sm-2 control-label">Bookings Ids</label>
+        <div id="bookingsIdsControls" class="col-sm-10">
+            <input id="bookingsIds" name="bookingsIds" type="text" class="form-control" ng-model="payment.bookingsIds" placeholder="Enter the Payment Bookings Ids"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.sortedBookings.$invalid}">
+        <label for="sortedBookings" class="col-sm-2 control-label">Sorted Bookings</label>
+        <div id="sortedBookingsControls" class="col-sm-10">
+            <input id="sortedBookings" name="sortedBookings" type="text" class="form-control" ng-model="payment.sortedBookings" placeholder="Enter the Payment Sorted Bookings"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.type.$invalid}">
+        <label for="type" class="col-sm-2 control-label">Type</label>
+        <div id="typeControls" class="col-sm-10">
+        <select id="type" name="type" class="form-control" ng-model="payment.type" ng-options="t for t in typeList" required >
+            <option value="">Choose a Type</option>
+        </select>
+        <span class="help-block error" ng-show="PaymentForm.type.$error.required">required</span> 
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.paymentDate.$invalid}">
+        <label for="paymentDate" class="col-sm-2 control-label">Payment Date</label>
+        <div id="paymentDateControls" class="col-sm-10">
+            <datetime id="paymentDate" name="paymentDate" ng-model="payment.paymentDate" placeholder="Enter the Payment Payment Date"></datetime>
+            <span class="help-block error" ng-show="PaymentForm.paymentDate.$error.datetimeFormat">does not match format "yyyy-MM-dd hh:mm:ss" (e.g. 2013-12-01 22:00:00)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.changed.$invalid}">
+        <label for="changed" class="col-sm-2 control-label">Changed</label>
+        <div id="changedControls" class="col-sm-10">
+            <datetime id="changed" name="changed" ng-model="payment.changed" placeholder="Enter the Payment Changed"></datetime>
+            <span class="help-block error" ng-show="PaymentForm.changed.$error.datetimeFormat">does not match format "yyyy-MM-dd hh:mm:ss" (e.g. 2013-12-01 22:00:00)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.created.$invalid}">
+        <label for="created" class="col-sm-2 control-label">Created</label>
+        <div id="createdControls" class="col-sm-10">
+            <datetime id="created" name="created" ng-model="payment.created" placeholder="Enter the Payment Created"></datetime>
+            <span class="help-block error" ng-show="PaymentForm.created.$error.datetimeFormat">does not match format "yyyy-MM-dd hh:mm:ss" (e.g. 2013-12-01 22:00:00)</span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.changedBy.$invalid}">
+        <label for="changedBy" class="col-sm-2 control-label">Changed By</label>
+        <div id="changedByControls" class="col-sm-10">
+            <input id="changedBy" name="changedBy" type="text" class="form-control" ng-model="payment.changedBy" placeholder="Enter the Payment Changed By"></input>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': PaymentForm.createdBy.$invalid}">
+        <label for="createdBy" class="col-sm-2 control-label">Created By</label>
+        <div id="createdByControls" class="col-sm-10">
+            <input id="createdBy" name="createdBy" type="text" class="form-control" ng-model="payment.createdBy" placeholder="Enter the Payment Created By"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="savePayment" name="savePayment" class="btn btn-primary" ng-disabled="isClean() || PaymentForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deletePayment" name="deletePayment" class="btn btn-danger" ng-show="payment.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        </div>
+    </div>
+</form>

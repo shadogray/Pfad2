@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:forgeview="http://jboss.org/forge/view" xmlns:p="http://primefaces.org/ui"
+	 xmlns:o="http://omnifaces.org/ui" template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Member History" />
+
+	<ui:define name="header">
+		Member
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Member History
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="search">
+		
+			<p:focus preserve="true" ajaxRendered="false" />
+		
+			<f:validateBean disabled="true">
+				<h:panelGroup styleClass="search">
+
+					<h:panelGrid columnClasses="label,component,required" columns="3">
+						<h:outputLabel for="memberHistoryBeanExampleName" value="Name:" />
+						<h:panelGroup>
+							<p:autoComplete id="memberHistoryBeanExampleName" value="#{memberHistoryBean.example.name}" mode="lazyClient"
+								autofill="false" autocompleteList="#{memberBean.distinctName}" minQueryLength="2" clientFilterFunction="autoFilter">
+							</p:autoComplete>
+							<h:message for="memberHistoryBeanExampleName" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+						<h:outputLabel for="memberHistoryBeanExampleVorname" value="Vorname:" />
+						<h:panelGroup>
+							<p:autoComplete id="memberHistoryBeanExampleVorname" value="#{memberHistoryBean.example.vorname}"
+								mode="lazyClient" autofill="false" autocompleteList="#{memberBean.distinctVorname}"
+								clientFilterFunction="autoFilter" />
+							<h:message for="memberHistoryBeanExampleVorname" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+						<h:outputLabel for="memberHistoryBeanExampleBVKey" value="BV Key:" />
+						<h:panelGroup>
+							<h:inputText id="memberHistoryBeanExampleBVKey" value="#{memberHistoryBean.example.BVKey}" />
+							<h:message for="memberHistoryBeanExampleBVKey" styleClass="error" />
+						</h:panelGroup>
+						<h:outputText />
+					</h:panelGrid>
+					<h:panelGroup styleClass="buttons">
+						<h:commandLink value="Suchen" action='#{memberHistoryBean.search}' styleClass="btn btn-primary" />
+					</h:panelGroup>
+				</h:panelGroup>
+			</f:validateBean>
+
+			<h:dataTable id="memberHistoryBeanPageItems" styleClass="data-table" value="#{memberHistoryBean.pageItems}"
+				var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="BV Key" />
+					</f:facet>
+					<h:link outcome="view">
+						<f:param name="id" value="#{_item.member.id}" />
+						<h:outputText id="itemBVKey" value="#{_item.member.BVKey}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name" />
+					</f:facet>
+					<h:link outcome="view">
+						<f:param name="id" value="#{_item.member.id}" />
+						<h:outputText id="itemName" value="#{_item.member.name}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Vorname" />
+					</f:facet>
+					<h:link outcome="view">
+						<f:param name="id" value="#{_item.member.id}" />
+						<h:outputText id="itemVorname" value="#{_item.member.vorname}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Aktiv" />
+					</f:facet>
+					<h:link outcome="view">
+						<f:param name="id" value="#{_item.member.id}" />
+						<h:outputText id="itemAktiv" value="#{_item.member.aktiv}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Trupp" />
+					</f:facet>
+					<h:link outcome="view">
+						<f:param name="id" value="#{_item.member.id}" />
+						<h:outputText id="itemTrupp" value="#{_item.member.truppId}" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Datum" />
+					</f:facet>
+					<h:link outcome="view">
+						<f:param name="id" value="#{_item.member.id}" />
+						<h:outputText value="#{_item.member.changed}" converter="javax.faces.DateTime" />
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="User" />
+					</f:facet>
+					<h:link outcome="view">
+						<f:param name="id" value="#{_item.member.id}" />
+						<h:outputText value="#{_item.member.changedBy}" />
+					</h:link>
+				</h:column>
+			</h:dataTable>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

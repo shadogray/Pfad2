@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:o="http://omnifaces.org/ui"
+	xmlns:p="http://primefaces.org/ui"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{participationBean.id}" />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction action="#{participationBean.retrieve}" />
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Participation" />
+
+	<ui:define name="header">
+		<c:choose>
+			<c:when test='#{!empty participationBean.id}'>
+				Teilnahme ändern
+			</c:when>
+			<c:otherwise>
+				Teilnahme erstellen
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="subheader">
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error" />
+
+			<h:panelGrid columnClasses="label2,component2,required,label2,component2,required" columns="6">
+				<h:outputLabel for="participationBeanParticipationTraining" value="Training:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="participationBeanParticipationTraining" value="#{participationBean.participation.training}" converter="#{trainingBean.converter}">
+						<f:selectItems value="#{trainingBean.allTrainings}" var="t" itemLabel="#{t.name}" itemValue="#{t.idStr}"/>
+					</h:selectOneMenu>
+					<h:message for="participationBeanParticipationTraining" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="participationBeanParticipationMember" value="Mitglied:" />
+				<h:panelGroup>
+					<p:autoComplete id="participationBeanParticipationMember" value="#{participationBean.participation.member}" dropdown="true" 
+						completeMethod="#{members.filtered}" converter="#{memberBean.converter}" var="m" itemLabel="#{m}" itemValue="#{m.id}">
+					</p:autoComplete>
+					<h:message for="participationBeanParticipationMember" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="participationBeanParticipationCostType" value="KostenArt:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="participationBeanParticipationCostType" value="#{participationBean.participation.costType}" >
+						<f:selectItems value="#{participationBean.costTypes}"/>
+					</h:selectOneMenu>
+					<h:message for="participationBeanParticipationCostType" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="participationBeanParticipationAmount" value="Betrag:" />
+				<h:panelGroup>
+					<h:inputText id="participationBeanParticipationAmount" value="#{participationBean.participation.amount}" >
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+					</h:inputText>
+					<h:message for="participationBeanParticipationAmount" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="participationBeanParticipationStart" value="Start:" />
+				<h:panelGroup>
+					<p:calendar id="participationBeanParticipationStart" value="#{participationBean.participation.start}" pattern="dd.MM.yyyy">
+						<f:convertDateTime pattern="dd.MM.yyyy"/>
+					</p:calendar>
+					<h:message for="participationBeanParticipationStart" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="participationBeanParticipationEnd" value="End:" />
+				<h:panelGroup>
+					<p:calendar id="participationBeanParticipationEnd" value="#{participationBean.participation.end}" pattern="dd.MM.yyyy">
+						<f:convertDateTime pattern="dd.MM.yyyy"/>
+					</p:calendar>
+					<h:message for="participationBeanParticipationEnd" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+				<h:outputLabel for="participationBeanParticipationStatus" value="Status:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="participationBeanParticipationStatus" value="#{participationBean.participation.status}" >
+						<f:selectItems value="#{participationBean.stati}"/>
+					</h:selectOneMenu>
+					<h:message for="participationBeanParticipationStatus" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+			</h:panelGrid>
+
+			<h:panelGrid columns="8" style="width: 100%;">
+				<h:outputLabel value="Erstellt:" />
+				<h:outputText value="#{participationBean.participation.created}" converter="javax.faces.DateTime" />
+				<h:outputLabel value="Von:" />
+				<h:outputText value="#{participationBean.participation.createdBy}" />
+				<h:outputLabel value="Geändert:" />
+				<h:outputText value="#{participationBean.participation.changed}" converter="javax.faces.DateTime" />
+				<h:outputLabel value="Von:" />
+				<h:outputText value="#{participationBean.participation.changedBy}" />
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action='#{participationBean.update}' styleClass="btn btn-primary"
+					disabled="#{!participationBean.updateAllowed}" />
+				<c:choose>
+					<c:when test='#{!empty participationBean.id}'>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary" />
+						<h:commandLink value="Delete" action='#{participationBean.delete}' styleClass="btn btn-primary"
+							disabled="#{!participationBean.deleteAllowed}" />
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary" />
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

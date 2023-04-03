@@ -1,0 +1,41 @@
+<?xml version='1.0'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      >
+
+
+<h:head>
+</h:head>
+
+<h:body>
+	<h:outputScript target="body">
+	//<![CDATA[
+	function test(event, element) {
+		if (true || event.ctrlKey && event.code=='Enter') {
+			var el = $('#cmd');
+			console.log('calling:  '+el);
+			el.click();
+			//mojarra.ab(el,event,'action','@form','query:results query:messages');
+			//$('#cmd').submit();
+		}
+	}
+	//]]>
+	</h:outputScript>	
+	
+		<h:form id="form">
+			<p:growl/>
+			<h:button value="TEST" onclick="test(event, this); return false;"/>
+			<h:commandButton id="cmd" action="#{downloadBean.executeQuery}" value="Query" >
+			</h:commandButton>
+			<h:commandButton id="cmdAjax" action="#{downloadBean.executeQuery}" value="QueryAjax" >
+				<f:ajax render="@form"/>
+			</h:commandButton>
+			<p:commandButton value="test" action="#{configurationBean.all}"></p:commandButton>
+		</h:form>
+	
+</h:body>
+</html>

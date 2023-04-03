@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<o:viewParam name="id" value='#{activityBean.id}' />
+		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction action="#{activityBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:define name="header">
+		<c:choose>
+			<c:when test='#{!empty activityBean.id}'>
+				Aktivität ändern
+			</c:when>
+			<c:otherwise>
+				Aktivität anlegen
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="subheader">
+	</ui:define>
+
+	<ui:define name="footer" />
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error" />
+			<p:focus />
+
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+
+				<h:outputLabel for="activityBeanActivityName" value="Name:" />
+				<h:panelGroup>
+					<h:inputText id="activityBeanActivityName" value="#{activityBean.activity.name}" />
+					<h:message for="activityBeanActivityName" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="activityBeanActivityType" value="Typ:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="activityBeanActivityType" value="#{activityBean.activity.type}">
+						<f:selectItem noSelectionOption="true"/>
+						<f:selectItems value="#{activityBean.types}" />
+					</h:selectOneMenu>
+					<h:message for="activityBeanActivityType" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="activityBeanActivityStatus" value="Status:" />
+				<h:panelGroup>
+					<h:selectOneMenu id="activityBeanActivityStatus" value="#{activityBean.activity.status}">
+						<f:selectItems value="#{activityBean.stati}" />
+					</h:selectOneMenu>
+					<h:message for="activityBeanActivityStatus" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="activityBeanActivityStart" value="Start:" />
+				<h:panelGroup>
+					<p:calendar id="activityBeanActivityStart" value="#{activityBean.activity.start}" datePattern="dd.MM.yyyy" />
+					<h:message for="activityBeanActivityStart" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel for="activityBeanActivityEnd" value="Ende:" />
+				<h:panelGroup>
+					<p:calendar id="activityBeanActivityEnd" value="#{activityBean.activity.end}" datePattern="dd.MM.yyyy" />
+					<h:message for="activityBeanActivityEnd" styleClass="error" />
+				</h:panelGroup>
+				<h:outputText />
+
+				<h:outputLabel value="Betrag:" />
+				<h:inputText id="activityBeanActivityAmount" tabindex="0" value="#{activityBean.activity.amount}" validatorMessage="Betrag ungültig!">
+					<f:convertNumber maxFractionDigits="2" />
+				</h:inputText>
+				<h:message for="activityBeanActivityAmount" />
+
+				<h:outputLabel value="Anzahlung:" />
+				<h:inputText id="activityBeanActivityAconto" tabindex="0" value="#{activityBean.activity.aconto}" validatorMessage="Betrag ungültig!">
+					<f:convertNumber maxFractionDigits="2" />
+				</h:inputText>
+				<h:message for="activityBeanActivityAconto" />
+
+				<h:outputLabel value="Bemerkung:" />
+				<h:inputTextarea id="activityBeanActivityComment" tabindex="0" value="#{activityBean.activity.comment}" rows="5"/>
+				<h:message for="activityBeanActivityComment" />
+
+				<h:outputLabel for="activityBeanActivityRevision" value="Änderung:" />
+				<h:panelGrid id="activityBeanActivityRevision" columns="8">
+					<h:outputLabel value="Erstellt:" />
+					<h:outputText value="#{activityBean.activity.created}" converter="javax.faces.DateTime" />
+					<h:outputLabel value="Von:" />
+					<h:outputText value="#{activityBean.activity.createdBy}" />
+					<h:outputLabel value="Geändert:" />
+					<h:outputText value="#{activityBean.activity.changed}" converter="javax.faces.DateTime" />
+					<h:outputLabel value="Von:" />
+					<h:outputText value="#{activityBean.activity.changedBy}" />
+				</h:panelGrid>
+				<h:outputText />
+	
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action='#{activityBean.update}' styleClass="btn btn-primary"
+					disabled="#{!activityBean.updateAllowed}" />
+				<c:choose>
+					<c:when test='#{!empty activityBean.id}'>
+						<h:link value="Cancel" outcome="view" styleClass="btn btn-primary">
+							<f:param name="id" value='#{activityBean.id}' />
+						</h:link>
+						<h:commandLink value="Delete" action='#{activityBean.delete}' styleClass="btn btn-primary"
+							disabled="#{!activityBean.deleteAllowed}" />
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary" />
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
