@@ -1,11 +1,11 @@
 package at.tfr.pfad.util;
 
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerFactory;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerFactory;
 
 public class FacesExceptionHandlerFactory extends ExceptionHandlerFactory {
 
-    private final javax.faces.context.ExceptionHandlerFactory parent;
+    private final jakarta.faces.context.ExceptionHandlerFactory parent;
 
     public FacesExceptionHandlerFactory(final ExceptionHandlerFactory parent) {
         this.parent = parent;

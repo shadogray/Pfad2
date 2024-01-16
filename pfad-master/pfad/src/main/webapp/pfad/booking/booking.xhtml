@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	template="/resources/scaffold/pageTemplate.xhtml">
 
@@ -58,7 +58,7 @@
 						<h:message for="createBookingsBeanBookingWithAssistants" styleClass="error" />
 
 						<h:outputLabel value="Buchung durchführen:" />
-						<h:commandButton id="createBookingsBeanCreateBookings" action="#{createBookingsBean.createBookings()}" value="Buchen"
+						<h:commandButton id="createBookingsBeanCreateBookings" action="#{createBookingsBean.createBookings()}" value="Buchen" styleClass="btn btn-primary"
 							disabled="#{!bookingBean.updateAllowed}" />
 						<h:messages for="createBookingsBeanCreateBookings" />
 					</h:panelGrid>
@@ -93,7 +93,7 @@
 						<h:message for="createBookingsBeanBookingSource" styleClass="error" />
 
 						<h:outputLabel value="Buchung durchführen:" />
-						<h:commandButton id="createBookingsBeanCreateFromSource" action="#{createBookingsBean.createFromSource()}" value="Buchen"
+						<h:commandButton id="createBookingsBeanCreateFromSource" action="#{createBookingsBean.createFromSource()}" value="Buchen" styleClass="btn btn-primary"
 							disabled="#{!bookingBean.updateAllowed}" />
 						<h:messages for="createBookingsBeanCreateFromSource" />
 					</h:panelGrid>
@@ -119,7 +119,7 @@
 						<h:message for="createBookingsBeanBookingActivityAllActive" styleClass="error" />
 
 						<h:outputLabel value="Buchung durchführen:" />
-						<h:commandButton id="createBookingsBeanCreateBookingsAllActive" action="#{createBookingsBean.createBookingsForAllActive()}"
+						<h:commandButton id="createBookingsBeanCreateBookingsAllActive" action="#{createBookingsBean.createBookingsForAllActive()}" styleClass="btn btn-primary"
 							value="Alle Aktiven Pfadfinder Buchen" disabled="#{!bookingBean.createAllAllowed}" />
 						<h:messages for="createBookingsBeanCreateBookingsAllActive" />
 
@@ -157,7 +157,7 @@
 						<h:message for="createBookingsBeanBookingActivitySourceTarget" styleClass="error" />
 
 						<h:outputLabel value="Buchung Neu:" />
-						<h:commandButton id="createBookingsBeanCreateBookingsSource" action="#{createBookingsBean.createBookingsFromSource()}"
+						<h:commandButton id="createBookingsBeanCreateBookingsSource" action="#{createBookingsBean.createBookingsFromSource()}" styleClass="btn btn-primary"
 							value="Von #{createBookingsBean.sourceActivity.name} auf #{createBookingsBean.targetActivity.name} Neu Buchen"
 							disabled="#{!bookingBean.createAllAllowed}" />
 						<h:messages for="createBookingsBeanCreateBookingsSource" />

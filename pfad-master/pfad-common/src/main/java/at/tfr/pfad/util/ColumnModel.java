@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import javax.faces.convert.Converter;
+import jakarta.faces.convert.Converter;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd">
-
+<faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+        https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd"
+    version="4.0">
 	<factory>
-		<exception-handler-factory>at.tfr.pfad.util.FacesExceptionHandlerFactory</exception-handler-factory>
-		<partial-view-context-factory>at.tfr.pfad.util.PfadPartialViewContextFactory</partial-view-context-factory>
+	     <exception-handler-factory>org.omnifaces.exceptionhandler.FacesMessageExceptionHandlerFactory</exception-handler-factory>
+		<!-- <exception-handler-factory>at.tfr.pfad.util.FacesExceptionHandlerFactory</exception-handler-factory> -->
+		<!-- <partial-view-context-factory>at.tfr.pfad.util.PfadPartialViewContextFactory</partial-view-context-factory> -->
+	</factory>
+	
+	<lifecycle>
+		<phase-listener>at.tfr.pfad.util.PfadPhaseListener</phase-listener>
+	</lifecycle>
+	
+	<factory>
+		<faces-context-factory>at.tfr.pfad.util.PfadFacesContextFactory</faces-context-factory>
 	</factory>
 
 	<application>

@@ -1,10 +1,10 @@
 package at.tfr.pfad.util;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.PartialViewContextWrapper;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.PartialViewContextWrapper;
+import jakarta.faces.event.PhaseId;
 
 public class PfadPartialViewContext extends PartialViewContextWrapper {
 

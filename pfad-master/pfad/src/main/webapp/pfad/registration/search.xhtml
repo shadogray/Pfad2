@@ -88,12 +88,12 @@
 		
 		<h:form id="table">
 			<h:panelGrid styleClass="buttons" columns="8">
-				<p:commandButton id="search" widgetVar="search" value="Suchen" action="#{registrationBean.paginate}" update="regBeanItemTable" styleClass="btn btn-primary">
+				<h:commandButton id="search" widgetVar="search" value="Suchen" action="#{registrationBean.paginate}" update="regBeanItemTable" styleClass="btn btn-primary">
 					<f:param name="all" value="false" />
-				</p:commandButton>
-				<p:commandButton id="all" widgetVar="all" value="Alle" action="#{registrationBean.paginate}" update="regBeanItemTable" styleClass="btn btn-primary">
+				</h:commandButton>
+				<h:commandButton id="all" widgetVar="all" value="Alle" action="#{registrationBean.paginate}" update="regBeanItemTable" styleClass="btn btn-primary">
 					<f:param name="all" value="true" />
-				</p:commandButton>
+				</h:commandButton>
 				<h:button id="create" value="Anlegen" outcome="create?faces-redirect=true" styleClass="btn btn-primary"
 					disabled="#{!registrationBean.updateAllowed}">
 					<f:param name="id" value="" />

@@ -3,9 +3,10 @@ package at.tfr.pfad;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.Ignore;
@@ -25,7 +26,7 @@ public class TestTemplateUtils {
 	}
 	
 	@Inject
-	private TemplateUtils templateUtils;
+	private Instance<TemplateUtils> templateUtils;
 	
 	@Test
 	public void testReplaceMap() {
@@ -33,19 +34,19 @@ public class TestTemplateUtils {
 		beans.put("trupp", trupp);
 		beans.put("NULL", null);
 		
-		String res = templateUtils.replace("${trupp.name}", beans);
+		String res = templateUtils.get().replace("${trupp.name}", beans);
 		Assert.assertEquals("replace failed: "+res, trupp.getName(), res);
 		
-		res = templateUtils.replace("${truppX.name}", beans);
+		res = templateUtils.get().replace("${truppX.name}", beans);
 		Assert.assertNull("replace failed: "+res, res);
 
-		res = templateUtils.replace("${truppX.name}", beans, "DEFAULT");
+		res = templateUtils.get().replace("${truppX.name}", beans, "DEFAULT");
 		Assert.assertEquals("replace failed: "+res, "DEFAULT", res);
 
-		res = templateUtils.replace("${NULL}", beans, "DEFAULT");
+		res = templateUtils.get().replace("${NULL}", beans, "DEFAULT");
 		Assert.assertEquals("replace failed: "+res, "null", res);
 		
-		res = templateUtils.replace("${NULL.name}", beans, "DEFAULT");
+		res = templateUtils.get().replace("${NULL.name}", beans, "DEFAULT");
 		Assert.assertEquals("replace failed: "+res, "DEFAULT", res);
 	}
 
@@ -54,7 +55,7 @@ public class TestTemplateUtils {
 		Map<String,Object> beans = new HashMap<>();
 		beans.put("TruPp", trupp);
 		
-		String res = templateUtils.replace("${trupp.name}", beans);
+		String res = templateUtils.get().replace("${trupp.name}", beans);
 		Assert.assertEquals("replace failed: "+res, trupp.getName(), res);
 	}
 

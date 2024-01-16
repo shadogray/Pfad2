@@ -3,8 +3,8 @@ package at.tfr.pfad.dao;
 import java.util.Collection;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 import org.apache.deltaspike.data.api.EntityManagerDelegate;
 import org.apache.deltaspike.data.api.EntityRepository;

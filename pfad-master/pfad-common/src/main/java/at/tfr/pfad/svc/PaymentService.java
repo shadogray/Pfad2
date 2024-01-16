@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 import at.tfr.pfad.dao.PaymentRepository;
 import at.tfr.pfad.model.Payment;

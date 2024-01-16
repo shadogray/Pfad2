@@ -1,6 +1,5 @@
 package at.tfr.pfad.util;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,21 +10,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.transform.BasicTransformerAdapter;
+import org.hibernate.query.Query;
+import org.hibernate.query.TupleTransformer;
 
 import at.tfr.pfad.ConfigurationType;
 import at.tfr.pfad.dao.ConfigurationRepository;
 import at.tfr.pfad.model.Configuration;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 @Stateless
-public class QueryExecutor implements Serializable {
+public class QueryExecutor {
 
 	@Inject
 	private SessionBean sessionBean;
@@ -93,7 +91,7 @@ public class QueryExecutor implements Serializable {
 			q.setFirstResult(firstResult);
 		}
 		
-		q.setResultTransformer(new AliasTransformer());
+		q.setTupleTransformer(new AliasTransformer());
 		List<List<Entry<String,Object>>> list = q.list();
 		
 		return list;
@@ -109,9 +107,9 @@ public class QueryExecutor implements Serializable {
 		return result;
 	}
 	
-	class AliasTransformer extends BasicTransformerAdapter {
+	class AliasTransformer implements TupleTransformer<List<Entry<String, Object>>> {
 		@Override
-		public Object transformTuple(Object[] tuple, String[] aliases) {
+		public List<Entry<String, Object>> transformTuple(Object[] tuple, String[] aliases) {
 			Map<String,Object> result = new LinkedHashMap<>(tuple.length);
 			for ( int i=0; i<tuple.length; i++ ) {
 				String alias = aliases[i];

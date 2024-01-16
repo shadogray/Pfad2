@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -25,14 +22,17 @@ import at.tfr.pfad.dao.PaymentRepository;
 import at.tfr.pfad.model.Booking;
 import at.tfr.pfad.model.Member;
 import at.tfr.pfad.model.Payment;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.inject.Default;
+import jakarta.inject.Inject;
 
-public class ProcessExcelPayments implements Serializable {
+@Default
+public class ProcessExcelPayments {
 
 	private Logger log = Logger.getLogger(getClass());
 
 	private BookingRepository bookingRepo;
 	private PaymentRepository paymentRepo;
-	private ConfigurationRepository configRepo;
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("dd.mm.yyyy");
 	public static Pattern ibanPattern = Pattern.compile("[A-Z]{2}\\d{18,}"); // AT112020500000007450
 

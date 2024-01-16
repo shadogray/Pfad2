@@ -10,21 +10,21 @@ package at.tfr.pfad.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.Stateful;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.ConcurrencyManagement;
+import jakarta.ejb.ConcurrencyManagementType;
+import jakarta.ejb.Stateful;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import at.tfr.pfad.model.Payment;
 import at.tfr.pfad.util.ColumnModel;
 
 @Named
 @ViewScoped
 @Stateful
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class PaymentTableBean extends BaseBean {
+public class PaymentTableBean extends BaseBean<Payment> {
 
 	private static int cnt = 0;
 	private String selectionMode = "multiple";

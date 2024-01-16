@@ -1,9 +1,9 @@
 package at.tfr.pfad.view.convert;
 
-import javax.enterprise.inject.Model;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
+import jakarta.enterprise.inject.Model;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.omnifaces.util.Faces;

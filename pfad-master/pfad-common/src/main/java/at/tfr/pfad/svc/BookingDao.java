@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import at.tfr.pfad.BookingStatus;
 import at.tfr.pfad.model.Activity;

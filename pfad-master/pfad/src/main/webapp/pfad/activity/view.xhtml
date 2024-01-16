@@ -48,11 +48,11 @@
 			<h:outputText />
 
 			<h:outputLabel for="activityBeanActivityStart" value="Start:" />
-			<h:outputText id="activityBeanActivityStart" value="#{activityBean.activity.start}" converter="javax.faces.DateTime" />
+			<h:outputText id="activityBeanActivityStart" value="#{activityBean.activity.start}" converter="jakarta.faces.DateTime" />
 			<h:outputText />
 
 			<h:outputLabel for="activityBeanActivityEnd" value="Ende:" />
-			<h:outputText id="activityBeanActivityEnd" value="#{activityBean.activity.end}" converter="javax.faces.DateTime" />
+			<h:outputText id="activityBeanActivityEnd" value="#{activityBean.activity.end}" converter="jakarta.faces.DateTime" />
 			<h:outputText />
 
 			<h:outputLabel value="Betrag:" />
@@ -74,11 +74,11 @@
 			<h:outputLabel for="activityBeanActivityRevision" value="Änderung:" />
 			<h:panelGrid id="activityBeanActivityRevision" columns="8">
 				<h:outputLabel value="Erstellt:" />
-				<h:outputText value="#{activityBean.activity.created}" converter="javax.faces.DateTime" />
+				<h:outputText value="#{activityBean.activity.created}" converter="jakarta.faces.DateTime" />
 				<h:outputLabel value="Von:" />
 				<h:outputText value="#{activityBean.activity.createdBy}" />
 				<h:outputLabel value="Geändert:" />
-				<h:outputText value="#{activityBean.activity.changed}" converter="javax.faces.DateTime" />
+				<h:outputText value="#{activityBean.activity.changed}" converter="jakarta.faces.DateTime" />
 				<h:outputLabel value="Von:" />
 				<h:outputText value="#{activityBean.activity.changedBy}" />
 			</h:panelGrid>

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:forgeview="http://jboss.org/forge/view"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" template="/resources/scaffold/pageTemplate.xhtml">
 
@@ -94,11 +94,11 @@
 				<h:outputLabel for="activityBeanActivityRevision" value="Änderung:" />
 				<h:panelGrid id="activityBeanActivityRevision" columns="8">
 					<h:outputLabel value="Erstellt:" />
-					<h:outputText value="#{activityBean.activity.created}" converter="javax.faces.DateTime" />
+					<h:outputText value="#{activityBean.activity.created}" converter="jakarta.faces.DateTime" />
 					<h:outputLabel value="Von:" />
 					<h:outputText value="#{activityBean.activity.createdBy}" />
 					<h:outputLabel value="Geändert:" />
-					<h:outputText value="#{activityBean.activity.changed}" converter="javax.faces.DateTime" />
+					<h:outputText value="#{activityBean.activity.changed}" converter="jakarta.faces.DateTime" />
 					<h:outputLabel value="Von:" />
 					<h:outputText value="#{activityBean.activity.changedBy}" />
 				</h:panelGrid>

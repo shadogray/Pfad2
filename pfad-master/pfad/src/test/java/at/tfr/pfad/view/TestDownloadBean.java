@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.joda.time.DateTime;

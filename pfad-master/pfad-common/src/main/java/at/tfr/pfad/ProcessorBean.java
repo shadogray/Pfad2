@@ -2,14 +2,14 @@ package at.tfr.pfad;
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.LocalBean;
-import javax.ejb.Schedule;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.persistence.EntityManager;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Schedule;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.persistence.EntityManager;
 
 import org.jboss.logging.Logger;
 import org.joda.time.DateTime;

@@ -9,72 +9,73 @@ import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import org.apache.commons.lang3.text.StrBuilder;
-import org.apache.commons.lang3.text.StrLookup;
-import org.apache.commons.lang3.text.StrMatcher;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.TextStringBuilder;
+import org.apache.commons.text.StringSubstitutor;
+import org.apache.commons.text.lookup.StringLookup;
+import org.apache.commons.text.matcher.StringMatcher;
+import org.apache.commons.text.matcher.StringMatcherFactory;
 
-public class PositiveStrSubstitutor extends StrSubstitutor {
+public class PositiveStringSubstitutor extends StringSubstitutor {
 
-	public static final StrMatcher POSITIVE_DEFAULT_VALUE_DELIMITER = StrMatcher.stringMatcher(":+");
+	public static final StringMatcher POSITIVE_DEFAULT_VALUE_DELIMITER = StringMatcherFactory.INSTANCE.stringMatcher(":+");
 	public static final String SCRIPT_NAME = "js";
 	protected ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 	protected Map<String,?> valueMap = Collections.emptyMap();
 
-	public PositiveStrSubstitutor() {
+	public PositiveStringSubstitutor() {
 		super();
 	}
 
-	public <V> PositiveStrSubstitutor(Map<String, V> valueMap, String prefix, String suffix, char escape,
+	public <V> PositiveStringSubstitutor(Map<String, V> valueMap, String prefix, String suffix, char escape,
 			String valueDelimiter) {
 		super(valueMap, prefix, suffix, escape, valueDelimiter);
 		this.valueMap = valueMap;
 	}
 
-	public <V> PositiveStrSubstitutor(Map<String, V> valueMap, String prefix, String suffix, char escape) {
+	public <V> PositiveStringSubstitutor(Map<String, V> valueMap, String prefix, String suffix, char escape) {
 		super(valueMap, prefix, suffix, escape);
 		this.valueMap = valueMap;
 	}
 
-	public <V> PositiveStrSubstitutor(Map<String, V> valueMap, String prefix, String suffix) {
+	public <V> PositiveStringSubstitutor(Map<String, V> valueMap, String prefix, String suffix) {
 		super(valueMap, prefix, suffix);
 		this.valueMap = valueMap;
 	}
 
-	public <V> PositiveStrSubstitutor(Map<String, V> valueMap) {
+	public <V> PositiveStringSubstitutor(Map<String, V> valueMap) {
 		super(valueMap);
 		this.valueMap = valueMap;
 	}
 
-	public PositiveStrSubstitutor(StrLookup<?> variableResolver, String prefix, String suffix, char escape,
+	public PositiveStringSubstitutor(StringLookup variableResolver, String prefix, String suffix, char escape,
 			String valueDelimiter) {
 		super(variableResolver, prefix, suffix, escape, valueDelimiter);
 	}
 
-	public PositiveStrSubstitutor(StrLookup<?> variableResolver, String prefix, String suffix, char escape) {
+	public PositiveStringSubstitutor(StringLookup variableResolver, String prefix, String suffix, char escape) {
 		super(variableResolver, prefix, suffix, escape);
 	}
 
-	public PositiveStrSubstitutor(StrLookup<?> variableResolver, StrMatcher prefixMatcher, StrMatcher suffixMatcher,
-			char escape, StrMatcher valueDelimiterMatcher) {
+	public PositiveStringSubstitutor(StringLookup variableResolver, StringMatcher prefixMatcher, StringMatcher suffixMatcher,
+			char escape, StringMatcher valueDelimiterMatcher) {
 		super(variableResolver, prefixMatcher, suffixMatcher, escape, valueDelimiterMatcher);
 	}
 
-	public PositiveStrSubstitutor(StrLookup<?> variableResolver, StrMatcher prefixMatcher, StrMatcher suffixMatcher,
+	public PositiveStringSubstitutor(StringLookup variableResolver, StringMatcher prefixMatcher, StringMatcher suffixMatcher,
 			char escape) {
 		super(variableResolver, prefixMatcher, suffixMatcher, escape);
 	}
 
-	public PositiveStrSubstitutor(StrLookup<?> variableResolver) {
+	public PositiveStringSubstitutor(StringLookup variableResolver) {
 		super(variableResolver);
 	}
 	
-	public PositiveStrSubstitutor withEngine(ScriptEngine engine) {
+	public PositiveStringSubstitutor withEngine(ScriptEngine engine) {
 		this.engine = engine;
 		return this;
 	}
 	
-	public PositiveStrSubstitutor withValues(Map<String,?> valueMap) {
+	public PositiveStringSubstitutor withValues(Map<String,?> valueMap) {
 		this.valueMap = valueMap;
 		return this;
 	}
@@ -91,7 +92,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(source);
+        final TextStringBuilder buf = new MyStringBuilder(source);
         if (substitute(buf, 0, source.length()) == false) {
             return source;
         }
@@ -114,7 +115,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(length).append(source, offset, length);
+        final TextStringBuilder buf = new MyStringBuilder(length).append(source, offset, length);
         if (substitute(buf, 0, length) == false) {
             return source.substring(offset, offset + length);
         }
@@ -134,7 +135,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(source.length).append(source);
+        final TextStringBuilder buf = new MyStringBuilder(source.length).append(source);
         substitute(buf, 0, source.length);
         return buf.toString();
     }
@@ -156,7 +157,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(length).append(source, offset, length);
+        final TextStringBuilder buf = new MyStringBuilder(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -174,7 +175,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(source.length()).append(source);
+        final TextStringBuilder buf = new MyStringBuilder(source.length()).append(source);
         substitute(buf, 0, buf.length());
         return buf.toString();
     }
@@ -196,7 +197,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(length).append(source, offset, length);
+        final TextStringBuilder buf = new MyStringBuilder(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -235,7 +236,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(length).append(source, offset, length);
+        final TextStringBuilder buf = new MyStringBuilder(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -249,11 +250,11 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
      * @param source  the builder to use as a template, not changed, null returns null
      * @return the result of the replace operation
      */
-    public String replace(final StrBuilder source) {
+    public String replace(final TextStringBuilder source) {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(source.length()).append(source);
+        final TextStringBuilder buf = new MyStringBuilder(source.length()).append(source);
         substitute(buf, 0, buf.length());
         return buf.toString();
     }
@@ -271,11 +272,11 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
      * @param length  the length within the array to be processed, must be valid
      * @return the result of the replace operation
      */
-    public String replace(final StrBuilder source, final int offset, final int length) {
+    public String replace(final TextStringBuilder source, final int offset, final int length) {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder(length).append(source, offset, length);
+        final TextStringBuilder buf = new MyStringBuilder(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -293,7 +294,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new MyStrBuilder().append(source);
+        final TextStringBuilder buf = new MyStringBuilder().append(source);
         substitute(buf, 0, buf.length());
         return buf.toString();
     }
@@ -331,7 +332,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return false;
         }
-        final StrBuilder buf = new MyStrBuilder(length).append(source, offset, length);
+        final TextStringBuilder buf = new MyStringBuilder(length).append(source, offset, length);
         if (substitute(buf, 0, length) == false) {
             return false;
         }
@@ -374,7 +375,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
         if (source == null) {
             return false;
         }
-        final StrBuilder buf = new MyStrBuilder(length).append(source, offset, length);
+        final TextStringBuilder buf = new MyStringBuilder(length).append(source, offset, length);
         if (substitute(buf, 0, length) == false) {
             return false;
         }
@@ -390,7 +391,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
      * @param source  the builder to replace in, updated, null returns zero
      * @return true if altered
      */
-    public boolean replaceIn(final StrBuilder source) {
+    public boolean replaceIn(final TextStringBuilder source) {
         if (source == null) {
             return false;
         }
@@ -409,7 +410,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
      * @param length  the length within the builder to be processed, must be valid
      * @return true if altered
      */
-    public boolean replaceIn(final StrBuilder source, final int offset, final int length) {
+    public boolean replaceIn(final TextStringBuilder source, final int offset, final int length) {
         if (source == null) {
             return false;
         }
@@ -434,7 +435,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
 	 * @return true if altered
 	 */
 	@Override
-	protected boolean substitute(final StrBuilder buf, final int offset, final int length) {
+	protected boolean substitute(final TextStringBuilder buf, final int offset, final int length) {
 		return substitute(buf, offset, length, null) > 0;
 	}
 
@@ -452,18 +453,18 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
 	 * @return the length change that occurs, unless priorVariables is null when the
 	 *         int represents a boolean flag as to whether any change occurred.
 	 */
-	protected int substitute(final StrBuilder buf, final int offset, final int length, List<String> priorVariables) {
-		final StrMatcher pfxMatcher = getVariablePrefixMatcher();
-		final StrMatcher suffMatcher = getVariableSuffixMatcher();
+	protected int substitute(final TextStringBuilder buf, final int offset, final int length, List<String> priorVariables) {
+		final StringMatcher pfxMatcher = getVariablePrefixMatcher();
+		final StringMatcher suffMatcher = getVariableSuffixMatcher();
 		final char escape = getEscapeChar();
-		final StrMatcher valueDelimMatcher = getValueDelimiterMatcher();
-		final StrMatcher positiveDelimMatcher = POSITIVE_DEFAULT_VALUE_DELIMITER;
+		final StringMatcher valueDelimMatcher = getValueDelimiterMatcher();
+		final StringMatcher positiveDelimMatcher = POSITIVE_DEFAULT_VALUE_DELIMITER;
 		final boolean substitutionInVariablesEnabled = isEnableSubstitutionInVariables();
 
 		final boolean top = priorVariables == null;
 		boolean altered = false;
 		int lengthChange = 0;
-		char[] chars = ((MyStrBuilder) buf).getBuffer();
+		char[] chars = ((MyStringBuilder) buf).toCharArray();
 		int bufEnd = offset + length;
 		int pos = offset;
 		while (pos < bufEnd) {
@@ -475,7 +476,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
 				if (pos > offset && chars[pos - 1] == escape) {
 					// escaped
 					buf.deleteCharAt(pos - 1);
-					chars = ((MyStrBuilder) buf).getBuffer(); // in case buffer was altered
+					chars = ((MyStringBuilder) buf).toCharArray(); // in case buffer was altered
 					lengthChange--;
 					altered = true;
 					bufEnd--;
@@ -503,7 +504,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
 								String varNameExpr = new String(chars, startPos + startMatchLen,
 										pos - startPos - startMatchLen);
 								if (substitutionInVariablesEnabled) {
-									final StrBuilder bufName = new MyStrBuilder(varNameExpr);
+									final TextStringBuilder bufName = new MyStringBuilder(varNameExpr);
 									substitute(bufName, 0, bufName.length());
 									varNameExpr = bufName.toString();
 								}
@@ -592,7 +593,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
 									pos += change;
 									bufEnd += change;
 									lengthChange += change;
-									chars = ((MyStrBuilder)buf).getBuffer(); // in case buffer was
+									chars = ((MyStringBuilder)buf).toCharArray(); // in case buffer was
 									// altered
 								}
 
@@ -623,7 +624,7 @@ public class PositiveStrSubstitutor extends StrSubstitutor {
 		if (priorVariables.contains(varName) == false) {
 			return;
 		}
-		final StrBuilder buf = new MyStrBuilder(256);
+		final TextStringBuilder buf = new MyStringBuilder(256);
 		buf.append("Infinite loop in property interpolation of ");
 		buf.append(priorVariables.remove(0));
 		buf.append(": ");

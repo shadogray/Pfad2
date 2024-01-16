@@ -1,11 +1,11 @@
 package at.tfr.pfad.view.validator;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
-import javax.inject.Named;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
+import jakarta.inject.Named;
 
 import org.jboss.logging.Logger;
 

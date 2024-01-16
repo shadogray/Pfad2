@@ -1,19 +1,16 @@
 package at.tfr.pfad.mock;
 
-import java.security.Identity;
 import java.security.Principal;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.ejb.EJBHome;
-import javax.ejb.EJBLocalHome;
-import javax.ejb.EJBLocalObject;
-import javax.ejb.EJBObject;
-import javax.ejb.SessionContext;
-import javax.ejb.TimerService;
-import javax.enterprise.context.Dependent;
-import javax.transaction.UserTransaction;
-import javax.xml.rpc.handler.MessageContext;
+import jakarta.ejb.EJBHome;
+import jakarta.ejb.EJBLocalHome;
+import jakarta.ejb.EJBLocalObject;
+import jakarta.ejb.EJBObject;
+import jakarta.ejb.SessionContext;
+import jakarta.ejb.TimerService;
+import jakarta.enterprise.context.Dependent;
+import jakarta.transaction.UserTransaction;
 
 @Dependent
 public class DummySessionContext implements SessionContext {
@@ -41,11 +38,6 @@ public class DummySessionContext implements SessionContext {
 	}
 
 	@Override
-	public boolean isCallerInRole(Identity role) {
-		return false;
-	}
-
-	@Override
 	public UserTransaction getUserTransaction() throws IllegalStateException {
 		return null;
 	}
@@ -58,11 +50,6 @@ public class DummySessionContext implements SessionContext {
 	@Override
 	public boolean getRollbackOnly() throws IllegalStateException {
 		return false;
-	}
-
-	@Override
-	public Properties getEnvironment() {
-		return null;
 	}
 
 	@Override
@@ -82,11 +69,6 @@ public class DummySessionContext implements SessionContext {
 
 	@Override
 	public Principal getCallerPrincipal() {
-		return null;
-	}
-
-	@Override
-	public Identity getCallerIdentity() {
 		return null;
 	}
 
@@ -115,8 +97,4 @@ public class DummySessionContext implements SessionContext {
 		return null;
 	}
 
-	@Override
-	public MessageContext getMessageContext() throws IllegalStateException {
-		return null;
-	}
 }

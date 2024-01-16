@@ -7,10 +7,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;

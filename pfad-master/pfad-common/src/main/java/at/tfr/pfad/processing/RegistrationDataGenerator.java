@@ -9,13 +9,15 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -81,8 +83,8 @@ public class RegistrationDataGenerator {
 		XSSFWorkbook wb = new XSSFWorkbook();
 		XSSFSheet sheet = wb.createSheet("Personen");
 		CellStyle red = wb.createCellStyle();
-		red.setFillForegroundColor(HSSFColor.RED.index);
-		red.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		red.setFillForegroundColor(HSSFColorPredefined.RED.getIndex());
+		red.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		squads = Stream.of(squads).filter(s->s != null).collect(Collectors.toList()).toArray(new Squad[]{});
 
 		// non-filtered members

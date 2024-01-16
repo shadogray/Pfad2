@@ -1,7 +1,7 @@
 package at.tfr.pfad.svc;
 
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class FunctionDao extends BaseDao {

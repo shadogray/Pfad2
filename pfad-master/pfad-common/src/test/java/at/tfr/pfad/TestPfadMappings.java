@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.Test;

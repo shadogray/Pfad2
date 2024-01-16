@@ -3,13 +3,13 @@ package at.tfr.pfad.util;
 import java.io.Serializable;
 import java.security.Principal;
 
-import javax.annotation.Resource;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateful;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import jakarta.annotation.Resource;
+import jakarta.ejb.ConcurrencyManagement;
+import jakarta.ejb.ConcurrencyManagementType;
+import jakarta.ejb.SessionContext;
+import jakarta.ejb.Stateful;
+import jakarta.ejb.TransactionManagement;
+import jakarta.ejb.TransactionManagementType;
 
 import org.jboss.logging.Logger;
 

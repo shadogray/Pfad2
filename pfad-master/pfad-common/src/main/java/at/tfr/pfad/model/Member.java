@@ -8,22 +8,22 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedEntityGraphs;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedEntityGraphs;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -84,7 +84,7 @@ public class Member extends Membera {
 
 	@NotAudited // inverse side!
 	@OneToMany(mappedBy = "Vollzahler")
-	@OrderBy("Name, Vorname")
+	@OrderBy("name, vorname")
 	protected Set<Member> reduced;
 
 	@Audited
@@ -94,12 +94,12 @@ public class Member extends Membera {
 	@Audited
 	@ManyToMany
 	@JoinTable(name = "member_member", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "siblings_id"))
-	@OrderBy("Name, Vorname")
+	@OrderBy("name, vorname")
 	protected Set<Member> siblings = new HashSet<>();
 
 	@NotAudited // inverse side!
 	@ManyToMany(mappedBy = "siblings")
-	@OrderBy("Name, Vorname")
+	@OrderBy("name, vorname")
 	protected Set<Member> parents = new TreeSet<>();
 
 	@NotAudited // inverse side!

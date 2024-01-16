@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
 
 public class Graphs {
 

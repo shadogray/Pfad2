@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+        
 	<display-name>pfad</display-name>
 	<context-param>
-		<param-name>javax.faces.VALIDATE_EMPTY_FIELDS</param-name>
+		<param-name>facelets.Encoding</param-name>
+		<param-value>UTF8</param-value>
+	</context-param>
+	<context-param>
+		<param-name>jakarta.faces.VALIDATE_EMPTY_FIELDS</param-name>
 		<param-value>false</param-value>
 	</context-param>
 	<context-param>
-		<param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+		<param-name>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
-		<param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+		<param-name>jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
-		<param-name>javax.faces.CLIENT_WINDOW_MODE</param-name>
+		<param-name>jakarta.faces.CLIENT_WINDOW_MODE</param-name>
 		<param-value>NONE</param-value>
 	</context-param>
 	
+	<!-- <context-param>
+	    <param-name>primefaces.THEME</param-name>
+	    <param-value>none</param-value>
+	</context-param> -->
 	<context-param>
 		<param-name>primefaces.UPLOADER</param-name>
 		<param-value>auto</param-value>
@@ -37,7 +47,7 @@
 	</session-config>
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -82,6 +92,7 @@
     </security-constraint>
 	<login-config>
 		<auth-method>BASIC?silent=true,FORM</auth-method>
+		<realm-name>PfadisAppDomain</realm-name>
 		<form-login-config>
 			<form-login-page>/login.xhtml</form-login-page>
 			<form-error-page>/login-error.html</form-error-page>

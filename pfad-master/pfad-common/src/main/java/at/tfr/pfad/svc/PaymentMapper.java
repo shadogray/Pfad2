@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
@@ -11,7 +12,7 @@ import at.tfr.pfad.model.Booking;
 import at.tfr.pfad.model.Member;
 import at.tfr.pfad.model.Payment;
 
-@Mapper(uses={BaseDaoMapper.class})
+@Mapper(uses={BaseDaoMapper.class}, componentModel = MappingConstants.ComponentModel.CDI)
 public interface PaymentMapper {
 
 	PaymentMapper INSTANCE = Mappers.getMapper(PaymentMapper.class);

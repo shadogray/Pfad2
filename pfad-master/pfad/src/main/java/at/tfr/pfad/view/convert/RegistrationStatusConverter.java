@@ -1,7 +1,7 @@
 package at.tfr.pfad.view.convert;
 
-import javax.faces.convert.EnumConverter;
-import javax.inject.Named;
+import jakarta.faces.convert.EnumConverter;
+import jakarta.inject.Named;
 
 import at.tfr.pfad.RegistrationStatus;
 

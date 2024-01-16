@@ -12,15 +12,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.Stateful;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.ConcurrencyManagement;
+import jakarta.ejb.ConcurrencyManagementType;
+import jakarta.ejb.Stateful;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import at.tfr.pfad.BookingStatus;
+import at.tfr.pfad.model.Booking;
 import at.tfr.pfad.util.ColumnModel;
 import at.tfr.pfad.view.convert.BookingStatusConverter;
 import at.tfr.pfad.view.convert.TrueFalseTristateConverter;
@@ -29,7 +30,7 @@ import at.tfr.pfad.view.convert.TrueFalseTristateConverter;
 @ViewScoped
 @Stateful
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class BookingTableBean extends BaseBean {
+public class BookingTableBean extends BaseBean<Booking> {
 
 	private static int cnt = 0;
 	private String selectionMode = "multiple";

@@ -2,7 +2,7 @@ package at.tfr.pfad.dao;
 
 import java.util.Date;
 
-import javax.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.metamodel.SingularAttribute;
 
 import at.tfr.pfad.ScoutRole;
 import at.tfr.pfad.Sex;

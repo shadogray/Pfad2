@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.apache.poi.ss.usermodel.Row;

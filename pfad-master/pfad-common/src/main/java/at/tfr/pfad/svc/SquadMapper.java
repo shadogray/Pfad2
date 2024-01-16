@@ -2,13 +2,14 @@ package at.tfr.pfad.svc;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import at.tfr.pfad.model.Squad;
 
-@Mapper(uses={BaseDaoMapper.class})
+@Mapper(uses={BaseDaoMapper.class}, componentModel = MappingConstants.ComponentModel.CDI)
 public interface SquadMapper {
 
 	SquadMapper INSTANCE = Mappers.getMapper(SquadMapper.class);

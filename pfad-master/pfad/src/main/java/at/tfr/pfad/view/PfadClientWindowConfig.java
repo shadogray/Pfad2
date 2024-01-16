@@ -1,7 +1,7 @@
 package at.tfr.pfad.view;
 
-import javax.enterprise.inject.Specializes;
-import javax.faces.context.FacesContext;
+import jakarta.enterprise.inject.Specializes;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.deltaspike.jsf.spi.scope.window.DefaultClientWindowConfig;
 

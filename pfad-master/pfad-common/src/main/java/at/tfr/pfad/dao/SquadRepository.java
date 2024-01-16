@@ -9,7 +9,7 @@ package at.tfr.pfad.dao;
 
 import java.util.List;
 
-import javax.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.JoinType;
 
 import org.apache.deltaspike.data.api.EntityManagerDelegate;
 import org.apache.deltaspike.data.api.EntityRepository;

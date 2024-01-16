@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:forgeview="http://jboss.org/forge/view" xmlns:p="http://primefaces.org/ui"   
+	xmlns:p="http://primefaces.org/ui"   
 	xmlns:o="http://omnifaces.org/ui" template="/resources/scaffold/pageTemplate.xhtml">
 
 	<f:metadata>
@@ -24,7 +24,7 @@
 		<h:outputText value="Personen" />
 		<h:panelGroup rendered="#{sessionBean.registrationEndDate != null}" style="position: absolute; right: 0;">
 			<h:outputText value="Registrierung Ende: " />
-			<h:outputText value="#{sessionBean.registrationEndDate}" converter="javax.faces.DateTime" />
+			<h:outputText value="#{sessionBean.registrationEndDate}" converter="jakarta.faces.DateTime" />
 		</h:panelGroup>
 	</ui:define>
 
@@ -110,51 +110,51 @@
 							
 								<h:outputLabel for="mbeGeschlecht" value="Geschl:" />
 								<h:panelGroup>
-									<p:selectOneMenu id="mbeGeschlecht" value="#{memberBean.example.geschlecht}" >
+									<h:selectOneMenu id="mbeGeschlecht" value="#{memberBean.example.geschlecht}" >
 										<f:selectItem noSelectionOption="true"/>
 										<f:selectItems value="#{memberBean.sexes}"/>
 										<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
-									</p:selectOneMenu>
+									</h:selectOneMenu>
 									<h:message for="mbeAktiv" styleClass="error" />
 								</h:panelGroup>
 								
 								<h:outputLabel for="mbeAktiv" value="Aktiv:" />
-								<p:selectOneMenu id="mbeAktiv" value="#{memberBean.exampleActive}" >
+								<h:selectOneMenu id="mbeAktiv" value="#{memberBean.exampleActive}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
-								</p:selectOneMenu>
+								</h:selectOneMenu>
 							
 								<h:outputLabel for="mbeFree" value="Frei:" />
-								<p:selectOneMenu id="mbeFree" value="#{memberBean.exampleFree}" >
+								<h:selectOneMenu id="mbeFree" value="#{memberBean.exampleFree}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
-								</p:selectOneMenu>
+								</h:selectOneMenu>
 	
 								<h:outputLabel for="mbeGilde" value="Gilde:" />
-								<p:selectOneMenu id="mbeGilde" value="#{memberBean.exampleGilde}" >
+								<h:selectOneMenu id="mbeGilde" value="#{memberBean.exampleGilde}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
-								</p:selectOneMenu>
+								</h:selectOneMenu>
 								<h:outputLabel for="mbeSupport" value="Support:" />
-								<p:selectOneMenu id="mbeSupport" value="#{memberBean.exampleSupport}" >
+								<h:selectOneMenu id="mbeSupport" value="#{memberBean.exampleSupport}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
-								</p:selectOneMenu>
+								</h:selectOneMenu>
 								<h:outputLabel for="mbeInfoMail" value="InfoMail:" />
-								<p:selectOneMenu id="mbeInfoMail" value="#{memberBean.exampleInfoMail}" >
+								<h:selectOneMenu id="mbeInfoMail" value="#{memberBean.exampleInfoMail}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
-								</p:selectOneMenu>
+								</h:selectOneMenu>
 							</h:panelGrid>
 						</h:panelGroup>
 

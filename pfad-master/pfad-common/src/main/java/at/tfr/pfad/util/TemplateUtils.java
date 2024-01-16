@@ -10,10 +10,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrLookup;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.lookup.StringLookup;
 
+import jakarta.enterprise.inject.Default;
 
+import org.apache.commons.text.StringSubstitutor;
+
+@Default
 public class TemplateUtils implements Serializable {
 
 	public static final Pattern pFilter = Pattern.compile("<p[^>/]*?>");
@@ -44,12 +47,12 @@ public class TemplateUtils implements Serializable {
 	public String replace(String template, Collection<Entry<String, Object>> map) {
 		Map<String, Object> vals = new HashMap<>();
 		map.forEach(e -> vals.put(e.getKey(), e.getValue()));
-		StrSubstitutor strSub = new PositiveStrSubstitutor(new BeansStrLookup(map)).withValues(vals);
+		StringSubstitutor strSub = new PositiveStringSubstitutor(new BeansStrLookup(map)).withValues(vals);
 		strSub.setEnableSubstitutionInVariables(true);
 		return strSub.replace(template);
 	}
 
-	public class BeansStrLookup extends StrLookup<String> {
+	public class BeansStrLookup implements StringLookup {
 
 		private Collection<Entry<String, Object>> map;
 

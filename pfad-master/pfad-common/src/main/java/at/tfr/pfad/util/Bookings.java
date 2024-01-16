@@ -5,17 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Model;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Model;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;

@@ -2,14 +2,13 @@ package at.tfr.pfad.util;
 
 import java.util.Iterator;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.FacesException;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerWrapper;
-import javax.faces.event.ExceptionQueuedEvent;
-
-import org.apache.deltaspike.core.api.exception.control.event.ExceptionToCatchEvent;
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerWrapper;
+import jakarta.faces.event.ExceptionQueuedEvent;
 
 public class FacesExceptionHandler extends ExceptionHandlerWrapper {
 
@@ -33,10 +32,8 @@ public class FacesExceptionHandler extends ExceptionHandlerWrapper {
         while (it.hasNext()) {
             try {
                 ExceptionQueuedEvent evt = it.next();
-                // Fires the Event with the Exception (with expected Qualifier) to
-                // be handled
-                ExceptionToCatchEvent etce = new ExceptionToCatchEvent(evt.getContext().getException());
-                beanManager.fireEvent(etce);
+                // Fires the Event with the Exception (with expected Qualifier) to be handled
+                //beanManager.fireEvent(evt);
             } finally {
                 it.remove();
             }

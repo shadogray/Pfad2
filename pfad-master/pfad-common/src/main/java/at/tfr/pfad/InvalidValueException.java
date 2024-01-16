@@ -1,6 +1,6 @@
 package at.tfr.pfad;
 
-import javax.ejb.ApplicationException;
+import jakarta.ejb.ApplicationException;
 
 @ApplicationException
 public class InvalidValueException extends PfadException {

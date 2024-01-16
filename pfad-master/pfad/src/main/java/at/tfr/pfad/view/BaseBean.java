@@ -15,17 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.validation.Validator;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import jakarta.ejb.SessionContext;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
@@ -102,11 +102,11 @@ public abstract class BaseBean<T> implements Serializable {
 	@Inject
 	protected TemplateUtils templateUtils;
 	@Inject
-	protected MemberMapper memberMapper;
+	protected transient MemberMapper memberMapper;
 	@Inject
-	protected PaymentMapper paymentMapper;
+	protected transient PaymentMapper paymentMapper;
 	@Inject
-	protected BookingMapper bookingMapper;
+	protected transient BookingMapper bookingMapper;
 	
 	protected int page;
 	protected long count;
@@ -468,7 +468,7 @@ public abstract class BaseBean<T> implements Serializable {
 		member.setVollzahler(attachMemberToAdd());
 	}
 
-	public void addMemberSibling(SelectEvent event) {
+	public void addMemberSibling(SelectEvent<Object> event) {
 		log.debug("selectMemberSibling: " + event);
 		focusId = event.getComponent().getClientId();
 		Member m2a = attachMemberToAdd();

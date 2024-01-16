@@ -11,16 +11,16 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.Part;
-import javax.transaction.SystemException;
+import jakarta.annotation.Resource;
+import jakarta.ejb.SessionContext;
+import jakarta.ejb.Stateful;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.Part;
+import jakarta.transaction.SystemException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +50,7 @@ public class PaymentImportBean implements Serializable {
 	@Inject
 	private SessionBean sessionBean;
 	@Inject
-	private ProcessExcelPayments processor;
+	private transient ProcessExcelPayments processor;
 	@Resource
 	private SessionContext ctx;
 
@@ -229,7 +229,7 @@ public class PaymentImportBean implements Serializable {
 				try {
 					Cell cell = row.getCell(i);
 					if (cell != null) {
-						switch (cell.getCellTypeEnum()) {
+						switch (cell.getCellType()) {
 						case STRING:
 							values.set(i, cell.getStringCellValue());
 							break;

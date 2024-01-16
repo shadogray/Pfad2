@@ -11,14 +11,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateful;
-import javax.persistence.Tuple;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.ejb.Stateful;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,7 +65,7 @@ public class PaymentDataModel extends BaseDataModel<Payment, PaymentUI> {
 
 			//cq.multiselect(pr, payerJoin);
 			
-			cq.where(pr.in(ids));
+			cq.where(pr.get(Payment_.id).in(ids));
 			cq.orderBy(createOrders(pr));
 			cq.distinct(true);
 			

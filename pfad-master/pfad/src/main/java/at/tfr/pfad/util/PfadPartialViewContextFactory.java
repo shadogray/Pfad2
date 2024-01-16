@@ -1,8 +1,8 @@
 package at.tfr.pfad.util;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.PartialViewContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.PartialViewContextFactory;
 
 public class PfadPartialViewContextFactory extends PartialViewContextFactory {
 

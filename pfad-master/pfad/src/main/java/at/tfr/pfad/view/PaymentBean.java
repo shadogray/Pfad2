@@ -17,24 +17,25 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.model.ListDataModel;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import jakarta.ejb.ConcurrencyManagement;
+import jakarta.ejb.ConcurrencyManagementType;
+import jakarta.ejb.Stateful;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.faces.model.DataModel;
+import jakarta.faces.model.ListDataModel;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
@@ -207,7 +208,7 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 	 */
 
 	private List<PaymentUI> pageItems;
-	private javax.faces.model.DataModel<PaymentUI> dataModel;
+	private DataModel<PaymentUI> dataModel;
 
 	private Boolean exampleFinished;
 	private Boolean exampleAconto;
@@ -367,7 +368,7 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 		return this.pageItems;
 	}
 
-	public javax.faces.model.DataModel<PaymentUI> getDataModel() {
+	public DataModel<PaymentUI> getDataModel() {
 		return dataModel;
 	}
 	

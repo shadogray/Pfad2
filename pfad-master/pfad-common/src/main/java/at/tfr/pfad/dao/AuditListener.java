@@ -2,13 +2,13 @@ package at.tfr.pfad.dao;
 
 import java.util.Date;
 
-import javax.ejb.SessionContext;
 import javax.naming.InitialContext;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 
 import at.tfr.pfad.model.Auditable;
 import at.tfr.pfad.model.Registration;
+import jakarta.ejb.SessionContext;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 public class AuditListener {
 

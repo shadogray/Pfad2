@@ -1,6 +1,53 @@
 @charset "UTF-8";
-/* Bootstrap overrides: */
-fieldset {}
+/* Primefaces overrides: */
+body .ui-datatable .ui-datatable-data > tr > td {
+	padding: .1rem .1rem;
+}
+body .ui-datatable .ui-paginator {
+	padding: .1rem 1rem;
+	background-color: lightgrey;
+}
+body .ui-button.ui-button-text-icon-left .ui-button-text {
+	padding: .1rem 1rem .1rem 2rem;
+}
+body .ui-fileupload .ui-fileupload-buttonbar {
+	padding: 0rem;
+}
+body .ui-fieldset {
+	padding: .1rem;
+}
+body .ui-fieldset .ui-fieldset-legend {
+	padding: .2rem;
+}
+.ui-fileupload .ui-fileupload-content {
+	display: none;
+	border: 1px solid #dee2e6;
+	background: #fff;
+	color: #495057;
+	/* padding: 1rem; */
+	border-top: 0 none;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+.ui-accordion-header {
+    border: 1px solid olive;
+    color: black;
+	background-color: #bfba64;
+}
+
+element.style {
+    border: 1px solid olive;
+    background-color: #c3c368;
+    color: black;
+    font-style: italic;
+    font-weight: bold;
+}
+
+fieldset {
+    border: 1px solid grey;
+}
+
 legend {
 	width: auto;
 	font-size: .8em;
@@ -63,7 +110,7 @@ body {
 	background-color: #5F5F5F;
 	color: #5b5b5b;
 	text-shadow: 0 1px 0 #efefef;
-	padding-top: 50px;
+	padding-top: 30px;
 }
 
 .container {
@@ -630,15 +677,16 @@ select.manual {
 
 .content h2 {
 	color: #867f10;
-	line-height: 46px;
+	line-height: 30px;
 	padding-top: 5px;
 	border-top: 1px solid #ccc;
 	position: relative;
+	margin: 0 5px 0 5px;
 }
 
 .content h2.success {
 	color: #5d8a10;
-	line-height: 46px;
+	line-height: 30px;
 	padding: 5px 0 20px 35px;
 	border-top: 1px solid #ccc;
 	background: url(true.png) no-repeat 0px 15px transparent;
@@ -739,7 +787,7 @@ p.logo {
 	text-decoration: none;
 	display: block;
 	float: left;
-	padding: 8px 20px 12px;
+	padding: 3px 100px 12px;
 	margin-left: -20px;
 	line-height: 1;
 	color: #999999;
@@ -845,7 +893,6 @@ button::-moz-focus-inner {
 
 .btn-primary {
 	background-color: #817B10; /* dk gold */
-	*background-color: #817B10;
 	background-image: linear-gradient(top, #B0A826, #979026);
 	background-repeat: repeat-x;
 	border-color: #979026 #979026 #7C7301;
@@ -854,9 +901,10 @@ button::-moz-focus-inner {
 	filter: progid:dximagetransform.microsoft.gradient(enabled=false);
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 	font-weight: bold;
+	font-size: smaller;
 	text-align: center;
 	color: #fff !important;
-	padding: 2px 8px;
+	padding: 1px 7px;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 	border-radius: 4px;
 	box-shadow: 0px 1px 3px rgba(137, 137, 137, 0.8);
@@ -864,12 +912,10 @@ button::-moz-focus-inner {
 
 .btn-primary:hover {
 	background-color: #979026;
-	*background-color: #979026;
 }
 
 .btn-primary.disabled, .btn-primary[disabled] {
 	background-color: gray;
-	*background-color: gray;
 }
 
 span.btn-primary, span.btn-primary:hover {

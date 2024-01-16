@@ -2,7 +2,7 @@ package at.tfr.pfad.rest;
 
 import java.lang.reflect.Method;
 
-import javax.validation.ValidationException;
+import jakarta.validation.ValidationException;
 
 import org.jboss.logging.Logger;
 

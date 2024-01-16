@@ -3,15 +3,15 @@ package at.tfr.pfad.util;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
-import javax.inject.Named;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.validation.ValidationException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
+import jakarta.inject.Named;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.validation.ValidationException;
 
 import org.apache.commons.lang3.StringUtils;
 
