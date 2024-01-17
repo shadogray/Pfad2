@@ -3,11 +3,6 @@ package at.tfr.pfad;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
-
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,6 +10,10 @@ import org.junit.runner.RunWith;
 
 import at.tfr.pfad.model.Squad;
 import at.tfr.pfad.util.TemplateUtils;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import junit.framework.Assert;
 
 @RunWith(CdiTestRunner.class)

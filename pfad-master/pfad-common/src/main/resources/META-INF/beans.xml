@@ -3,8 +3,4 @@
        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_3_0.xsd"
        version="3.0" bean-discovery-mode="all">
        
-    <alternatives>
-    	<!-- see: /META-INF/apache-deltaspike.properties: globalAlternatives.org.apache.deltaspike.jpa.spi.transaction.TransactionStrategy = org.apache.deltaspike.jpa.impl.transaction.ContainerManagedTransactionStrategy -->
-        <!-- class>org.apache.deltaspike.jpa.impl.transaction.ContainerManagedTransactionStrategy</class-->
-    </alternatives>
 </beans>

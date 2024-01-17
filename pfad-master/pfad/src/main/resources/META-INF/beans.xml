@@ -3,5 +3,9 @@
        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_3_0.xsd"
        version="3.0" bean-discovery-mode="all">
 
+    <alternatives>
+    	<!-- see: org.apache.deltaspike.jpa.spi.transaction.TransactionStrategy-->
+        <class>at.tfr.pfad.jpa.PfadTransactionStrategy</class>
+    </alternatives>
 
 </beans>

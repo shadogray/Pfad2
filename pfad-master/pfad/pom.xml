@@ -49,10 +49,6 @@
 			<artifactId>expressly</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.deltaspike.core</groupId>
-			<artifactId>deltaspike-core-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.deltaspike.modules</groupId>
 			<artifactId>deltaspike-jsf-module-api</artifactId>
 		</dependency>
@@ -63,12 +59,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.deltaspike.modules</groupId>
-			<artifactId>deltaspike-data-module-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.deltaspike.modules</groupId>
-			<artifactId>deltaspike-data-module-impl</artifactId>
-			<scope>runtime</scope>
+			<artifactId>deltaspike-jpa-module-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>

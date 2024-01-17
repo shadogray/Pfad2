@@ -1,0 +1,31 @@
+
+
+select m.id, m, m2.id, m2 from Member m, Member m2 where m.id != m2.id and m.id < m2.id and m.name = m2.name and m.vorname = m2.vorname order by m.id
+
+1) First move Children from newer to older
+
+2) Delete referencing messages if necessaary
+delete from MailMessage m where m.member.id = 17024
+
+3) Move Registration to older parent
+
+select concat('update Registration r set r.parent  = (select m from Member m where m.id = ', m.id,') where r.parent.id = ', m2.id, '') 
+from Member m, Member m2 where m.id != m2.id and m.id < m2.id and m.name = m2.name and m.vorname = m2.vorname order by m.id
+
+update Registration r set r.parent  = (select m from Member m where m.id = 16638) where r.parent.id = 17024
+
+4) Delete duplicate Parent
+delete from Member m where id = 17024
+
+
+
+History:
+update Registration r set r.parent = (select m from Member m where m.id = 118) where r.parent.id = 17020
+update Registration r set r.parent = (select m from Member m where m.id = 12056) where r.parent.id = 16811
+update Registration r set r.parent = (select m from Member m where m.id = 15776) where r.parent.id = 16795
+update Registration r set r.parent = (select m from Member m where m.id = 16327) where r.parent.id = 17071
+update Registration r set r.parent = (select m from Member m where m.id = 16349) where r.parent.id = 16803
+update Registration r set r.parent = (select m from Member m where m.id = 16548) where r.parent.id = 16797
+update Registration r set r.parent = (select m from Member m where m.id = 16600) where r.parent.id = 17048
+update Registration r set r.parent = (select m from Member m where m.id = 16843) where r.parent.id = 17077
+update Registration r set r.parent = (select m from Member m where m.id = 16856) where r.parent.id = 16878
