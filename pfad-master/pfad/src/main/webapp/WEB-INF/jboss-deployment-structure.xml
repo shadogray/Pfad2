@@ -2,9 +2,11 @@
 <jboss-deployment-structure>
   <deployment>
     <dependencies>
+      <module name="jdk.unsupported" />
       <module name="org.hibernate" />
       <module name="org.jboss.resteasy.resteasy-jackson2-provider"/>
       <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
+      <!-- module name="org.graalvm" optional="false" services="import" /-->
     </dependencies>
   </deployment>
 </jboss-deployment-structure>

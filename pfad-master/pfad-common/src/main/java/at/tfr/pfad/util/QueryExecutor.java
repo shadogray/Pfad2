@@ -1,6 +1,7 @@
 package at.tfr.pfad.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,9 +58,15 @@ public class QueryExecutor {
 		Integer maxResults = null;
 		Integer firstResult = null;
 		
+		if (query == null) return Collections.emptyList();
+		
 		if (query != null && query.matches("(?).*password.*")) {
 			throw new SecurityException("security check failed");
 		}
+		
+		// JPA reserved words:
+		query = query.replaceAll("(?i) as +(?=to|cc|bcc)", " as _");
+
 		Matcher limitMatch = limitPattern.matcher(query);
 		if (limitMatch.matches()) {
 			query = limitMatch.group(1);
@@ -113,6 +120,7 @@ public class QueryExecutor {
 			Map<String,Object> result = new LinkedHashMap<>(tuple.length);
 			for ( int i=0; i<tuple.length; i++ ) {
 				String alias = aliases[i];
+				if (alias != null) alias = alias.replaceAll("^_?", "");
 				result.put( alias != null ? alias : Integer.toString(i), tuple[i] );
 			}
 			return result.entrySet().stream().collect(Collectors.toList());

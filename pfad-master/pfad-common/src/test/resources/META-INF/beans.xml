@@ -4,6 +4,7 @@
        version="3.0" bean-discovery-mode="all">
 	<alternatives>
 		<class>at.tfr.pfad.mock.MockUserSession</class>
+		<class>at.tfr.pfad.mock.MockSessionBean</class>
 		<class>at.tfr.pfad.TestProvider</class>
 	</alternatives>
 </beans>

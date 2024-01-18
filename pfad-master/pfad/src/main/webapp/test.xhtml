@@ -29,12 +29,16 @@
 		<h:form id="form">
 			<p:growl/>
 			<h:button value="TEST" onclick="test(event, this); return false;"/>
-			<h:commandButton id="cmd" action="#{downloadBean.executeQuery}" value="Query" >
-			</h:commandButton>
+			<h:commandButton id="cmd" action="#{downloadBean.executeQuery}" value="Query" />
 			<h:commandButton id="cmdAjax" action="#{downloadBean.executeQuery}" value="QueryAjax" >
 				<f:ajax render="@form"/>
 			</h:commandButton>
 			<p:commandButton value="test" action="#{configurationBean.all}"></p:commandButton>
+			<h:panelGrid columns="3">
+				<h:inputText value="#{engineBean.script}"/>
+				<h:commandButton id="script" value="EvalScript" action="#{engineBean.eval}"/>
+				<h:outputText value="#{engineBean.result}"/>
+			</h:panelGrid>
 		</h:form>
 	
 </h:body>

@@ -22,6 +22,7 @@
         <resteasy.version>6.2.6.Final</resteasy.version>
         <org.primefaces.version>13.0.4</org.primefaces.version>
         <jaxb.version>4.0.1</jaxb.version>
+        <graalvm.version>23.1.1</graalvm.version>
         <log4j.version>2.22.1</log4j.version>
     </properties>
 
@@ -81,8 +82,8 @@
                 <groupId>org.richfaces</groupId>
                 <artifactId>richfaces</artifactId>
                 <version>4.5.17.Final</version>
-            </dependency>
- -->            <dependency>
+            </dependency> -->
+            <dependency>
                 <groupId>org.omnifaces</groupId>
                 <artifactId>omnifaces</artifactId>
                 <version>4.3</version>
@@ -262,6 +263,18 @@
 			    <version>${jaxb.version}</version>
 			    <scope>test</scope>
 			</dependency>
+			<dependency> 
+				<groupId>org.graalvm.polyglot</groupId> 
+				<artifactId>polyglot</artifactId> 
+				<version>${graalvm.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<!--dependency> 
+				<groupId>org.graalvm.polyglot</groupId> 
+				<artifactId>js</artifactId> 
+				<version>${graalvm.version}</version> 
+				<type>pom</type>
+			<dependency-->
 
             <dependency>
                 <groupId>junit</groupId>

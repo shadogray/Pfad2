@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
@@ -19,8 +20,8 @@ public class PositiveStringSubstitutor extends StringSubstitutor {
 
 	public static final StringMatcher POSITIVE_DEFAULT_VALUE_DELIMITER = StringMatcherFactory.INSTANCE.stringMatcher(":+");
 	public static final String SCRIPT_NAME = "js";
-	protected ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 	protected Map<String,?> valueMap = Collections.emptyMap();
+	
 
 	public PositiveStringSubstitutor() {
 		super();
@@ -68,11 +69,6 @@ public class PositiveStringSubstitutor extends StringSubstitutor {
 
 	public PositiveStringSubstitutor(StringLookup variableResolver) {
 		super(variableResolver);
-	}
-	
-	public PositiveStringSubstitutor withEngine(ScriptEngine engine) {
-		this.engine = engine;
-		return this;
 	}
 	
 	public PositiveStringSubstitutor withValues(Map<String,?> valueMap) {
@@ -569,11 +565,10 @@ public class PositiveStringSubstitutor extends StringSubstitutor {
 								if (varValue == null || (varValue.length()==0 && varDefaultValue != null)) {
 									if (SCRIPT_NAME.equals(varName)) {
 										try {
-											Bindings bindings = engine.createBindings();
-											bindings.putAll(valueMap);
-											varValue = ""+engine.eval(varDefaultValue, bindings);
+											varValue = ""+EngineUtil.evalStr(varDefaultValue, valueMap);
 										} catch (Throwable t) {
-											throw new IllegalArgumentException("cannot eval: " + varName + ":" + varDefaultValue + " : " + t, t);
+											throw new IllegalArgumentException("cannot eval: " + varName + ":" + varDefaultValue + " : " + t + " : " 
+											+ new ScriptEngineManager().getEngineFactories().stream().map(se -> se.getEngineName()).collect(Collectors.toList()), t);
 										}
 									} else {
 										varValue = varDefaultValue;

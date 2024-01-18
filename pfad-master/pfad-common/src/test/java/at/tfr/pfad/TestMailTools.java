@@ -6,6 +6,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
+import org.jboss.weld.environment.se.Weld;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import at.tfr.pfad.dao.MemberRepository;
+import at.tfr.pfad.model.Member;
+import at.tfr.pfad.util.EmailValidator;
+import at.tfr.pfad.util.QueryExecutor;
+import at.tfr.pfad.util.TemplateUtils;
 import jakarta.inject.Inject;
 import jakarta.mail.Message.RecipientType;
 import jakarta.mail.Session;
@@ -16,29 +32,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.validation.ValidationException;
 
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import at.tfr.pfad.dao.MemberRepository;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.util.EmailValidator;
-import at.tfr.pfad.util.QueryExecutor;
-import at.tfr.pfad.util.TemplateUtils;
-
 @RunWith(CdiTestRunner.class)
 public class TestMailTools {
 
 	@Inject
 	private EntityManager em;
-	@Inject
+//	@Inject
 	private QueryExecutor qe;
 	@Inject
 	private MemberRepository memberRepo;
-	@Inject
+//	@Inject
 	private TemplateUtils tu;
 	@Inject
 	private EmailValidator emailValidator;
@@ -213,7 +216,10 @@ public class TestMailTools {
 
 	EntityTransaction tx;
 	@Before
-	public void init() {
+	public void init() throws Exception {
+		//qe = BeanProvider.getContextualReference(QueryExecutor.class);
+		qe = get(QueryExecutor.class);
+		tu = get(TemplateUtils.class);
 
 		tx = memberRepo.getTransaction();
 		member = memberRepo.findBy(1L);
@@ -228,6 +234,10 @@ public class TestMailTools {
 		memberRepo.saveAndFlush(member);
 		tx.commit();
 		tx = memberRepo.getTransaction();
+	}
+
+	private <T> T get(Class<T> clazz) {
+		return Weld.newInstance().initialize().select(clazz).get();
 	}
 	
 	@After

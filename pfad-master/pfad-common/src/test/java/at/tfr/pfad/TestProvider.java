@@ -7,6 +7,10 @@
 
 package at.tfr.pfad;
 
+import org.hibernate.Session;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
@@ -19,12 +23,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.SynchronizationType;
 
-import org.hibernate.Session;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
-
-@Alternative
 @Specializes
+@Alternative
 @Priority(Interceptor.Priority.APPLICATION + 100)
 @ApplicationScoped
 public class TestProvider extends at.tfr.pfad.Provider {
@@ -47,6 +47,7 @@ public class TestProvider extends at.tfr.pfad.Provider {
 		return entityManagerFactory.createEntityManager();
 	}
 	
+	@Override
 	@Produces
 	@RequestScoped
 	public EntityManager getEntityManager() {
@@ -55,6 +56,7 @@ public class TestProvider extends at.tfr.pfad.Provider {
 		return em;
 	}
 	
+	@Override
 	@Produces
 	public AuditReader getAuditReader() {
 		return AuditReaderFactory.get(entityManagerFactory.createEntityManager(SynchronizationType.UNSYNCHRONIZED).unwrap(Session.class));
