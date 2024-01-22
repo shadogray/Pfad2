@@ -6,9 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import at.tfr.pfad.dao.MemberRepository;
 import at.tfr.pfad.dao.RegistrationRepository;
@@ -16,8 +14,8 @@ import at.tfr.pfad.model.Member;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
-@RunWith(CdiTestRunner.class)
-public class TestPfadRepositories {
+//@RunWith(CdiTestRunner.class)
+public class TestPfadRepositoriesWeldTesting extends CdiTestBase {
 
 	@Inject
 	private MemberRepository memberRepo;

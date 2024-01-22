@@ -9,7 +9,7 @@
         <Root level="INFO">
             <AppenderRef ref="Console" />
         </Root>
-        <logger name="org.jboss.weld" level="TRACE"/>
+        <logger name="org.jboss.weld" level="DEBUG"/>
         <logger name="org.apache.deltaspike" level="TRACE"/>
     </Loggers>
 </Configuration>

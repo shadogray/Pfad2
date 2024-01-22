@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -31,7 +32,7 @@ public class CreateBookingsBean implements Serializable {
 	@Inject
 	private SessionBean sessionBean;
 	@Inject
-	private QueryExecutor queryExecutor;
+	private Instance<QueryExecutor> queryExecutor;
 
 	private Activity activity;
 	private List<Squad> squads = new ArrayList<>();
@@ -154,7 +155,7 @@ public class CreateBookingsBean implements Serializable {
 
 	public void createFromSource() {
 		Configuration config = dataSources.get(dataSourceKeys.indexOf(dataSourceKey));
-		List<Member> members = (List) queryExecutor.list(config);
+		List<Member> members = (List) queryExecutor.get().list(config);
 		bookingActionBean.createBookingsForMembers(members, targetActivity);
 	}
 

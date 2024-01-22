@@ -232,6 +232,12 @@
 			  <version>2.1.2</version>
 			  <scope>provided</scope>
 			</dependency>
+			<dependency>
+			    <groupId>org.eclipse.angus</groupId>
+			    <artifactId>jakarta.mail</artifactId>
+			    <version>2.0.2</version>
+			    <scope>provided</scope>
+			</dependency>
 <!-- 			<dependency>
 			    <groupId>javax.mail</groupId>
 			    <artifactId>mail-api</artifactId>
@@ -282,6 +288,12 @@
                 <version>4.13.2</version>
                 <scope>test</scope>
             </dependency>
+			<dependency>
+			   <groupId>org.jboss.weld</groupId>
+			   <artifactId>weld-junit4</artifactId>
+			   <version>4.0.1.Final</version>
+			   <scope>test</scope>
+			</dependency>
             <dependency>
                 <groupId>org.apache.deltaspike.modules</groupId>
                 <artifactId>deltaspike-test-control-module-api</artifactId>

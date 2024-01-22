@@ -1,13 +1,12 @@
 package at.tfr.pfad;
 
+
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
-
-import jakarta.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.Test;
@@ -22,6 +21,7 @@ import at.tfr.pfad.svc.BaseDao;
 import at.tfr.pfad.svc.BaseDaoMapper;
 import at.tfr.pfad.svc.SquadDao;
 import at.tfr.pfad.svc.SquadMapper;
+import jakarta.inject.Inject;
 
 @RunWith(CdiTestRunner.class)
 public class TestPfadMappings {

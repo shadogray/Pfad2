@@ -10,11 +10,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.commons.text.lookup.StringLookup;
 
 import jakarta.enterprise.inject.Default;
-
-import org.apache.commons.text.StringSubstitutor;
 
 @Default
 public class TemplateUtils implements Serializable {
@@ -29,6 +28,9 @@ public class TemplateUtils implements Serializable {
 	
     private PropertyUtilsBean pub = new PropertyUtilsBean();
 
+    public TemplateUtils() {
+	}
+    
 	public String replace(String template, Map<String, Object> map) {
 		return replace(template, map, null);
 	}

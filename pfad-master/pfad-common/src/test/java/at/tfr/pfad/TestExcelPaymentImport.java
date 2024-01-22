@@ -1,5 +1,10 @@
 package at.tfr.pfad;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,15 +12,12 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.inject.Inject;
-
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,7 @@ import at.tfr.pfad.model.Member;
 import at.tfr.pfad.model.Squad;
 import at.tfr.pfad.processing.ProcessData;
 import at.tfr.pfad.processing.ProcessExcelPayments;
+import jakarta.inject.Inject;
 
 @RunWith(CdiTestRunner.class)
 public class TestExcelPaymentImport {
@@ -80,13 +83,13 @@ public class TestExcelPaymentImport {
 	public void testFindBooking() throws Exception {
 
 		List<Booking> bookings = bookingRepo.findByMemberNames("Gruppenbeitrag 16/17 NameEins VornameEins", activity);
-		Assert.assertFalse(bookings.isEmpty());
-		Assert.assertEquals(1, bookings.size());
+		assertFalse(bookings.isEmpty());
+		assertEquals(1, bookings.size());
 
 		bookings = bookingRepo.findByMemberNames("Gruppenbeitrag 16/17 NameDrei VornameDrei1 VornameDrei2 VornameDrei3",
 				activity);
-		Assert.assertFalse(bookings.isEmpty());
-		Assert.assertEquals(3, bookings.size());
+		assertFalse(bookings.isEmpty());
+		assertEquals(3, bookings.size());
 	}
 
 	@Test
@@ -101,7 +104,7 @@ public class TestExcelPaymentImport {
 		ProcessData data = new ProcessData(activity);
 
 		ProcessExcelPayments.BookingData bd = procPayments.findBooking(row, data);
-		Assert.assertEquals(1, bd.bookings.size());
+		assertEquals(1, bd.bookings.size());
 	}
 
 	@Test
@@ -121,7 +124,7 @@ public class TestExcelPaymentImport {
 		ProcessData data = new ProcessData(activity);
 
 		String iban = procPayments.findIBAN(row, data);
-		Assert.assertEquals(targetIBAN, iban);
+		assertEquals(targetIBAN, iban);
 	}
 
 	@Test
@@ -136,9 +139,9 @@ public class TestExcelPaymentImport {
 		ProcessData data = new ProcessData(activity);
 
 		ProcessExcelPayments.BookingData bd = procPayments.findBooking(row, data);
-		Assert.assertEquals(3, bd.bookings.size());
+		assertEquals(3, bd.bookings.size());
 		// find related members - see Vollzahler
-		Assert.assertTrue(procPayments.validateBookings(bd));
+		assertTrue(procPayments.validateBookings(bd));
 	}
 
 	@Test
@@ -155,7 +158,7 @@ public class TestExcelPaymentImport {
 
 		ProcessExcelPayments.BookingData bd = procPayments.findBooking(row, data);
 		// do not find unrelated members - see Vollzahler
-		Assert.assertFalse(procPayments.validateBookings(bd));
+		assertFalse(procPayments.validateBookings(bd));
 	}
 
 	@Test
@@ -193,8 +196,8 @@ public class TestExcelPaymentImport {
 				+ "Irgend Wer : AT112233445566778899 : EinTrupp/Gruppenleitung : EinTrupp/Gruppenleitung : Irgend Wer : "
 				+ "EinTrupp/Gruppenleitung : 202030304040AIG-090807060504 : ";
 		List<Booking> bookings = bookingRepo.findByMemberNames(firstLine, activity);
-		Assert.assertFalse(bookings.isEmpty());
-		Assert.assertEquals(1, bookings.size());
+		assertFalse(bookings.isEmpty());
+		assertEquals(1, bookings.size());
 
 		ProcessData data = new ProcessData(activity);
 		data.setCreatePayment(true);
@@ -215,15 +218,15 @@ public class TestExcelPaymentImport {
 					switch (row.getRowNum()) {
 					case 0:
 						bd = procPayments.findBooking(xssfRow, data);
-						Assert.assertNotNull(bd);
-						Assert.assertEquals(1, bd.bookings.size());
-						Assert.assertEquals(IBANEins, data.getPayment().getPayerIBAN());
+						assertNotNull(bd);
+						assertEquals(1, bd.bookings.size());
+						assertEquals(IBANEins, data.getPayment().getPayerIBAN());
 						break;
 					case 1:
 						bd = procPayments.findBooking(xssfRow, data);
-						Assert.assertNotNull(bd);
-						Assert.assertEquals(3, bd.bookings.size());
-						Assert.assertEquals(IBANDrei, data.getPayment().getPayerIBAN());
+						assertNotNull(bd);
+						assertEquals(3, bd.bookings.size());
+						assertEquals(IBANDrei, data.getPayment().getPayerIBAN());
 						break;
 					}
 

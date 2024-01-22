@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.inject.Inject;
-
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -29,11 +27,11 @@ import at.tfr.pfad.model.Member;
 import at.tfr.pfad.model.Squad;
 import at.tfr.pfad.processing.MemberValidator;
 import at.tfr.pfad.util.ValidationResult;
+import jakarta.inject.Inject;
 
 @RunWith(CdiTestRunner.class)
 public class TestDownloadBean {
 
-	private DownloadBean db = new DownloadBean();
 	@Inject
 	private MemberValidator mv;
 	@Inject

@@ -22,6 +22,7 @@ import jakarta.ejb.ConcurrencyManagementType;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
+import jakarta.enterprise.inject.Instance;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -76,7 +77,7 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private MemberValidator memberValidator;
+	private Instance<MemberValidator> memberValidator;
 	private Boolean exampleActive;
 	private Boolean exampleFree;
 	private Boolean exampleGilde;
@@ -206,7 +207,7 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 
 	private Collection<ValidationResult> validateMember(Member member, boolean toMessages) {
 		Collection<Member> leaders = squadRepo.findLeaders();
-		List<ValidationResult> vr = memberValidator.validate(member, leaders);
+		List<ValidationResult> vr = memberValidator.get().validate(member, leaders);
 		if (!vr.isEmpty() && toMessages) {
 			warn(vr.toString());
 		}

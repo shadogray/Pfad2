@@ -1,19 +1,20 @@
 package at.tfr.pfad;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.jboss.weld.environment.se.Weld;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,11 +38,11 @@ public class TestMailTools {
 
 	@Inject
 	private EntityManager em;
-//	@Inject
+	@Inject
 	private QueryExecutor qe;
 	@Inject
 	private MemberRepository memberRepo;
-//	@Inject
+	@Inject
 	private TemplateUtils tu;
 	@Inject
 	private EmailValidator emailValidator;
@@ -51,7 +52,7 @@ public class TestMailTools {
 	@Test
 	public void testExecutor() throws Exception {
 		List<List<Entry<String, Object>>> list = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m", false);
-		Assert.assertFalse(list.isEmpty());
+		assertFalse(list.isEmpty());
 	}
 	
 	@Test
@@ -68,26 +69,26 @@ public class TestMailTools {
 		}
 		
 		List<List<Entry<String, Object>>> list = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id", false);
-		Assert.assertFalse(list.isEmpty());
-		Assert.assertTrue(list.size() >= 4);
+		assertFalse(list.isEmpty());
+		assertTrue(list.size() >= 4);
 		System.out.println("members: " + list);
 
 		List<List<Entry<String, Object>>> listLimit = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id limit 2", false);
-		Assert.assertFalse(listLimit.isEmpty());
-		Assert.assertEquals("LIMIT not working: "+listLimit, 2, listLimit.size());
-		Assert.assertEquals("LIMIT produces wrong sublist: "+listLimit, list.subList(0,2), listLimit);
+		assertFalse(listLimit.isEmpty());
+		assertEquals("LIMIT not working: "+listLimit, 2, listLimit.size());
+		assertEquals("LIMIT produces wrong sublist: "+listLimit, list.subList(0,2), listLimit);
 
 		listLimit = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id \t \n limit \t 2, \t \n 2", false);
-		Assert.assertFalse(listLimit.isEmpty());
-		Assert.assertEquals("FirstResult not working: "+listLimit, 2, listLimit.size());
-		Assert.assertEquals("FirstResult produces wrong sublist: "+listLimit,list.subList(2,4), listLimit);
+		assertFalse(listLimit.isEmpty());
+		assertEquals("FirstResult not working: "+listLimit, 2, listLimit.size());
+		assertEquals("FirstResult produces wrong sublist: "+listLimit,list.subList(2,4), listLimit);
 		em.getTransaction().rollback();
 	}
 	
 	@Test
 	public void testExecutorNoNames() throws Exception {
 		List<List<Entry<String, Object>>> list = qe.execute("select m.name, m.vorname, m.email from Member m", false);
-		Assert.assertFalse(list.isEmpty());
+		assertFalse(list.isEmpty());
 	}
 	
 	@Test
@@ -100,7 +101,7 @@ public class TestMailTools {
 
 		List<Entry<String,Object>> map = list.get(0);
 		String res = tu.replace(template, map);
-		Assert.assertEquals("Replacement failed.", "Das ist eine Nachricht an email.", res);
+		assertEquals("Replacement failed.", "Das ist eine Nachricht an email.", res);
 	}
 	
 	@Test
@@ -113,7 +114,7 @@ public class TestMailTools {
 
 		List<Entry<String,Object>> map = list.get(0);
 		String res = tu.replace(template, map);
-		Assert.assertEquals("Replacement failed.", "Das ist eine Nachricht an email.", res);
+		assertEquals("Replacement failed.", "Das ist eine Nachricht an email.", res);
 	}
 	
 	@Test(expected = AddressException.class)
@@ -129,7 +130,7 @@ public class TestMailTools {
 		Map<String,Object> map = new HashMap<>();
 		map.put("test", "REPLACEMENT");
 		String result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein PositiveContent", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein PositiveContent", result);
 	}
 	
 	@Test
@@ -138,7 +139,7 @@ public class TestMailTools {
 		Map<String,Object> map = new HashMap<>();
 		map.put("test", "REPLACEMENT");
 		String result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein PositiveContent", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein PositiveContent", result);
 	}
 	
 	@Test
@@ -147,7 +148,7 @@ public class TestMailTools {
 		Map<String,Object> map = new HashMap<>();
 		map.put("test", "REPLACEMENT");
 		String result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein PositiveContent", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein PositiveContent", result);
 	}
 	
 	@Test
@@ -156,7 +157,7 @@ public class TestMailTools {
 		Map<String,Object> map = new HashMap<>();
 		map.put("test", "REPLACEMENT");
 		String result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
 	}
 	
 	@Test
@@ -166,7 +167,7 @@ public class TestMailTools {
 		map.put("repl", "REPLACEMENT");
 		map.put("test", "repl");
 		String result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
 	}
 	
 	@Test
@@ -176,7 +177,7 @@ public class TestMailTools {
 		map.put("repl", "REPLACEMENT");
 		map.put("test", "repl");
 		String result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
 	}
 	
 	@Test
@@ -188,23 +189,23 @@ public class TestMailTools {
 		map.put("unchecked", false);
 		String template = "Das ist ein ${js:-if (checked) repl; else test;}";
 		String result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
 		
 		template = "Das ist ein ${js:-if (unchecked) repl; else test;}";
 		result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein repl", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein repl", result);
 
 		template = "Das ist ein ${${js:-if (unchecked) repl; else test;}}";
 		result = tu.replace(template, map);
-		Assert.assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
+		assertEquals("positive replacement failed: " + result, "Das ist ein REPLACEMENT", result);
 	}
 	
 	@Test
 	public void testEmailValidator() throws Exception {
 		String mails = " test@test.at; test@test.at , test@test.at, , , ; ;";
-		Assert.assertNull("cleanup failed on null", EmailValidator.cleanEmail(null));
-		Assert.assertEquals("cleanup failed", "test@test.at", EmailValidator.cleanEmail("   test@test.at  ,"));
-		Assert.assertEquals("cleanup failed 2", "test@test.at,test@test.at,test@test.at", EmailValidator.cleanEmail(mails));
+		assertNull("cleanup failed on null", EmailValidator.cleanEmail(null));
+		assertEquals("cleanup failed", "test@test.at", EmailValidator.cleanEmail("   test@test.at  ,"));
+		assertEquals("cleanup failed 2", "test@test.at,test@test.at,test@test.at", EmailValidator.cleanEmail(mails));
 		emailValidator.validate(null, null, "m-test.test@test.at");
 		emailValidator.validate(null, null, "m-elisabeth.resch@gmx.at");
 	}
@@ -217,11 +218,14 @@ public class TestMailTools {
 	EntityTransaction tx;
 	@Before
 	public void init() throws Exception {
-		//qe = BeanProvider.getContextualReference(QueryExecutor.class);
-		qe = get(QueryExecutor.class);
-		tu = get(TemplateUtils.class);
+//		qe = get(QueryExecutor.class);
+//		tu = get(TemplateUtils.class);
 
 		tx = memberRepo.getTransaction();
+		if (tx.isActive()) {
+			tx.rollback();
+		}
+		tx.begin();
 		member = memberRepo.findBy(1L);
 		if (member == null) {
 			member = new Member();

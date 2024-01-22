@@ -1,16 +1,13 @@
 package at.tfr.pfad.mock;
 
+import at.tfr.pfad.util.UserSession;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.inject.Inject;
-import jakarta.interceptor.Interceptor;
-
-import at.tfr.pfad.util.UserSession;
 
 @Alternative
-@Priority(Interceptor.Priority.APPLICATION + 100)
+//@Priority(Interceptor.Priority.APPLICATION + 100)
 @ApplicationScoped
 public class MockUserSession extends UserSession {
 

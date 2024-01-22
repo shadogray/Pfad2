@@ -36,9 +36,6 @@ public class ProcessExcelPayments {
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("dd.mm.yyyy");
 	public static Pattern ibanPattern = Pattern.compile("[A-Z]{2}\\d{18,}"); // AT112020500000007450
 
-	public ProcessExcelPayments() {
-	}
-
 	@Inject
 	public ProcessExcelPayments(BookingRepository bookingRepo, PaymentRepository paymentRepo) {
 		this.bookingRepo = bookingRepo;

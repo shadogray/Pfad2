@@ -29,12 +29,12 @@ import at.tfr.pfad.model.Squad;
 public class SessionBean implements Serializable {
 	
 	private Logger log = Logger.getLogger(getClass());
-	private List<Configuration> config;
+	private List<Configuration> config = new ArrayList<>();
 	private Date registrationEndDate;
 	private boolean logActive;
 	@Inject
 	protected UserSession userSession;
-	private final List<Role> roles = new ArrayList<>();
+	protected final List<Role> roles = new ArrayList<>();
 	@Inject
 	private ConfigurationRepository configRepo;
 	@Inject

@@ -28,6 +28,7 @@ import jakarta.ejb.AccessTimeout;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
 import jakarta.ejb.Stateful;
+import jakarta.enterprise.inject.Instance;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -73,15 +74,15 @@ public class MailerBean extends BaseBean<MailMessage> {
 	private Logger log = Logger.getLogger(getClass());
 
 	@Inject
-	private QueryExecutor queryExec;
+	private Instance<QueryExecutor> queryExec;
 	@Inject
 	private MailTemplateRepository templateRepo;
 	@Inject
 	private MailTemplateBean mailTemplateBean;
 	@Inject
-	private MailSender mailSender;
+	private Instance<MailSender> mailSender;
 	@Inject
-	private SmsSender smsSender;
+	private Instance<SmsSender> smsSender;
 
 	private MailConfig mailConfig;
 	private String mailConfigKey;
@@ -145,7 +146,7 @@ public class MailerBean extends BaseBean<MailMessage> {
 					isNative = optConf.get().isNative();
 				}
 			}
-			values = queryExec.execute(query
+			values = queryExec.get().execute(query
 					.replaceAll("\\$\\{templateId\\}", ""+mailTemplate.getId())
 					.replaceAll("\\$\\{templateName\\}", mailTemplate.getName())
 					.replaceAll("\\$\\{templateOwner\\}", mailTemplate.getOwner())
@@ -462,9 +463,9 @@ public class MailerBean extends BaseBean<MailMessage> {
 
 					MailMessage sentMsg;
 					if (!mailTemplate.isSms()) {
-						sentMsg = mailSender.sendMail(mail, msg, mailTemplate.isSaveText());
+						sentMsg = mailSender.get().sendMail(mail, msg, mailTemplate.isSaveText());
 					} else {
-						sentMsg = smsSender.sendMail(msg, mailConfig, mailTemplate.isSaveText());
+						sentMsg = smsSender.get().sendMail(msg, mailConfig, mailTemplate.isSaveText());
 					}
 					msg.setSend(false);
 					msg.setCreated(sentMsg.getCreated());

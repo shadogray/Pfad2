@@ -7,6 +7,10 @@
 
 package at.tfr.pfad.view;
 
+import org.hibernate.Session;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
@@ -19,13 +23,9 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.SynchronizationType;
 
-import org.hibernate.Session;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
-
-//@Specializes
+@Specializes
 @Alternative
-@Priority(Interceptor.Priority.APPLICATION + 100)
+@Priority(Interceptor.Priority.APPLICATION)
 @ApplicationScoped
 public class TestProvider extends at.tfr.pfad.Provider {
 	

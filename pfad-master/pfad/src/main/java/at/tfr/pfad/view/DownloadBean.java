@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateful;
+import jakarta.enterprise.inject.Instance;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -71,9 +72,9 @@ public class DownloadBean implements Serializable {
 	@Inject
 	private SquadRepository squadRepo;
 	@Inject
-	private QueryExecutor qExec;
+	private Instance<QueryExecutor> qExec;
 	@Inject
-	private RegistrationDataGenerator regDataGenerator;
+	private Instance<RegistrationDataGenerator> regDataGenerator;
 	@Inject
 	private TemplateUtils templateUtils;
 	private Configuration configuration = new Configuration().withCkey("undef").withUiName("undef");
@@ -88,7 +89,7 @@ public class DownloadBean implements Serializable {
 	private final Map<String,Object> beans = new HashMap<>();
 	private boolean activeOnly = true;
 	private Activity payedActivity;
-	public List<Configuration> queries = Collections.emptyList();
+	private List<Configuration> queries = Collections.emptyList();
 	
 	@PostConstruct
 	public void init() {
@@ -183,7 +184,7 @@ public class DownloadBean implements Serializable {
 
 			ExternalContext ectx = setHeaders("Export");
 			try (OutputStream os = ectx.getResponseOutputStream()) {
-				XSSFWorkbook wb = regDataGenerator.generateData(config, filter, squads);
+				XSSFWorkbook wb = regDataGenerator.get().generateData(config, filter, squads);
 				wb.write(os);
 			}
 			FacesContext.getCurrentInstance().responseComplete();
@@ -321,7 +322,7 @@ public class DownloadBean implements Serializable {
 		if (replQuery != null) {
 			replQuery = templateUtils.replace(replQuery, beans);
 		}
-		results = qExec.execute(replQuery, configuration.isNative());
+		results = qExec.get().execute(replQuery, configuration.isNative());
 		if (results.size() > 0) {
 			resultModel.setWrappedData(results);
 			List<String> columnNames = results.get(0).stream().map(Entry::getKey).collect(Collectors.toList());

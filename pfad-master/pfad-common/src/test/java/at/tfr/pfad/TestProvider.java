@@ -25,7 +25,7 @@ import jakarta.persistence.SynchronizationType;
 
 @Specializes
 @Alternative
-@Priority(Interceptor.Priority.APPLICATION + 100)
+@Priority(Interceptor.Priority.APPLICATION)
 @ApplicationScoped
 public class TestProvider extends at.tfr.pfad.Provider {
 	

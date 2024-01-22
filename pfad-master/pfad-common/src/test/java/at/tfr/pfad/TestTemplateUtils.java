@@ -1,5 +1,9 @@
 package at.tfr.pfad;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +18,6 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
-import junit.framework.Assert;
 
 @RunWith(CdiTestRunner.class)
 public class TestTemplateUtils {
@@ -34,19 +37,19 @@ public class TestTemplateUtils {
 		beans.put("NULL", null);
 		
 		String res = templateUtils.get().replace("${trupp.name}", beans);
-		Assert.assertEquals("replace failed: "+res, trupp.getName(), res);
+		assertEquals("replace failed: "+res, trupp.getName(), res);
 		
 		res = templateUtils.get().replace("${truppX.name}", beans);
-		Assert.assertNull("replace failed: "+res, res);
+		assertNull("replace failed: "+res, res);
 
 		res = templateUtils.get().replace("${truppX.name}", beans, "DEFAULT");
-		Assert.assertEquals("replace failed: "+res, "DEFAULT", res);
+		assertEquals("replace failed: "+res, "DEFAULT", res);
 
 		res = templateUtils.get().replace("${NULL}", beans, "DEFAULT");
-		Assert.assertEquals("replace failed: "+res, "null", res);
+		assertEquals("replace failed: "+res, "null", res);
 		
 		res = templateUtils.get().replace("${NULL.name}", beans, "DEFAULT");
-		Assert.assertEquals("replace failed: "+res, "DEFAULT", res);
+		assertEquals("replace failed: "+res, "DEFAULT", res);
 	}
 
 	@Test
@@ -55,7 +58,7 @@ public class TestTemplateUtils {
 		beans.put("TruPp", trupp);
 		
 		String res = templateUtils.get().replace("${trupp.name}", beans);
-		Assert.assertEquals("replace failed: "+res, trupp.getName(), res);
+		assertEquals("replace failed: "+res, trupp.getName(), res);
 	}
 
 	@Ignore
@@ -64,7 +67,7 @@ public class TestTemplateUtils {
 		MimeMessage msg = new MimeMessage(null, getClass().getResourceAsStream("/testmail.msg"));
 		MimeMultipart mm = (MimeMultipart)msg.getContent();
 		String text = TemplateUtils.htmlToText(""+mm.getBodyPart(1).getContent());
-		Assert.assertFalse("filter html failed: "+text, text.contains("<"));
+		assertFalse("filter html failed: "+text, text.contains("<"));
 	}
 	
 }

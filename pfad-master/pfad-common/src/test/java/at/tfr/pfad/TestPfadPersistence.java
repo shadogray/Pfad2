@@ -6,13 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +19,10 @@ import at.tfr.pfad.model.MailTemplate;
 import at.tfr.pfad.model.Member;
 import at.tfr.pfad.model.Payment;
 import at.tfr.pfad.model.Squad;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 
 @RunWith(CdiTestRunner.class)
 public class TestPfadPersistence {
@@ -35,10 +33,6 @@ public class TestPfadPersistence {
 	private MemberRepository memberRepo;
 	@Inject
 	private MailTemplateRepository templateRepo;
-
-	@Before
-	public void init() {
-	}
 
 	/**
 	 * @throws Exception
