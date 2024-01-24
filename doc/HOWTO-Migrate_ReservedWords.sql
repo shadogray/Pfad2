@@ -1,22 +1,22 @@
-alter table activity rename column end to endDate;
-alter table activity rename column start to startDate;
+alter table activity rename column "end" to endDate;
+alter table activity rename column "start" to startDate;
 
-alter table activity_aud rename column end to endDate;
-alter table activity_aud rename column start to startDate;
+alter table activity_aud rename column "end" to endDate;
+alter table activity_aud rename column "start" to startDate;
 alter table activity_aud rename column end_mod to endDate_mod;
 alter table activity_aud rename column start_mod to startDate_mod;
 
 
-alter table function rename column key to fkey;
+alter table function rename column "key" to fkey;
 
-alter table function_aud rename column key to fkey;
+alter table function_aud rename column "key" to fkey;
 alter table function_aud rename column key_mod to fkey_mod;
 
-alter table participation rename column end to endDate;
-alter table participation rename column start to startDate;
+alter table participation rename column "end" to endDate;
+alter table participation rename column "start" to startDate;
 
-alter table participation_aud rename column end to endDate;
-alter table participation_aud rename column start to startDate;
+alter table participation_aud rename column "end" to endDate;
+alter table participation_aud rename column "start" to startDate;
 alter table participation_aud rename column end_mod to endDate_mod;
 alter table participation_aud rename column start_mod to startDate_mod;
 

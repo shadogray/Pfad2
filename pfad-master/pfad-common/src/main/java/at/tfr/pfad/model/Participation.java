@@ -59,11 +59,11 @@ public class Participation extends BaseEntity implements Comparable<Participatio
 
 	@Column(name = "startDate")
 	@Temporal(TemporalType.DATE)
-	private Date start;
+	private Date startDate;
 
 	@Column(name = "endDate")
 	@Temporal(TemporalType.DATE)
-	private Date end;
+	private Date endDate;
 
 	@Column
 	private Float amount;
@@ -134,19 +134,19 @@ public class Participation extends BaseEntity implements Comparable<Participatio
 	}
 
 	public Date getStart() {
-		return start;
+		return startDate;
 	}
 
 	public void setStart(Date start) {
-		this.start = start;
+		this.startDate = start;
 	}
 
 	public Date getEnd() {
-		return end;
+		return endDate;
 	}
 
 	public void setEnd(Date end) {
-		this.end = end;
+		this.endDate = end;
 	}
 
 	public Float getAmount() {

@@ -30,13 +30,13 @@ public abstract class ParticipationRepository implements EntityRepository<Partic
 	public List<Participation> findActive(List<ParticipationStatus> stati, Date start, Date end) {
 		Criteria<Participation, Participation> active = criteria().in(Participation_.status, stati.toArray(new ParticipationStatus[]{}));
 		if (start != null) {
-			active = active.lt(Participation_.start, new DateTime(start).minusDays(1).toDate());
+			active = active.lt(Participation_.startDate, new DateTime(start).minusDays(1).toDate());
 		}
 		if (end != null) {
-			active = active.gt(Participation_.end, new DateTime(end).minusDays(1).toDate());
+			active = active.gt(Participation_.endDate, new DateTime(end).minusDays(1).toDate());
 		}
 		return active
-				.orderDesc(Participation_.start)
+				.orderDesc(Participation_.startDate)
 				.getResultList();
 	}
 }

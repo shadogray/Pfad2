@@ -230,12 +230,12 @@ public class ParticipationBean extends BaseBean<Participation> implements Serial
 
 		Date start = this.example.getStart();
 		if (start != null) {
-			predicatesList.add(builder.greaterThanOrEqualTo(root.get(Participation_.start), start));
+			predicatesList.add(builder.greaterThanOrEqualTo(root.get(Participation_.startDate), start));
 		}
 		
 		Date end = this.example.getEnd();
 		if (end != null) {
-			predicatesList.add(builder.greaterThanOrEqualTo(root.get(Participation_.end), end));
+			predicatesList.add(builder.greaterThanOrEqualTo(root.get(Participation_.endDate), end));
 		}
 		
 		if (example.getStatus() != null) {

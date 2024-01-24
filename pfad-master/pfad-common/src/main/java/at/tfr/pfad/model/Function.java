@@ -51,7 +51,7 @@ public class Function extends BaseEntity implements Presentable, Comparable<Func
 	private String function;
 
 	@Column(name = "fkey")
-	private String key;
+	private String fkey;
 
 	@Column(columnDefinition = "boolean default 'false' not null")
 	private boolean exportReg;
@@ -98,11 +98,11 @@ public class Function extends BaseEntity implements Presentable, Comparable<Func
 	}
 
 	public String getKey() {
-		return key;
+		return fkey;
 	}
 
 	public void setKey(String key) {
-		this.key = key;
+		this.fkey = key;
 	}
 
 	public boolean isExportReg() {
@@ -153,8 +153,8 @@ public class Function extends BaseEntity implements Presentable, Comparable<Func
 	@Override
 	public String getShortString() {
 		String result = "" + function;
-		if (key != null && !key.trim().isEmpty())
-			result += ", key: " + key;
+		if (fkey != null && !fkey.trim().isEmpty())
+			result += ", key: " + fkey;
 		return result;
 	}
 	
@@ -171,8 +171,8 @@ public class Function extends BaseEntity implements Presentable, Comparable<Func
 	@Override
 	public String toString() {
 		String result = "" + function;
-		if (key != null && !key.trim().isEmpty())
-			result += ", key: " + key;
+		if (fkey != null && !fkey.trim().isEmpty())
+			result += ", key: " + fkey;
 		result += ", reg: " + exportReg;
 		return result;
 	}

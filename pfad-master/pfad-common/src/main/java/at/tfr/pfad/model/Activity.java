@@ -47,7 +47,7 @@ import at.tfr.pfad.dao.AuditListener;
 @JsonIgnoreProperties(ignoreUnknown=true, value = {"handler", "hibernateLazyInitializer"})
 @NamedQueries({
 	@NamedQuery(name = "Activity.distName", query = "select a.name from Activity a"),
-	@NamedQuery(name = "Activity.distNameActive", query = "select a.name from Activity a where a.end > CURRENT_DATE")
+	@NamedQuery(name = "Activity.distNameActive", query = "select a.name from Activity a where a.endDate > CURRENT_DATE")
 })
 public class Activity extends BaseEntity implements Auditable, Presentable {
 
@@ -69,11 +69,11 @@ public class Activity extends BaseEntity implements Auditable, Presentable {
 
 	@Column(name = "startDate")
 	@Temporal(TemporalType.DATE)
-	private Date start;
+	private Date startDate;
 
 	@Column(name = "endDate")
 	@Temporal(TemporalType.DATE)
-	private Date end;
+	private Date endDate;
 
 	@Column
 	private String name;
@@ -138,27 +138,27 @@ public class Activity extends BaseEntity implements Auditable, Presentable {
 	}
 
 	public Date getStart() {
-		return start;
+		return startDate;
 	}
 
 	public void setStart(Date start) {
-		this.start = start;
+		this.startDate = start;
 	}
 
 	public String getStartString() {
-		return start != null ? new DateTime(start).toString(format) : "";
+		return startDate != null ? new DateTime(startDate).toString(format) : "";
 	}
 
 	public Date getEnd() {
-		return end;
+		return endDate;
 	}
 
 	public void setEnd(Date end) {
-		this.end = end;
+		this.endDate = end;
 	}
 
 	public String getEndString() {
-		return end != null ? new DateTime(end).toString(format) : "";
+		return endDate != null ? new DateTime(endDate).toString(format) : "";
 	}
 
 	public String getName() {
@@ -245,8 +245,8 @@ public class Activity extends BaseEntity implements Auditable, Presentable {
 	public String toString() {
 		String result = ((StringUtils.isNotBlank(name) ? name : getClass()
 				.getSimpleName()) + ":" + type + ":" + status);
-		if (start != null) {
-			result += ", " + new DateTime(start).toString(format);
+		if (startDate != null) {
+			result += ", " + new DateTime(startDate).toString(format);
 		}
 		return result;
 	}
@@ -265,6 +265,6 @@ public class Activity extends BaseEntity implements Auditable, Presentable {
 	@Transient
 	public boolean isFinished() {
 		return ActivityStatus.cancelled.equals(status) || ActivityStatus.finished.equals(status)
-				|| (end != null && new Date().after(end));
+				|| (endDate != null && new Date().after(endDate));
 	}
 }

@@ -28,7 +28,7 @@ public class FunctionAud  implements java.io.Serializable {
      private String function;
      private Boolean functionMod;
      @Column(name = "fkey")
-     private String key;
+     private String fkey;
      @Column(name = "fkey_MOD")
      private Boolean keyMod;
      private Boolean free;
@@ -58,7 +58,7 @@ public class FunctionAud  implements java.io.Serializable {
        this.exportregMod = exportregMod;
        this.function = function;
        this.functionMod = functionMod;
-       this.key = key;
+       this.fkey = key;
        this.keyMod = keyMod;
        this.free = free;
        this.freeMod = freeMod;
@@ -147,11 +147,11 @@ public class FunctionAud  implements java.io.Serializable {
     
     @Column(name="KEY")
     public String getKey() {
-        return this.key;
+        return this.fkey;
     }
     
     public void setKey(String key) {
-        this.key = key;
+        this.fkey = key;
     }
 
     

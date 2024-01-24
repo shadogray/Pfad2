@@ -68,13 +68,13 @@ public abstract class BaseBean<T> implements Serializable {
 	@Inject
 	protected transient EntityManager entityManager;
 	@Resource
-	protected SessionContext sessionContext;
+	protected transient SessionContext sessionContext;
 	@Inject
-	protected SessionBean sessionBean;
+	protected transient SessionBean sessionBean;
 	@Inject
-	protected Validator validator;
+	protected transient Validator validator;
 	@Inject
-	protected PageSizeBean pageSize;
+	protected transient PageSizeBean pageSize;
 	@Inject
 	protected transient Bookings bookings;
 	@Inject
@@ -98,9 +98,9 @@ public abstract class BaseBean<T> implements Serializable {
 	@Inject 
 	protected transient RegistrationRepository registrationRepo;
 	@Inject
-	protected PfadUI pfadUI;
+	protected transient PfadUI pfadUI;
 	@Inject
-	protected TemplateUtils templateUtils;
+	protected transient TemplateUtils templateUtils;
 	@Inject
 	protected transient MemberMapper memberMapper;
 	@Inject

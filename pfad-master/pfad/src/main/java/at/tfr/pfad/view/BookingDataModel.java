@@ -137,7 +137,7 @@ public class BookingDataModel extends BaseDataModel<Booking, BookingUI> {
 		case "activity":
 			return getSplittedPredicateName(root.join(Booking_.activity).get(Activity_.name), val);
 		case "activityFinished":
-			Predicate actFin = cb.or(cb.lessThan(root.join(Booking_.activity).get(Activity_.end), DateTime.now().minusMonths(1).toDate()),
+			Predicate actFin = cb.or(cb.lessThan(root.join(Booking_.activity).get(Activity_.endDate), DateTime.now().minusMonths(1).toDate()),
 					root.join(Booking_.activity).get(Activity_.status).in(ActivityStatus.cancelled, ActivityStatus.finished));
 			switch(val) {
 			case "false": 

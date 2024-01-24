@@ -31,13 +31,13 @@ public abstract class ActivityRepository implements EntityRepository<Activity, L
 	public List<Activity> findActive(List<ActivityStatus> stati, Date start, Date end) {
 		Criteria<Activity, Activity> active = criteria().in(Activity_.status, stati.toArray(new ActivityStatus[]{}));
 		if (start != null) {
-			active = active.lt(Activity_.start, new DateTime(start).minusDays(1).toDate());
+			active = active.lt(Activity_.startDate, new DateTime(start).minusDays(1).toDate());
 		}
 		if (end != null) {
-			active = active.gt(Activity_.end, new DateTime(end).minusDays(1).toDate());
+			active = active.gt(Activity_.endDate, new DateTime(end).minusDays(1).toDate());
 		}
 		return active
-				.orderDesc(Activity_.start)
+				.orderDesc(Activity_.startDate)
 				.orderAsc(Activity_.name)
 				.getResultList();
 	}

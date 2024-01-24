@@ -323,8 +323,8 @@ public class BookingBean extends BaseBean<Booking> implements Serializable {
 		if (!showFinished && !(getBookingExample().getActivity() != null && getBookingExample().getActivity().isFinished())) {
 			Join<Booking,Activity> act = root.join(Booking_.activity);
 			predicatesList.add(builder.or(
-					builder.isNull(act.get(Activity_.end)),
-					builder.greaterThan(act.get(Activity_.end), new Date())));
+					builder.isNull(act.get(Activity_.endDate)),
+					builder.greaterThan(act.get(Activity_.endDate), new Date())));
 			predicatesList.add(builder.notEqual(act.get(Activity_.status), ActivityStatus.cancelled));
 		}
 		

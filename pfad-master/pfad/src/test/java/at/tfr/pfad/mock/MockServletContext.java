@@ -8,7 +8,10 @@ import java.util.EventListener;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.annotation.Priority;
+import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Default;
+import jakarta.interceptor.Interceptor;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.RequestDispatcher;
@@ -21,7 +24,8 @@ import jakarta.servlet.SessionCookieConfig;
 import jakarta.servlet.SessionTrackingMode;
 import jakarta.servlet.descriptor.JspConfigDescriptor;
 
-@Default
+@Alternative
+@Priority(Interceptor.Priority.APPLICATION)
 public class MockServletContext implements ServletContext {
 
 	@Override

@@ -41,11 +41,11 @@ public class ParticipationAud  implements java.io.Serializable {
      private String createdby;
      private Boolean createdbyMod;
      @Column(name = "endDate")
-     private Date end;
+     private Date endDate;
      @Column(name = "endDate_MOD")
      private Boolean endMod;
      @Column(name = "startDate")
-     private Date start;
+     private Date startDate;
      @Column(name = "startDate_MOD")
      private Boolean startMod;
      private String status;
@@ -81,9 +81,9 @@ public class ParticipationAud  implements java.io.Serializable {
        this.createdMod = createdMod;
        this.createdby = createdby;
        this.createdbyMod = createdbyMod;
-       this.end = end;
+       this.endDate = end;
        this.endMod = endMod;
-       this.start = start;
+       this.startDate = start;
        this.startMod = startMod;
        this.status = status;
        this.statusMod = statusMod;
@@ -270,11 +270,11 @@ public class ParticipationAud  implements java.io.Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name="END", length=8)
     public Date getEnd() {
-        return this.end;
+        return this.endDate;
     }
     
     public void setEnd(Date end) {
-        this.end = end;
+        this.endDate = end;
     }
 
     
@@ -290,11 +290,11 @@ public class ParticipationAud  implements java.io.Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name="START", length=8)
     public Date getStart() {
-        return this.start;
+        return this.startDate;
     }
     
     public void setStart(Date start) {
-        this.start = start;
+        this.startDate = start;
     }
 
     

@@ -218,7 +218,7 @@ public class FunctionBean extends BaseBean<Function> implements Serializable {
 		}
 		String key = this.example.getKey();
 		if (key != null && !"".equals(key)) {
-			predicatesList.add(builder.like(builder.lower(root.get(Function_.key)), '%' + key.toLowerCase() + '%'));
+			predicatesList.add(builder.like(builder.lower(root.get(Function_.fkey)), '%' + key.toLowerCase() + '%'));
 		}
 
 		return predicatesList.toArray(new Predicate[predicatesList.size()]);

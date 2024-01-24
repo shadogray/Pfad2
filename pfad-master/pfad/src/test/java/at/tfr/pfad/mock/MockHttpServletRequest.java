@@ -9,7 +9,10 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+import jakarta.annotation.Priority;
+import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Default;
+import jakarta.interceptor.Interceptor;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
@@ -26,7 +29,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;
 
-@Default
+@Alternative
+@Priority(Interceptor.Priority.APPLICATION)
 public class MockHttpServletRequest implements HttpServletRequest {
 
 	@Override
