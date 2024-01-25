@@ -1,0 +1,12 @@
+at.tfr.pfad
+at.tfr.pfad.action
+at.tfr.pfad.dao
+at.tfr.pfad.jpa
+at.tfr.pfad.model
+at.tfr.pfad.processing
+at.tfr.pfad.rest
+at.tfr.pfad.svc
+at.tfr.pfad.util
+at.tfr.pfad.view
+at.tfr.pfad.view.convert
+at.tfr.pfad.view.validator

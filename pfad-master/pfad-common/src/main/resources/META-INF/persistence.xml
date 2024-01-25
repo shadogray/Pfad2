@@ -16,6 +16,7 @@
 			-->
 			<property name="hibernate.transaction.flush_before_completion" value="true" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+			<property name="hibernate.jpa.compliance.query" value="false"/>
 			<!-- property name="org.hibernate.envers.revision_on_collection_change" value="false"/ -->
 		</properties>
 	</persistence-unit>
