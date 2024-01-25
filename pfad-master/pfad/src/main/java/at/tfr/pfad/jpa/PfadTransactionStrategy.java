@@ -11,7 +11,7 @@ import jakarta.interceptor.InvocationContext;
  * @see deltaspike.ContanierBasedTransactionStrategy
  */
 @Alternative
-//@Priority(Interceptor.Priority.APPLICATION+1)
+@Priority(Interceptor.Priority.APPLICATION+1)
 public class PfadTransactionStrategy implements TransactionStrategy {
 
 	@Override
