@@ -53,13 +53,13 @@ public class Bookings implements Serializable {
 	}
 
 	public List<Booking> filtered(final String filter, Activity activity, String strasse) {
-		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Booking> cq = cb.createQuery(Booking.class);
 		Root<Booking> root = cq.from(Booking.class);
 		CriteriaQuery<Booking> query = cq.select(root);
 		List<Predicate> preds = filterPreds(root, cb, filter, activity, strasse);
 		cq.where(cb.and(preds.toArray(new Predicate[preds.size()])));
-		return this.entityManager.createQuery(query.distinct(true)).setMaxResults(10).getResultList();
+		return entityManager.createQuery(query.distinct(true)).setMaxResults(10).getResultList();
 	}
 
 	public List<Predicate> filterPreds(Path<Booking> root, CriteriaBuilder cb, final String filter, Activity activity) {

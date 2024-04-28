@@ -10,8 +10,8 @@
         <Root level="INFO">
             <AppenderRef ref="Console" />
         </Root>
-        <logger name="at.tfr.pfad.util" level="TRACE"/>
-        <logger name="org.jboss.weld" level="TRACE"/>
-        <logger name="org.apache.deltaspike" level="DEBUG"/>
+        <logger name="at.tfr.pfad.util" level="DEBUG"/>
+        <logger name="org.jboss.weld" level="INFO"/>
+        <logger name="org.apache.deltaspike" level="INFO"/>
     </Loggers>
 </Configuration>

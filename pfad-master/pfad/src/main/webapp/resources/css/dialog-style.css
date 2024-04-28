@@ -1,0 +1,66 @@
+body {
+    background-color: whitesmoke;
+}
+
+.dialog table .required {
+    color: red;
+    padding-top: 7pt;
+    padding-left: 4pt;
+    line-height: 8pt;
+    font-weight: bold;
+}
+
+.dialog table .label {
+    width: 10%;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.dialog table .component {
+    width: 30em;
+    text-align: left;
+    vertical-align: top;
+    max-width: 400px;
+}
+
+.dialog table .label2 {
+    width: 5em;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.dialog table .component2 {
+    width: 20em;
+    text-align: left;
+    vertical-align: top;
+    max-width: 250px;
+}
+
+.dialog table .component2l {
+    width: 30em;
+    text-align: left;
+    vertical-align: top;
+    max-width: 330px;
+}
+
+.dialog table .label3 {
+    width: 5em;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.dialog table .component3 {
+    width: 10%;
+    text-align: left;
+    vertical-align: top;
+    max-width: 200px;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-title {
+    float: none;
+    font-size: 1rem;
+    margin: 0px;
+}

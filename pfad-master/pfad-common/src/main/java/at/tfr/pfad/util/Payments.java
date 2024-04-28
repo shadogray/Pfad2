@@ -39,7 +39,7 @@ public class Payments {
 	}
 
 	public List<Payment> filtered(final String filter) {
-		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Payment> cq = cb.createQuery(Payment.class);
 		Root<Payment> root = cq.from(Payment.class);
 		CriteriaQuery<Payment> query = cq.select(root);
@@ -48,7 +48,7 @@ public class Payments {
 			Stream.of(filter.toLowerCase().split(" ")).forEach(v->preds.add(cb.or(predicatesFor(v, cb, root))));
 			cq.where(cb.and(preds.toArray(new Predicate[preds.size()])));
 		}
-		return this.entityManager.createQuery(query.distinct(true)).setMaxResults(10).getResultList();
+		return entityManager.createQuery(query.distinct(true)).setMaxResults(10).getResultList();
 	}
 	
 	Predicate[] predicatesFor(String value, CriteriaBuilder cb, Root<Payment> root) {

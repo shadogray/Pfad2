@@ -121,7 +121,12 @@ public class MailerBean extends BaseBean<MailMessage> {
 			warn("No MailConfiguration found! Cannot execute any Mails.");
 		}
 	}
-	
+
+	@Override
+	public String update() {
+		return null;
+	}
+
 	public void reinit() {
 		testTo = null;
 	}

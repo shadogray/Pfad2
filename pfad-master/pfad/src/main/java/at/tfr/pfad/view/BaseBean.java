@@ -8,11 +8,7 @@
 package at.tfr.pfad.view;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import jakarta.annotation.PostConstruct;
@@ -29,6 +25,9 @@ import jakarta.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
+import org.omnifaces.cdi.Param;
+import org.omnifaces.util.Faces;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 
 import at.tfr.pfad.PaymentType;
@@ -55,6 +54,8 @@ import at.tfr.pfad.util.Bookings;
 import at.tfr.pfad.util.Payments;
 import at.tfr.pfad.util.SessionBean;
 import at.tfr.pfad.util.TemplateUtils;
+import org.primefaces.model.DialogFrameworkOptions;
+import org.primefaces.util.Constants;
 
 /**
  * @author u0x27vo
@@ -64,7 +65,7 @@ public abstract class BaseBean<T> implements Serializable {
 
 	protected Logger log = Logger.getLogger(getClass());
 	protected String menuItem = "base";
-	
+
 	@Inject
 	protected transient EntityManager entityManager;
 	@Resource
@@ -95,7 +96,7 @@ public abstract class BaseBean<T> implements Serializable {
 	protected transient ParticipationRepository participationRepo;
 	@Inject
 	protected transient ActivityRepository activityRepo;
-	@Inject 
+	@Inject
 	protected transient RegistrationRepository registrationRepo;
 	@Inject
 	protected transient PfadUI pfadUI;
@@ -107,12 +108,14 @@ public abstract class BaseBean<T> implements Serializable {
 	protected transient PaymentMapper paymentMapper;
 	@Inject
 	protected transient BookingMapper bookingMapper;
-	
+
+	protected String dialogSize = "600x400";
+
 	protected int page;
 	protected long count;
-	protected final Map<String,String> trueOnly = new LinkedHashMap<>();
-	protected final Map<String,String> falseOnly = new LinkedHashMap<>();
-	protected final Map<String,String> trueFalse = new LinkedHashMap<>();
+	protected final Map<String, String> trueOnly = new LinkedHashMap<>();
+	protected final Map<String, String> falseOnly = new LinkedHashMap<>();
+	protected final Map<String, String> trueFalse = new LinkedHashMap<>();
 
 	public BaseBean() {
 		trueFalse.put("Ja", Boolean.TRUE.toString());
@@ -120,16 +123,18 @@ public abstract class BaseBean<T> implements Serializable {
 		trueOnly.put("Ja", Boolean.TRUE.toString());
 		falseOnly.put("Nein", Boolean.FALSE.toString());
 	}
-	
+
 	@PostConstruct
 	public void init() {
-		log.debug("creating: "+sessionContext+" : "+Thread.currentThread()+" : "+this);
+		log.debug("creating: " + sessionContext + " : " + Thread.currentThread() + " : " + this);
 	}
-	
+
+	public abstract String update();
+
 	public boolean isAdmin() {
 		return sessionBean.isAdmin();
 	}
-	
+
 	public boolean isGruppe() {
 		return sessionBean.isGruppe();
 	}
@@ -145,7 +150,7 @@ public abstract class BaseBean<T> implements Serializable {
 	public boolean isVorstand() {
 		return sessionBean.isVorstand();
 	}
-	
+
 	public boolean isTrainer() {
 		return sessionBean.isTrainer();
 	}
@@ -153,19 +158,21 @@ public abstract class BaseBean<T> implements Serializable {
 	public boolean isViewAllowed() {
 		return true;
 	}
+
 	public abstract boolean isUpdateAllowed();
+
 	public boolean isDeleteAllowed() {
 		return isAdmin();
 	}
-	
+
 	public boolean isRegistrationEnd() {
 		return sessionBean.getRegistrationEndDate() != null && sessionBean.getRegistrationEndDate().before(new Date());
 	}
-	
+
 	public int getPageSize() {
 		return pageSize.getPageSize();
 	}
-	
+
 	public int getPage() {
 		return this.page;
 	}
@@ -177,9 +184,10 @@ public abstract class BaseBean<T> implements Serializable {
 	public long getCount() {
 		return this.count;
 	}
-	
-	
+
+
 	protected Long id;
+	protected T entity;
 	protected String focusId;
 
 	protected Payment payment;
@@ -197,7 +205,7 @@ public abstract class BaseBean<T> implements Serializable {
 	protected Payment paymentSearch;
 	protected Activity activitySearch;
 	protected Training trainingSearch;
-	
+
 	protected Member memberToAdd;
 	protected Booking bookingToAdd;
 	protected Payment paymentToAdd;
@@ -214,105 +222,117 @@ public abstract class BaseBean<T> implements Serializable {
 //		bookingExample.setMember(new Member());
 //		paymentExample.setPayer(new Member());
 	}
-	
-	
+
+
 	public Long getId() {
 		return this.id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public String getFocusId() {
 		return focusId;
 	}
+
 	public void setFocusId(String focusId) {
 		this.focusId = focusId;
 	}
-	
+
 	public void retrieve(Long id) {
 		this.id = id;
 		retrieve();
 	}
-	
+
 	public abstract void retrieve();
-	
+
 	public Member getMemberExample() {
 		return memberExample;
 	}
+
 	public void setMemberExample(Member memberExample) {
 		this.memberExample = memberExample;
 	}
+
 	public Booking getBookingExample() {
 		return bookingExample;
 	}
+
 	public void setBookingExample(Booking bookingExample) {
 		this.bookingExample = bookingExample;
 	}
+
 	public Payment getPaymentExample() {
 		return paymentExample;
 	}
+
 	public void setPaymentExample(Payment paymentExample) {
 		this.paymentExample = paymentExample;
 	}
+
 	public Activity getActivityExample() {
 		return activityExample;
 	}
+
 	public void setActivityExample(Activity activityExample) {
 		this.activityExample = activityExample;
 	}
+
 	public Training getTrainingExample() {
 		return trainingExample;
 	}
+
 	public void setTrainingExample(Training trainingExample) {
 		this.trainingExample = trainingExample;
 	}
+
 	public Payment getPayment() {
 		return payment;
 	}
-	
+
 	public List<Payment> getPayments(Booking b) {
 		if (b == null) {
 			return new ArrayList<>();
 		}
 		if (b.getId() == null) {
-			return new ArrayList<Payment>(b.getPayments().stream().sorted((x,y) -> x.getId().compareTo(y.getId())).collect(Collectors.toList()));
+			return new ArrayList<Payment>(b.getPayments().stream().sorted((x, y) -> x.getId().compareTo(y.getId())).collect(Collectors.toList()));
 		}
 		return paymentRepo.findByBooking(b);
 	}
-	
+
 	public void setPayment(Payment payment) {
 		if (this.payment == null || !this.payment.equals(payment)) {
 			this.payment = payment;
 		}
 	}
-	
+
 	public Member getMember() {
 		return member;
 	}
-	
+
 	public void setMember(Member member) {
 		this.member = member;
 	}
-	
+
 	public Booking getBooking() {
 		return booking;
 	}
-	
+
 	public void setBooking(Booking booking) {
 		this.booking = booking;
 	}
-	
+
 	public List<Booking> getBookings(Payment p) {
 		if (p == null) {
 			return new ArrayList<>();
 		}
 		if (p.getId() == null) {
-			return new ArrayList<Booking>(p.getBookings().stream().sorted((x,y) -> x.getId().compareTo(y.getId())).collect(Collectors.toList()));
+			return new ArrayList<Booking>(p.getBookings().stream().sorted((x, y) -> x.getId().compareTo(y.getId())).collect(Collectors.toList()));
 		}
 		return bookingRepo.findByPayment(p);
 	}
-	
+
 	public Participation getExampleParticipation() {
 		return exampleParticipation;
 	}
@@ -324,17 +344,17 @@ public abstract class BaseBean<T> implements Serializable {
 	public List<Booking> filterBookings(String filter) {
 		return filterBookings(null, null, filter);
 	}
-	
+
 	public List<Booking> filterBookings(FacesContext facesContext, UIComponent component, final String filter) {
 		if (StringUtils.isNotBlank(filter) && filter.length() < 16) {
-			if (component == null) 
+			if (component == null)
 				filteredBookings = bookings.filtered(filter);
-			else 
+			else
 				filteredBookings = bookings.filtered(facesContext, component, filter);
 		}
 		return filteredBookings;
 	}
-	
+
 	public List<Booking> getFilteredBookings() {
 		return filteredBookings;
 	}
@@ -342,34 +362,34 @@ public abstract class BaseBean<T> implements Serializable {
 	public List<Member> filterMembers(String filter) {
 		return filterMembers(null, null, filter);
 	}
-	
+
 	public List<Member> filterMembers(FacesContext facesContext, UIComponent component, final String filter) {
 		if (StringUtils.isNotBlank(filter) && filter.length() < 16) {
-			if (component == null) 
+			if (component == null)
 				filteredMembers = members.filtered(filter);
-			else 
+			else
 				filteredMembers = members.filtered(facesContext, component, filter);
 		}
 		return filteredMembers;
 	}
-	
+
 	public List<Member> getFilteredMembers() {
 		return filteredMembers;
 	}
-	
+
 	public List<Payment> filterPayments(String filter) {
 		return filterPayments(null, null, filter);
 	}
-	
+
 	public List<Payment> filterPayments(FacesContext facesContext, UIComponent component, final String filter) {
 		if (StringUtils.isNotBlank(filter) && filter.length() < 16) {
-			if (component == null) 
+			if (component == null)
 				filteredPayments = payments.filtered(filter);
 			filteredPayments = payments.filtered(facesContext, component, filter);
 		}
 		return filteredPayments;
 	}
-	
+
 	public List<Payment> getFilteredPayments() {
 		return filteredPayments;
 	}
@@ -474,40 +494,41 @@ public abstract class BaseBean<T> implements Serializable {
 		Member m2a = attachMemberToAdd();
 		if (m2a != null) {
 			if (m2a.equals(member) || m2a.getSiblings().contains(member)) {
-				throw new IllegalArgumentException("Cannot add Parent as Child: parent="+member+", childToAdd: "+m2a);
+				throw new IllegalArgumentException("Cannot add Parent as Child: parent=" + member + ", childToAdd: " + m2a);
 			}
 			member.getSiblings().add(m2a);
 		}
 	}
 
 	public Booking findBookingById(Long id) {
-		return this.entityManager.find(Booking.class, id);
+		return entityManager.find(Booking.class, id);
 	}
 
 	public Member findMemberById(Long id) {
-		return this.entityManager.find(Member.class, id);
+		return entityManager.find(Member.class, id);
 	}
-	
+
 	public Payment findPaymentById(Long id) {
-		return this.entityManager.find(Payment.class, id);
+		return entityManager.find(Payment.class, id);
 	}
-	
+
 	public Activity findActivityById(Long id) {
-		return this.entityManager.find(Activity.class, id);
+		return entityManager.find(Activity.class, id);
 	}
-	
+
 	public Training findTrainingById(Long id) {
-		return this.entityManager.find(Training.class, id);
+		return entityManager.find(Training.class, id);
 	}
 
 	public Participation findParticipationById(Long id) {
-		return this.entityManager.find(Participation.class, id);
+		return entityManager.find(Participation.class, id);
 	}
 
-	
+
 	public Booking getBookingToAdd() {
 		return bookingToAdd;
 	}
+
 	public void setBookingToAdd(Booking bookingToAdd) {
 		this.bookingToAdd = bookingToAdd;
 	}
@@ -555,6 +576,7 @@ public abstract class BaseBean<T> implements Serializable {
 	public Member getMemberToAdd() {
 		return memberToAdd;
 	}
+
 	public void setMemberToAdd(Member memberToAdd) {
 		this.memberToAdd = memberToAdd;
 	}
@@ -562,48 +584,50 @@ public abstract class BaseBean<T> implements Serializable {
 	public Payment getPaymentToAdd() {
 		return paymentToAdd;
 	}
+
 	public void setPaymentToAdd(Payment paymentToAdd) {
 		this.paymentToAdd = paymentToAdd;
 	}
-	
+
 	public Activity getActivityToAdd() {
 		return activityToAdd;
 	}
-	
+
 	public void setActivityToAdd(Activity activityToAdd) {
 		this.activityToAdd = activityToAdd;
 	}
-	
+
 	public Training getTrainingToAdd() {
 		return trainingToAdd;
 	}
-	
+
 	public void setTrainingToAdd(Training trainingToAdd) {
 		this.trainingToAdd = trainingToAdd;
 	}
-	
+
 	public String getNullString() {
 		return null;
 	}
-	
-	public void setNullString(String any) {}
-	
+
+	public void setNullString(String any) {
+	}
+
 	public SessionContext getSessionContext() {
 		return sessionContext;
 	}
-	
+
 	public T getAlwaysNull() {
 		return alwaysNull;
 	}
-	
+
 	public void setAlwaysNull(T alwaysNull) {
 		//this.alwaysNull = alwaysNull;
 	}
-	
+
 	public void info(String message) {
 		info(null, message);
 	}
-	
+
 	public void info(String id, String message) {
 		uiMessage(id, FacesMessage.SEVERITY_INFO, message, null);
 	}
@@ -611,7 +635,7 @@ public abstract class BaseBean<T> implements Serializable {
 	public void warn(String message) {
 		warn(null, message);
 	}
-	
+
 	public void warn(String id, String message) {
 		uiMessage(id, FacesMessage.SEVERITY_WARN, message, null);
 	}
@@ -619,12 +643,63 @@ public abstract class BaseBean<T> implements Serializable {
 	public void error(String message) {
 		error(null, message);
 	}
-	
+
 	public void error(String id, String message) {
 		uiMessage(id, FacesMessage.SEVERITY_ERROR, message, null);
 	}
 
 	public void uiMessage(String id, Severity severity, String message, String detail) {
 		FacesContext.getCurrentInstance().addMessage(id, new FacesMessage(severity, message, detail));
+	}
+
+	public void updateAndClose() {
+		update();
+		close();
+	}
+
+	DialogFrameworkOptions.Builder getDialog() {
+		return DialogFrameworkOptions.builder()
+				.modal(true)
+				.closable(true).closeOnEscape(true)
+				//.contentWidth("800px")
+				//.contentHeight("500px")
+				.resizable(true)
+				//.fitViewport(true)
+				//.width("800px")
+				//.height("600px")
+				;
+	}
+
+	public void show(String view, Long id) {
+		show(view, id, null);
+	}
+	public void show(String view, Long id, String dialogSize) {
+		Map<String, List<String>> values = new HashMap<>();
+		values.put("id", Arrays.asList(id.toString()));
+		DialogFrameworkOptions.Builder dialog = getDialog();
+
+		if (dialogSize == null) dialogSize = this.dialogSize;
+		if (StringUtils.isNotBlank(dialogSize) && dialogSize.matches("\\d+x\\d+")) {
+			String[] dims = dialogSize.split("x");
+			dialog.contentWidth(dims[0]);
+			dialog.contentHeight(dims[1]);
+		}
+		PrimeFaces.current().dialog().openDynamic(view, dialog.build(), values);
+	}
+
+	public void close() {
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		String pfdlgcid = params.get(Constants.DialogFramework.CONVERSATION_PARAM);
+		if (pfdlgcid != null) {
+			PrimeFaces.current().dialog().closeDynamic(entity);
+		}
+	}
+
+	public String getDialogSize() {
+		return dialogSize;
+	}
+
+	public void setDialogSize(String dialogSize) {
+		this.dialogSize = dialogSize;
 	}
 }

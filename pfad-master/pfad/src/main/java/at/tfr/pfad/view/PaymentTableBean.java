@@ -59,6 +59,11 @@ public class PaymentTableBean extends BaseBean<Payment> {
 		paymentDataModel.reloadRowData();
 	}
 
+	@Override
+	public String update() {
+		return null;
+	}
+
 	public List<ColumnModel> getColumns() {
 		return columns;
 	}

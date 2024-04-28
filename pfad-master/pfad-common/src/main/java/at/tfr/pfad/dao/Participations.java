@@ -46,7 +46,7 @@ public class Participations {
 	
 	public List<Participation> filtered(final String filter, final Long trainingId, final Long memberId) {
 		log.debug("filter: " + filter);
-		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Participation> cq = cb.createQuery(Participation.class);
 		Root<Participation> root = cq.from(Participation.class);
 		CriteriaQuery<Participation> query = cq.select(root);
@@ -67,7 +67,7 @@ public class Participations {
 		}
 		
 		cq.where(cb.and(preds.toArray(new Predicate[preds.size()])));
-		return this.entityManager.createQuery(query.distinct(true))
+		return entityManager.createQuery(query.distinct(true))
 				.setHint(Graphs.FETCHGRAPH, Graphs.createHint(entityManager, "fetchAll"))
 				.setMaxResults(30).getResultList();
 	}

@@ -40,7 +40,7 @@ public class Trainings {
 
 	public List<Training> filtered(final String filter) {
 		log.debug("filter: " + filter);
-		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Training> cq = cb.createQuery(Training.class);
 		Root<Training> root = cq.from(Training.class);
 		CriteriaQuery<Training> query = cq.select(root);
@@ -55,7 +55,7 @@ public class Trainings {
 		}
 		
 		cq.where(cb.and(preds.toArray(new Predicate[preds.size()])));
-		return this.entityManager.createQuery(query.distinct(true))
+		return entityManager.createQuery(query.distinct(true))
 				.setHint(Graphs.FETCHGRAPH, Graphs.createHint(entityManager, "fetchAll"))
 				.setMaxResults(30).getResultList();
 	}

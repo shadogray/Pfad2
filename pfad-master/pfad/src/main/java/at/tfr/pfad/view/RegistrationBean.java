@@ -62,13 +62,13 @@ public class RegistrationBean extends BaseBean<Registration> {
 		distinctSchoolEntry = regRepo.findDistinctSchoolEntry();
 		filterStati = new RegistrationStatus[] 
 				{ RegistrationStatus.ZusageGes, RegistrationStatus.AbsageGes}; 
-		rowVals.put("20", new Integer(20));
-		rowVals.put("50", new Integer(50));
-		rowVals.put("Alle", new Integer(10000));
+		rowVals.put("20", Integer.valueOf(20));
+		rowVals.put("50", Integer.valueOf(50));
+		rowVals.put("Alle", Integer.valueOf(10000));
 		rowDm = new ArrayList<>(rowVals.entrySet());
 		paginate();
 	}
-	
+
 	@PreDestroy
 	private void destroy() {
 		log.debug("destroyed: id="+id+", filter="+Arrays.toString(filterStati));
@@ -82,6 +82,7 @@ public class RegistrationBean extends BaseBean<Registration> {
 		} else {
 			registration = regRepo.findBy(id);
 		}
+		entity = registration;
 	}
 	
 	public String show(Long id) {
@@ -98,7 +99,7 @@ public class RegistrationBean extends BaseBean<Registration> {
 		dataModel = regRepo.queryBy(example, filterStati, aktiv, storno);
 	}
 
-	public void update() {
+	public String update() {
 		if (isUpdateAllowed()) {
 			registration = updateRegistration(registration);
 			id = registration.getId();
@@ -106,6 +107,7 @@ public class RegistrationBean extends BaseBean<Registration> {
 		} else {
 			error("Keine Berechtigung zur Änderung für Benutzer: " + sessionBean.getUser() + "!");
 		}
+		return null;
 	}
 
 	public Registration updateRegistration(Registration reg) {

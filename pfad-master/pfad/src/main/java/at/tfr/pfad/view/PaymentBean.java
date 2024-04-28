@@ -96,6 +96,7 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 					filteredMembers.add(payment.getPayer());
 				}
 			}
+			entity = payment;
 		} catch (Exception e) {
 			log.info("retrieve: "+e, e);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(e.getMessage()));
@@ -103,7 +104,7 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 	}
 
 	public Payment findById(Long id) {
-		return this.entityManager.find(Payment.class, id);
+		return entityManager.find(Payment.class, id);
 	}
 
 	/*
@@ -148,11 +149,11 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 				if (this.payment.getPaymentDate() == null) {
 					this.payment.setPaymentDate(new Date());
 				}
-				this.entityManager.persist(this.payment);
-				this.entityManager.flush();
+				entityManager.persist(this.payment);
+				entityManager.flush();
 			} else {
 				payment = entityManager.merge(payment);
-				this.entityManager.flush();
+				entityManager.flush();
 			}
 			payment.getBookings().stream().filter(b->b.getActivity() != null).map(b->b.getActivity()).collect(Collectors.toList()); // for lazy init exc
 			id = payment.getId();
@@ -178,6 +179,7 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 			if (bOpt.isPresent()) {
 				payment.getBookings().remove(bOpt.get());
 				//bOpt.get().getPayments().remove(payment); Not initialized - so not necessary?!
+				entityManager.flush();
 			}
 		} catch (Exception e) {
 			log.info("deleteBooking: "+e, e);
@@ -193,9 +195,12 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 		try {
 			Payment deletableEntity = findById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
+
+			close();
 			return "search?faces-redirect=true";
+
 		} catch (Exception e) {
 			log.info("update: "+e, e);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(e.getMessage()));
@@ -270,14 +275,14 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Payment> root = countCriteria.from(Payment.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(countCriteria, root, builder));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
@@ -286,7 +291,7 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 		root.join(Payment_.payer, JoinType.LEFT);
 		root.join(Payment_.bookings, JoinType.LEFT).join(Booking_.member, JoinType.LEFT).join(Member_.funktionen, JoinType.LEFT);
 		
-		TypedQuery<Payment> query = this.entityManager
+		TypedQuery<Payment> query = entityManager
 				.createQuery(criteria.select(root).distinct(true).where(getSearchPredicates(criteria, root, builder)));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
 		
@@ -399,8 +404,8 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 
 	public List<Payment> getAll() {
 
-		CriteriaQuery<Payment> criteria = this.entityManager.getCriteriaBuilder().createQuery(Payment.class);
-		return this.entityManager.createQuery(criteria.select(criteria.from(Payment.class))).getResultList();
+		CriteriaQuery<Payment> criteria = entityManager.getCriteriaBuilder().createQuery(Payment.class);
+		return entityManager.createQuery(criteria.select(criteria.from(Payment.class))).getResultList();
 	}
 
 	public Converter getConverter() {

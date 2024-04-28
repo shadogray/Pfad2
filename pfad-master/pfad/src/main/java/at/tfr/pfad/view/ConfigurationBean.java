@@ -77,7 +77,7 @@ public class ConfigurationBean extends BaseBean<Configuration> implements Serial
 		this.id = id;
 	}
 
-	private Configuration configuration;
+	private Configuration configuration = new Configuration();
 
 	public Configuration getConfiguration() {
 		return this.configuration;
@@ -102,11 +102,12 @@ public class ConfigurationBean extends BaseBean<Configuration> implements Serial
 		} else {
 			this.configuration = findById(getId());
 		}
+		entity = configuration;
 	}
 
 	public Configuration findById(Long id) {
 
-		return this.entityManager.find(Configuration.class, id);
+		return entityManager.find(Configuration.class, id);
 	}
 
 	/*
@@ -127,12 +128,12 @@ public class ConfigurationBean extends BaseBean<Configuration> implements Serial
 			validator.validate(configuration);
 
 			if (this.id == null) {
-				this.entityManager.persist(this.configuration);
-				this.entityManager.flush();
+				entityManager.persist(this.configuration);
+				entityManager.flush();
 				return "search?faces-redirect=true";
 			} else {
 				configuration = entityManager.merge(configuration);
-				this.entityManager.flush();
+				entityManager.flush();
 				return "view?faces-redirect=true&id=" + this.configuration.getId();
 			}
 		} catch (Exception e) {
@@ -152,8 +153,8 @@ public class ConfigurationBean extends BaseBean<Configuration> implements Serial
 		try {
 			Configuration deletableEntity = findById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -193,20 +194,20 @@ public class ConfigurationBean extends BaseBean<Configuration> implements Serial
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Configuration> root = countCriteria.from(Configuration.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<Configuration> criteria = builder.createQuery(Configuration.class);
 		root = criteria.from(Configuration.class);
-		TypedQuery<Configuration> query = this.entityManager
+		TypedQuery<Configuration> query = entityManager
 				.createQuery(criteria.select(root).where(getSearchPredicates(root)));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
 		this.pageItems = query.getResultList();
@@ -214,7 +215,7 @@ public class ConfigurationBean extends BaseBean<Configuration> implements Serial
 
 	private Predicate[] getSearchPredicates(Root<Configuration> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		if (!(sessionBean.isAdmin() || sessionBean.isGruppe())) {

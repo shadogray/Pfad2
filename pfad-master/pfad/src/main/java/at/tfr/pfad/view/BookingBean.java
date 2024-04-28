@@ -157,21 +157,27 @@ public class BookingBean extends BaseBean<Booking> implements Serializable {
 			return;
 		}
 
-		if (id == null) {
-			booking = getBookingExample();
-		} else {
-			booking = findById(getId());
-			booking.getPayments().size();
-			if (booking.getSquad() != null) {
-				booking.getSquad().getName();
+		try {
+			if (id == null) {
+				booking = getBookingExample();
+			} else {
+				booking = findById(getId());
+				booking.getPayments().size();
+				if (booking.getSquad() != null) {
+					booking.getSquad().getName();
+				}
+				filteredMembers.add(booking.getMember());
 			}
-			filteredMembers.add(booking.getMember());
+			entity = booking;
+		} catch (Exception e) {
+			log.info("retrieve: "+e, e);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(e.getMessage()));
 		}
 	}
 
 	public Booking findById(Long id) {
 
-		return this.entityManager.find(Booking.class, id);
+		return entityManager.find(Booking.class, id);
 	}
 
 	/*
@@ -227,9 +233,12 @@ public class BookingBean extends BaseBean<Booking> implements Serializable {
 				throw new Exception("Payments exists for Booking: " + deletableEntity.getPayments());
 			}
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
+
+			close();
 			return "search?faces-redirect=true";
+
 		} catch (Exception e) {
 			log.info("update: "+e, e);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(e.getMessage()));
@@ -263,19 +272,19 @@ public class BookingBean extends BaseBean<Booking> implements Serializable {
 //			return;
 //		}
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Booking> root = countCriteria.from(Booking.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<Booking> criteria = builder.createQuery(Booking.class);
 		root = criteria.from(Booking.class);
-		TypedQuery<Booking> query = this.entityManager
+		TypedQuery<Booking> query = entityManager
 				.createQuery(criteria.select(root).distinct(true).where(getSearchPredicates(root)));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
 		this.pageItems = query.getResultList().stream().map(b -> 
@@ -288,7 +297,7 @@ public class BookingBean extends BaseBean<Booking> implements Serializable {
 
 	private Predicate[] getSearchPredicates(Root<Booking> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		if (getBookingExample().getActivity() != null) {
@@ -354,8 +363,8 @@ public class BookingBean extends BaseBean<Booking> implements Serializable {
 
 	public List<Booking> getAll() {
 
-		CriteriaQuery<Booking> criteria = this.entityManager.getCriteriaBuilder().createQuery(Booking.class);
-		return this.entityManager.createQuery(criteria.select(criteria.from(Booking.class))).getResultList();
+		CriteriaQuery<Booking> criteria = entityManager.getCriteriaBuilder().createQuery(Booking.class);
+		return entityManager.createQuery(criteria.select(criteria.from(Booking.class))).getResultList();
 	}
 
 	public Converter getConverter() {

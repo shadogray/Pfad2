@@ -29,7 +29,7 @@
 
 	<ui:define name="main">
 
-		<h:form id="search">
+		<h:form id="searchForm">
 
 			<p:growl id="messages" showDetail="true" />
 			<p:focus />
@@ -111,8 +111,8 @@
 				value="#{registrationBean.dataModel}" var="r" editable="true" rows="20" rowIndexVar="rowIndex"
 				sortMode="multiple" rowStyleClass="#{r.status}" paginator="true" rowsPerPageLabel="Anzahl:" rowsPerPageTemplate="20,50,10000">
 
-				<p:ajax event="rowEdit" listener="#{registrationBean.onRowEdit}" update=":search:messages" />
-				<p:ajax event="rowEditCancel" listener="#{registrationBean.onRowCancel}" update=":search:messages" />
+				<p:ajax event="rowEdit" listener="#{registrationBean.onRowEdit}" update=":searchForm:messages" />
+				<p:ajax event="rowEditCancel" listener="#{registrationBean.onRowCancel}" update=":searchForm:messages" />
 
 				<p:column headerText="Nr" style="width:2em">
 					<h:outputText value="#{rowIndex+1}" />
@@ -144,7 +144,7 @@
 							<h:panelGroup styleClass="#{r.status}">
 								<p:selectOneMenu value="#{r.status}" >
 									<f:selectItems value="#{registrationBean.stati}" />
-									<f:ajax listener="#{registrationBean.updateStatus}" execute="@this" render=":search:messages"/>
+									<f:ajax listener="#{registrationBean.updateStatus}" execute="@this" render=":searchForm:messages"/>
 									<f:attribute name="regId" value="#{r.id}"/>
 								</p:selectOneMenu>
 							</h:panelGroup>

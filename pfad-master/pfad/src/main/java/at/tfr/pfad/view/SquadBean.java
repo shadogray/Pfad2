@@ -129,6 +129,7 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 			this.squad.getScouts().size();
 			this.squad.getAssistants().size();
 		}
+		entity = squad;
 		init();
 		scouts = new CollectionDataModel<>(squad.getScouts());
 		assistants = new CollectionDataModel<>(squad.getAssistants());
@@ -136,7 +137,7 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 
 	public Squad findById(Long id) {
 
-		return this.entityManager.find(Squad.class, id);
+		return entityManager.find(Squad.class, id);
 	}
 
 	/*
@@ -175,7 +176,7 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 			if (this.id == null) {
 				this.squad.setCreated(new Date());
 				this.squad.setCreatedBy(sessionContext.getCallerPrincipal().getName());
-				this.entityManager.persist(this.squad);
+				entityManager.persist(this.squad);
 				if (this.squad.getId() != null) {
 					return "view?faces-redirect=true&id=" + this.squad.getId();
 				}
@@ -201,8 +202,8 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 		try {
 			Squad deletableEntity = findById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -242,14 +243,14 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Squad> root = countCriteria.from(Squad.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
@@ -257,7 +258,7 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 		root = criteria.from(Squad.class);
 		root.fetch(Squad_.assistants);
 		root.fetch(Squad_.scouts);
-		TypedQuery<Squad> query = this.entityManager
+		TypedQuery<Squad> query = entityManager
 				.createQuery(criteria.select(root).where(getSearchPredicates(root)));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
 		this.pageItems = query.getResultList().stream().sorted().collect(Collectors.toList());
@@ -265,7 +266,7 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 
 	private Predicate[] getSearchPredicates(Root<Squad> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		SquadType type = this.example.getType();
@@ -303,8 +304,8 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 
 	public List<Squad> getAll() {
 
-		CriteriaQuery<Squad> criteria = this.entityManager.getCriteriaBuilder().createQuery(Squad.class);
-		return this.entityManager.createQuery(criteria.select(criteria.from(Squad.class))).getResultList().stream()
+		CriteriaQuery<Squad> criteria = entityManager.getCriteriaBuilder().createQuery(Squad.class);
+		return entityManager.createQuery(criteria.select(criteria.from(Squad.class))).getResultList().stream()
 				.sorted().collect(Collectors.toList());
 	}
 

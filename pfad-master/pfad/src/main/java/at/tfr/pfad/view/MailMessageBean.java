@@ -105,11 +105,12 @@ public class MailMessageBean extends BaseBean<MailMessage> implements Serializab
 		} else {
 			this.MailMessage = findById(getId());
 		}
+		entity = MailMessage;
 	}
 
 	public MailMessage findById(Long id) {
 
-		return this.entityManager.find(MailMessage.class, id);
+		return entityManager.find(MailMessage.class, id);
 	}
 
 	/*
@@ -130,12 +131,12 @@ public class MailMessageBean extends BaseBean<MailMessage> implements Serializab
 			validator.validate(MailMessage);
 
 			if (this.id == null) {
-				this.entityManager.persist(this.MailMessage);
-				this.entityManager.flush();
+				entityManager.persist(this.MailMessage);
+				entityManager.flush();
 				return "search?faces-redirect=true";
 			} else {
 				MailMessage = entityManager.merge(MailMessage);
-				this.entityManager.flush();
+				entityManager.flush();
 				return "view?faces-redirect=true&id=" + this.MailMessage.getId();
 			}
 		} catch (Exception e) {
@@ -153,8 +154,8 @@ public class MailMessageBean extends BaseBean<MailMessage> implements Serializab
 		try {
 			MailMessage deletableEntity = findById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -210,20 +211,20 @@ public class MailMessageBean extends BaseBean<MailMessage> implements Serializab
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<MailMessage> root = countCriteria.from(MailMessage.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<MailMessage> criteria = builder.createQuery(MailMessage.class);
 		root = criteria.from(MailMessage.class);
-		TypedQuery<MailMessage> query = this.entityManager
+		TypedQuery<MailMessage> query = entityManager
 				.createQuery(criteria.select(root).where(getSearchPredicates(root))
 						.orderBy(builder.desc(root.get(MailMessage_.id))));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
@@ -232,7 +233,7 @@ public class MailMessageBean extends BaseBean<MailMessage> implements Serializab
 
 	private Predicate[] getSearchPredicates(Root<MailMessage> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		String receiver = this.example.getReceiver();
@@ -287,9 +288,9 @@ public class MailMessageBean extends BaseBean<MailMessage> implements Serializab
 
 	public List<MailMessage> getAll() {
 
-		CriteriaQuery<MailMessage> criteria = this.entityManager.getCriteriaBuilder()
+		CriteriaQuery<MailMessage> criteria = entityManager.getCriteriaBuilder()
 				.createQuery(MailMessage.class);
-		return this.entityManager.createQuery(criteria.select(criteria.from(MailMessage.class))).getResultList();
+		return entityManager.createQuery(criteria.select(criteria.from(MailMessage.class))).getResultList();
 	}
 
 	public Converter getConverter() {

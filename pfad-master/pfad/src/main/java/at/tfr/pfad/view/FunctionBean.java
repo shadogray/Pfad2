@@ -98,11 +98,12 @@ public class FunctionBean extends BaseBean<Function> implements Serializable {
 		} else {
 			this.function = findById(getId());
 		}
+		entity = function;
 	}
 
 	public Function findById(Long id) {
 
-		return this.entityManager.find(Function.class, id);
+		return entityManager.find(Function.class, id);
 	}
 
 	/*
@@ -123,7 +124,7 @@ public class FunctionBean extends BaseBean<Function> implements Serializable {
 
 		try {
 			if (this.id == null) {
-				this.entityManager.persist(this.function);
+				entityManager.persist(this.function);
 				return "search?faces-redirect=true";
 			} else {
 				function = entityManager.merge(function);
@@ -146,8 +147,8 @@ public class FunctionBean extends BaseBean<Function> implements Serializable {
 		try {
 			Function deletableEntity = findById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -187,20 +188,20 @@ public class FunctionBean extends BaseBean<Function> implements Serializable {
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Function> root = countCriteria.from(Function.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<Function> criteria = builder.createQuery(Function.class);
 		root = criteria.from(Function.class);
-		TypedQuery<Function> query = this.entityManager
+		TypedQuery<Function> query = entityManager
 				.createQuery(criteria.select(root).where(getSearchPredicates(root)));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
 		this.pageItems = query.getResultList();
@@ -208,7 +209,7 @@ public class FunctionBean extends BaseBean<Function> implements Serializable {
 
 	private Predicate[] getSearchPredicates(Root<Function> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		String function = this.example.getFunction();

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+    template="/resources/scaffold/dialogTemplate.xhtml">
+    <f:metadata>
+        <f:viewParam name="id" value="#{bookingBean.id}"/>
+        <f:viewParam name="dialogSize" value="#{bookingBean.dialogSize}"/>
+        <f:viewAction action="#{bookingBean.retrieve()}"/>
+    </f:metadata>
+
+    <ui:define name="title">
+        <title>Buchung: #{bookingBean.booking}</title>
+    </ui:define>
+
+    <ui:define name="main">
+        <h:form id="editBooking">
+
+            <h:messages styleClass="error" />
+
+            <h:panelGroup rendered="#{bookingBean.booking != null}">
+                <h:panelGrid columns="3">
+                    <h:outputLabel value="Aktivität:" />
+                    <h:outputText value="#{bookingBean.booking.activity}" />
+                    <h:outputText />
+
+                    <h:outputLabel value="Teilnehmer:" />
+                    <h:outputText value="#{bookingBean.booking.member}" />
+                    <h:outputText />
+
+                    <h:outputLabel value="Status:" />
+                    <h:panelGroup>
+                        <h:selectOneMenu id="bookingBeanBookingStatus" value="#{bookingBean.booking.status}" required="true">
+                            <f:selectItems value="#{bookingBean.stati}" />
+                        </h:selectOneMenu>
+                        <h:message for="bookingBeanBookingStatus" styleClass="error" />
+                    </h:panelGroup>
+                    <h:outputText />
+
+                    <h:outputLabel value="Bemerkung:" />
+                    <h:panelGroup>
+                        <h:inputText id="bookingBeanBookingComment" value="#{bookingBean.booking.comment}" />
+                        <h:message for="bookingBeanBookingComment" styleClass="error" />
+                    </h:panelGroup>
+                    <h:outputText />
+                </h:panelGrid>
+                <h:messages errorClass="error" />
+                <h:panelGrid columns="4" width="80%" style="text-align: center">
+                    <h:commandLink id="deleteBooking" value="Delete" styleClass="btn btn-primary"
+                        disabled="#{!bookingBean.deleteAllowed}">
+                        <f:ajax execute="@form" listener="#{bookingBean.delete}" render="@form"/>
+                    </h:commandLink>
+                    <h:commandLink id="saveBooking" value="Speichern" styleClass="btn btn-primary"
+                        disabled="#{!bookingBean.updateAllowed}">
+                        <f:ajax execute="@form" listener="#{bookingBean.update}" render="@form"/>
+                    </h:commandLink>
+                    <h:commandLink id="saveAndCloseBooking" value="Speichern/Schließen" styleClass="btn btn-primary"
+                        disabled="#{!bookingBean.updateAllowed}">
+                        <f:ajax execute="@form" listener="#{bookingBean.updateAndClose}" render="@form"/>
+                    </h:commandLink>
+                    <p:commandLink value="Abbruch" action="#{bookingBean.close}" styleClass="btn btn-primary" />
+                </h:panelGrid>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>

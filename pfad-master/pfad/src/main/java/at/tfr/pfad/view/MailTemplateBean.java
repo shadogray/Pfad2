@@ -101,11 +101,12 @@ public class MailTemplateBean extends BaseBean<MailTemplate> implements Serializ
 		} else {
 			this.MailTemplate = findById(getId());
 		}
+		entity = MailTemplate;
 	}
 
 	public MailTemplate findById(Long id) {
 
-		return this.entityManager.find(MailTemplate.class, id);
+		return entityManager.find(MailTemplate.class, id);
 	}
 
 	/*
@@ -126,12 +127,12 @@ public class MailTemplateBean extends BaseBean<MailTemplate> implements Serializ
 			validator.validate(MailTemplate);
 
 			if (this.id == null) {
-				this.entityManager.persist(this.MailTemplate);
-				this.entityManager.flush();
+				entityManager.persist(this.MailTemplate);
+				entityManager.flush();
 				return "search?faces-redirect=true";
 			} else {
 				MailTemplate = entityManager.merge(MailTemplate);
-				this.entityManager.flush();
+				entityManager.flush();
 				return "view?faces-redirect=true&id=" + this.MailTemplate.getId();
 			}
 		} catch (Exception e) {
@@ -149,8 +150,8 @@ public class MailTemplateBean extends BaseBean<MailTemplate> implements Serializ
 		try {
 			MailTemplate deletableEntity = findById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -190,20 +191,20 @@ public class MailTemplateBean extends BaseBean<MailTemplate> implements Serializ
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<MailTemplate> root = countCriteria.from(MailTemplate.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<MailTemplate> criteria = builder.createQuery(MailTemplate.class);
 		root = criteria.from(MailTemplate.class);
-		TypedQuery<MailTemplate> query = this.entityManager
+		TypedQuery<MailTemplate> query = entityManager
 				.createQuery(criteria.select(root).where(getSearchPredicates(root))
 						.orderBy(builder.asc(root.get(MailTemplate_.name))));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
@@ -212,7 +213,7 @@ public class MailTemplateBean extends BaseBean<MailTemplate> implements Serializ
 
 	private Predicate[] getSearchPredicates(Root<MailTemplate> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		String name = this.example.getName();
@@ -251,9 +252,9 @@ public class MailTemplateBean extends BaseBean<MailTemplate> implements Serializ
 
 	public List<MailTemplate> getAll() {
 
-		CriteriaQuery<MailTemplate> criteria = this.entityManager.getCriteriaBuilder()
+		CriteriaQuery<MailTemplate> criteria = entityManager.getCriteriaBuilder()
 				.createQuery(MailTemplate.class);
-		return this.entityManager.createQuery(criteria.select(criteria.from(MailTemplate.class))).getResultList();
+		return entityManager.createQuery(criteria.select(criteria.from(MailTemplate.class))).getResultList();
 	}
 
 	public Converter getConverter() {

@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -39,6 +38,7 @@
 						<h:panelGroup>
 							<h:selectOneListbox id="createBookingsBeanBookingActivity" value="#{createBookingsBean.activity}"
 								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItem itemLabel="--" noSelectionOption="true"/>
 								<f:selectItems value="#{activityBean.active}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
 							</h:selectOneListbox>
 						</h:panelGroup>
@@ -48,6 +48,7 @@
 						<h:panelGroup>
 							<h:selectManyListbox id="createBookingsBeanBookingSquads" value="#{createBookingsBean.squads}" converter="#{squadBean.converter}"
 								required="true" size="4">
+								<f:selectItem itemLabel="--" noSelectionOption="true"/>
 								<f:selectItems value="#{squadBean.all}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
 							</h:selectManyListbox>
 						</h:panelGroup>
@@ -79,6 +80,7 @@
 						<h:panelGroup>
 							<h:selectOneListbox id="createBookingsBeanBookingSourceActivity" value="#{createBookingsBean.targetActivity}"
 								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItem itemLabel="--" noSelectionOption="true"/>
 								<f:selectItems value="#{activityBean.active}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
 							</h:selectOneListbox>
 						</h:panelGroup>
@@ -87,6 +89,7 @@
 						<h:outputLabel for="createBookingsBeanBookingSource" value="Auswahl:" />
 						<h:panelGroup>
 							<h:selectOneListbox id="createBookingsBeanBookingSource" value="#{createBookingsBean.dataSourceKey}" required="true" size="4">
+								<f:selectItem itemLabel="--" noSelectionOption="true"/>
 								<f:selectItems value="#{createBookingsBean.dataSourceKeys}" />
 							</h:selectOneListbox>
 						</h:panelGroup>
@@ -113,6 +116,7 @@
 						<h:panelGroup>
 							<h:selectOneListbox id="createBookingsBeanBookingActivityAllActive" value="#{createBookingsBean.activity}"
 								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItem itemLabel="--" noSelectionOption="true"/>
 								<f:selectItems value="#{activityBean.active}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
 							</h:selectOneListbox>
 						</h:panelGroup>
@@ -140,6 +144,7 @@
 						<h:panelGroup>
 							<h:selectOneListbox id="createBookingsBeanBookingActivitySource" value="#{createBookingsBean.sourceActivity}"
 								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItem itemLabel="--" noSelectionOption="true"/>
 								<f:selectItems value="#{activityBean.all}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
 								<f:ajax render="createBookingsFromSource" />
 							</h:selectOneListbox>
@@ -150,6 +155,7 @@
 						<h:panelGroup>
 							<h:selectOneListbox id="createBookingsBeanBookingActivitySourceTarget" value="#{createBookingsBean.targetActivity}"
 								converter="#{activityBean.converter}" required="true" size="4">
+								<f:selectItem itemLabel="--" noSelectionOption="true"/>
 								<f:selectItems value="#{activityBean.active}" var="item" itemLabel="#{item.name}" itemValue="#{item.idStr}" />
 								<f:ajax render="createBookingsFromSource" />
 							</h:selectOneListbox>

@@ -129,6 +129,7 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 			this.validationResults = validateMember(member, false);
 			this.registration = registrationRepo.findByMember(member).stream().findFirst().orElse(null);
 		}
+		entity = member;
 	}
 
 	public Member findById(Long id) {
@@ -235,8 +236,8 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 			// cleanup of relationships:
 			deletableEntity.getMailMessages().stream().forEach(mm -> mm.setMember(null));
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -279,21 +280,21 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Member> root = countCriteria.from(Member.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<Member> criteria = builder.createQuery(Member.class);
 		root = criteria.from(Member.class);
 		root.fetch(Member_.trupp, JoinType.LEFT);
-		TypedQuery<Member> query = this.entityManager.createQuery(
+		TypedQuery<Member> query = entityManager.createQuery(
 				criteria.select(root).where(getSearchPredicates(root)).distinct(true).orderBy(builder.asc(root.get(Member_.name)),
 						builder.asc(root.get(Member_.vorname)), builder.asc(root.get(Member_.id))));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
@@ -303,7 +304,7 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 
 	private Predicate[] getSearchPredicates(Root<Member> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		String BVKey = getMemberExample().getBVKey();
@@ -456,22 +457,22 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 
 	public List<Member> getAll() {
 
-		CriteriaQuery<Member> criteria = this.entityManager.getCriteriaBuilder().createQuery(Member.class);
-		return this.entityManager.createQuery(criteria.select(criteria.from(Member.class))).getResultList().stream()
+		CriteriaQuery<Member> criteria = entityManager.getCriteriaBuilder().createQuery(Member.class);
+		return entityManager.createQuery(criteria.select(criteria.from(Member.class))).getResultList().stream()
 				.sorted().collect(Collectors.toList());
 	}
 
 	public List<Member> getSelectableLeaders() {
 
-		CriteriaQuery<Member> criteria = this.entityManager.getCriteriaBuilder().createQuery(Member.class);
-		return this.entityManager.createQuery(criteria.select(criteria.from(Member.class))).getResultList().stream()
+		CriteriaQuery<Member> criteria = entityManager.getCriteriaBuilder().createQuery(Member.class);
+		return entityManager.createQuery(criteria.select(criteria.from(Member.class))).getResultList().stream()
 				.filter(m -> m.isAktiv()).sorted().collect(Collectors.toList());
 	}
 
 	public List<Member> getActive() {
 
-		CriteriaQuery<Member> criteria = this.entityManager.getCriteriaBuilder().createQuery(Member.class);
-		List<Member> resultList = this.entityManager.createQuery(criteria.select(criteria.from(Member.class))).getResultList();
+		CriteriaQuery<Member> criteria = entityManager.getCriteriaBuilder().createQuery(Member.class);
+		List<Member> resultList = entityManager.createQuery(criteria.select(criteria.from(Member.class))).getResultList();
 		if (isAdmin()) {
 			return resultList;
 		}
@@ -481,8 +482,8 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 
 	public List<Member> getActiveNoVollzahler() {
 
-		CriteriaQuery<Member> criteria = this.entityManager.getCriteriaBuilder().createQuery(Member.class);
-		List<Member> resultList = this.entityManager.createQuery(criteria.select(criteria.from(Member.class))).getResultList();
+		CriteriaQuery<Member> criteria = entityManager.getCriteriaBuilder().createQuery(Member.class);
+		List<Member> resultList = entityManager.createQuery(criteria.select(criteria.from(Member.class))).getResultList();
 		if (isAdmin()) {
 			return resultList;
 		}

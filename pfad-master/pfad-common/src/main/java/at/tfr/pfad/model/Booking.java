@@ -6,25 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedEntityGraphs;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlID;
@@ -122,6 +104,11 @@ public class Booking extends BaseEntity implements Auditable, Presentable, Compa
 
 	public void setVersion(final int version) {
 		this.version = version;
+	}
+
+	@PreRemove
+	private void preRemove() {
+		getPayments().forEach(payment -> payment.getBookings().remove(this));
 	}
 
 	@XmlTransient
@@ -237,12 +224,8 @@ public class Booking extends BaseEntity implements Auditable, Presentable, Compa
 						+ activity.getStartString()
 				: getClass().getSimpleName());
 		if (member != null) {
-			result += " " + member.getName() + " " + member.getVorname() + ", "
-					+ member.getGebJahr() + ", " + member.getPLZ() + ", "
-					+ member.getStrasse();
+			result += " " + member.getShortString();
 		}
-		if (comment != null && !comment.trim().isEmpty())
-			result += " " + comment;
 		return result;
 	}
 	

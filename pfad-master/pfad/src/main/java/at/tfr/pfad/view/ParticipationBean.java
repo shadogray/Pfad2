@@ -124,6 +124,7 @@ public class ParticipationBean extends BaseBean<Participation> implements Serial
 		} else {
 			this.participation = findParticipationById(getId());
 		}
+		entity = participation;
 	}
 
 	/*
@@ -142,7 +143,7 @@ public class ParticipationBean extends BaseBean<Participation> implements Serial
 
 		try {
 			if (this.id == null) {
-				this.entityManager.persist(this.participation);
+				entityManager.persist(this.participation);
 				return "search?faces-redirect=true";
 			} else {
 				participation = entityManager.merge(participation);
@@ -163,8 +164,8 @@ public class ParticipationBean extends BaseBean<Participation> implements Serial
 		try {
 			Participation deletableEntity = findParticipationById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -204,20 +205,20 @@ public class ParticipationBean extends BaseBean<Participation> implements Serial
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Participation> root = countCriteria.from(Participation.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<Participation> criteria = builder.createQuery(Participation.class);
 		root = criteria.from(Participation.class);
-		TypedQuery<Participation> query = this.entityManager
+		TypedQuery<Participation> query = entityManager
 				.createQuery(criteria.select(root).where(getSearchPredicates(root)));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
 		this.pageItems = query.getResultList();
@@ -225,7 +226,7 @@ public class ParticipationBean extends BaseBean<Participation> implements Serial
 
 	private Predicate[] getSearchPredicates(Root<Participation> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		Date start = this.example.getStart();

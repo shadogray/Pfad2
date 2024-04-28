@@ -106,6 +106,7 @@ public class ActivityBean extends BaseBean<Activity> implements Serializable {
 		} else {
 			this.activity = findActivityById(getId());
 		}
+		entity = activity;
 	}
 
 	public Activity findActivityById(Long id) {
@@ -129,7 +130,7 @@ public class ActivityBean extends BaseBean<Activity> implements Serializable {
 
 		try {
 			if (this.id == null) {
-				this.entityManager.persist(this.activity);
+				entityManager.persist(this.activity);
 				return "search?faces-redirect=true";
 			} else {
 				activity = entityManager.merge(activity);
@@ -150,8 +151,8 @@ public class ActivityBean extends BaseBean<Activity> implements Serializable {
 		try {
 			Activity deletableEntity = findActivityById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -191,31 +192,33 @@ public class ActivityBean extends BaseBean<Activity> implements Serializable {
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Activity> root = countCriteria.from(Activity.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<Activity> criteria = builder.createQuery(Activity.class);
 		root = criteria.from(Activity.class);
-		TypedQuery<Activity> query = this.entityManager
-				.createQuery(criteria.select(root).where(getSearchPredicates(root)));
+		criteria.select(root).where(getSearchPredicates(root));
+		criteria.orderBy(builder.desc(root.get("id")));
+
+		TypedQuery<Activity> query = entityManager.createQuery(criteria);
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
 		List<Activity> activities = query.getResultList();
 		Map<Activity,Number> group = bookingRepo.summarize(activities);
-		activities.forEach(a -> { if (!group.containsKey(a)) group.put(a, new Integer(0)); });
+		activities.forEach(a -> { if (!group.containsKey(a)) group.put(a, Integer.valueOf(0)); });
 		this.pageItems = group.entrySet().stream().map(e -> new ActivityUI(e.getKey(),e.getValue())).collect(Collectors.toList());
 	}
 
 	private Predicate[] getSearchPredicates(Root<Activity> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		String name = this.example.getName();
@@ -244,11 +247,11 @@ public class ActivityBean extends BaseBean<Activity> implements Serializable {
 	 */
 
 	public List<Activity> getAll() {
-		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Activity> criteria = cb.createQuery(Activity.class);
 		Root<Activity> root = criteria.from(Activity.class);
 		criteria = criteria.select(root).orderBy(cb.desc(root.get(Activity_.startDate)), cb.asc(root.get(Activity_.name)));
-		return this.entityManager.createQuery(criteria)
+		return entityManager.createQuery(criteria)
 				.getResultList().stream().sorted((x,y)->x.getName().compareTo(y.getName())).collect(Collectors.toList());
 	}
 	

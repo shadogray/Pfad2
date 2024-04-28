@@ -44,7 +44,7 @@ public class Members {
 	
 	public List<Member> filtered(final String filter, final Long truppId) {
 		log.debug("filter: " + filter);
-		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Member> cq = cb.createQuery(Member.class);
 		Root<Member> root = cq.from(Member.class);
 		CriteriaQuery<Member> query = cq.select(root);
@@ -62,7 +62,7 @@ public class Members {
 		}
 		
 		cq.where(cb.and(preds.toArray(new Predicate[preds.size()])));
-		return this.entityManager.createQuery(query.distinct(true))
+		return entityManager.createQuery(query.distinct(true))
 				.setHint(Graphs.FETCHGRAPH, Graphs.createHint(entityManager, "fetchAll"))
 				.setMaxResults(30).getResultList();
 	}

@@ -44,7 +44,7 @@ public class MailTemplates {
 	
 	public List<MailTemplate> filtered(final String filter, final Long truppId) {
 		log.debug("filter: " + filter);
-		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<MailTemplate> cq = cb.createQuery(MailTemplate.class);
 		Root<MailTemplate> root = cq.from(MailTemplate.class);
 		CriteriaQuery<MailTemplate> query = cq.select(root);
@@ -59,7 +59,7 @@ public class MailTemplates {
 		}
 		
 		cq.where(cb.and(preds.toArray(new Predicate[preds.size()])));
-		return this.entityManager.createQuery(query.distinct(true))
+		return entityManager.createQuery(query.distinct(true))
 				.setMaxResults(30).getResultList();
 	}
 

@@ -80,6 +80,11 @@ public class BookingTableBean extends BaseBean<Booking> {
 		bookingDataModel.reloadRowData();
 	}
 
+	@Override
+	public String update() {
+		return null;
+	}
+
 	public List<ColumnModel> getColumns() {
 		return columns;
 	}

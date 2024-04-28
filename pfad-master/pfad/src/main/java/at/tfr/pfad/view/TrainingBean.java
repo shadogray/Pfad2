@@ -103,6 +103,7 @@ public class TrainingBean extends BaseBean<Training> implements Serializable {
 		} else {
 			this.training = findById(getId());
 		}
+		entity = training;
 	}
 
 	public Training findById(Long id) {
@@ -126,7 +127,7 @@ public class TrainingBean extends BaseBean<Training> implements Serializable {
 
 		try {
 			if (this.id == null) {
-				this.entityManager.persist(this.training);
+				entityManager.persist(this.training);
 				return "search?faces-redirect=true";
 			} else {
 				training = entityManager.merge(training);
@@ -147,8 +148,8 @@ public class TrainingBean extends BaseBean<Training> implements Serializable {
 		try {
 			Training deletableEntity = findById(getId());
 
-			this.entityManager.remove(deletableEntity);
-			this.entityManager.flush();
+			entityManager.remove(deletableEntity);
+			entityManager.flush();
 			return "search?faces-redirect=true";
 		} catch (Exception e) {
 			log.info("update: "+e, e);
@@ -188,20 +189,20 @@ public class TrainingBean extends BaseBean<Training> implements Serializable {
 
 	public void paginate() {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		// Populate this.count
 
 		CriteriaQuery<Long> countCriteria = builder.createQuery(Long.class);
 		Root<Training> root = countCriteria.from(Training.class);
 		countCriteria = countCriteria.select(builder.count(root)).where(getSearchPredicates(root));
-		this.count = this.entityManager.createQuery(countCriteria).getSingleResult();
+		this.count = entityManager.createQuery(countCriteria).getSingleResult();
 
 		// Populate this.pageItems
 
 		CriteriaQuery<Training> criteria = builder.createQuery(Training.class);
 		root = criteria.from(Training.class);
-		TypedQuery<Training> query = this.entityManager
+		TypedQuery<Training> query = entityManager
 				.createQuery(criteria.select(root).where(getSearchPredicates(root)));
 		query.setFirstResult(this.page * getPageSize()).setMaxResults(getPageSize());
 		this.pageItems = query.getResultList();
@@ -209,7 +210,7 @@ public class TrainingBean extends BaseBean<Training> implements Serializable {
 
 	private Predicate[] getSearchPredicates(Root<Training> root) {
 
-		CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		List<Predicate> predicatesList = new ArrayList<Predicate>();
 
 		String name = this.example.getName();
@@ -247,9 +248,9 @@ public class TrainingBean extends BaseBean<Training> implements Serializable {
 	
 	public List<Training> getAll() {
 
-		CriteriaQuery<Training> criteria = this.entityManager.getCriteriaBuilder()
+		CriteriaQuery<Training> criteria = entityManager.getCriteriaBuilder()
 				.createQuery(Training.class);
-		return this.entityManager.createQuery(criteria.select(criteria.from(Training.class)))
+		return entityManager.createQuery(criteria.select(criteria.from(Training.class)))
 				.getResultList().stream().sorted((x,y)->x.getName().compareTo(y.getName())).collect(Collectors.toList());
 	}
 	
