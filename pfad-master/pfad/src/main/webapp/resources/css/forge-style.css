@@ -77,6 +77,13 @@ legend {
 	font-weight: bold;
 }
 
+body .ui-dialog .ui-dialog-titlebar .ui-dialog-title {
+	font-size: 1rem;
+}
+body .ui-dialog .ui-dialog-titlebar {
+	padding: 1rem 2rem .1rem 2rem;
+}
+
 /* Bootstrap overrides: */
 label, input, button, select, textarea {
     font-size: 11px;
