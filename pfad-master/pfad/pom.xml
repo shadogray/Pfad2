@@ -24,6 +24,12 @@
 			<artifactId>jboss-logging</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>jakarta.faces</artifactId>
+			<version>4.0.4</version>
+			<scope>provided</scope>
+		</dependency>
  		<dependency>
 			<groupId>org.omnifaces</groupId>
 			<artifactId>omnifaces</artifactId>

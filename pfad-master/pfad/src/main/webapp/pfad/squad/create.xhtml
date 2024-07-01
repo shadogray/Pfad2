@@ -80,8 +80,7 @@
 				<h:outputText />
 				<h:outputLabel for="squadBeanSquadAssistants" value="Assistenten:" />
 				<h:panelGroup>
-					<ui:param name="_collection" value="#{squadBean.squad.assistants}" />
-					<h:dataTable id="squadBeanSquadAssistants" styleClass="data-table" value="#{_collection}"
+					<h:dataTable id="squadBeanSquadAssistants" styleClass="data-table" value="#{squadBean.squad.assistants}"
 						var="_item">
 						<h:column>
 							<f:facet name="header">
@@ -138,20 +137,19 @@
 							</h:link>
 						</h:column>
 						<h:column footerClass="remove-column" headerClass="remove-column">
-							<h:commandLink action="#{_collection.remove(_item)}" styleClass="remove-button" />
+							<h:commandLink action="#{squadBean.squad.assistants.remove(_item)}" styleClass="remove-button" />
 						</h:column>
 					</h:dataTable>
-					<h:panelGrid columnClasses=",remove-column" columns="3" styleClass="data-table-footer">
+					<h:panelGrid id="squadBeanAssistantAdd" columnClasses=",remove-column" columns="3" styleClass="data-table-footer">
 						<h:selectOneMenu converter="#{memberBean.converter}" id="squadBeanSquadAssistantsSelect"
-							value="#{requestScope['squadBeanSquadAssistantsSelect']}">
+							value="#{squadBean.memberToAdd}">
 							<f:selectItem noSelectionOption="true"/>
-							<f:selectItems itemLabel="#{_item}" itemValue="#{_item}"
-								value="#{memberBean.selectableLeaders}" var="_item" />
+							<f:selectItems itemLabel="#{_item}" itemValue="#{_item}" value="#{memberBean.selectableLeaders}" var="_item" />
+							<f:ajax render="squadBeanAssistantAdd"/>
 						</h:selectOneMenu>
-						<h:commandLink action="#{_collection.add(requestScope['squadBeanSquadAssistantsSelect'])}"
+						<h:commandLink action="#{squadBean.squad.assistants.add(squadBean.memberToAdd)}" disabled="#{squadBean.memberToAdd == null}"
 							id="squadBeanSquadAssistantsAdd"
-							onclick="if (document.getElementById('create:squadBeanSquadAssistantsSelect').selectedIndex &lt; 1) { alert('Must select a Member'); return false; }"
-							styleClass="add-button" />
+							styleClass="#{squadBean.memberToAdd != null ? 'add-button' : 'search'}" />
 						<h:outputText />
 					</h:panelGrid>
 				</h:panelGroup>
