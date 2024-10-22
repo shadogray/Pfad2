@@ -348,6 +348,16 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>3.2.5</version>
 				</plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.10.1</version>
+                    <configuration>
+                        <failOnError>false</failOnError>
+                        <doclint>none</doclint>
+                        <!--<includeDependencySources>true</includeDependencySources>-->
+                    </configuration>
+                </plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -360,16 +370,10 @@
 					<target>17</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.6.3</version>
-				<configuration>
-					<failOnError>false</failOnError>
-					<doclint>none</doclint>
-					<!--<includeDependencySources>true</includeDependencySources>-->
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
 		</plugins>
 	</build>
 
