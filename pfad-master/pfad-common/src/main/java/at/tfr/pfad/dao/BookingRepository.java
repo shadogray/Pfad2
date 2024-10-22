@@ -1,23 +1,21 @@
 package at.tfr.pfad.dao;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import at.tfr.pfad.model.Activity;
+import at.tfr.pfad.model.Booking;
+import at.tfr.pfad.model.Member;
+import at.tfr.pfad.model.Payment;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-
 import org.apache.deltaspike.data.api.EntityManagerDelegate;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.data.api.Query;
 import org.apache.deltaspike.data.api.Repository;
 import org.apache.deltaspike.data.api.criteria.CriteriaSupport;
 
-import at.tfr.pfad.model.Activity;
-import at.tfr.pfad.model.Booking;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Payment;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public abstract class BookingRepository implements EntityRepository<Booking, Long>, CriteriaSupport<Booking>, EntityManagerDelegate<Booking> {
@@ -69,4 +67,5 @@ public abstract class BookingRepository implements EntityRepository<Booking, Lon
 	
 	public abstract List<Booking> findByMemberAndActivityOrderByIdDesc(Member member, Activity activity);
 
+	public abstract List<Booking> findByMember(Member member);
 }

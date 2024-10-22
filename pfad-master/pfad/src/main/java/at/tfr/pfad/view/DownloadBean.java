@@ -7,21 +7,20 @@
 
 package at.tfr.pfad.view;
 
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import at.tfr.pfad.ConfigurationType;
+import at.tfr.pfad.dao.SquadRepository;
+import at.tfr.pfad.model.Activity;
+import at.tfr.pfad.model.Configuration;
+import at.tfr.pfad.model.Member;
+import at.tfr.pfad.model.Squad;
+import at.tfr.pfad.processing.PfadCommandExecutor;
+import at.tfr.pfad.processing.RegistrationDataGenerator;
+import at.tfr.pfad.processing.RegistrationDataGenerator.DataStructure;
+import at.tfr.pfad.processing.RegistrationDataGenerator.RegConfig;
+import at.tfr.pfad.util.ColumnModel;
+import at.tfr.pfad.util.QueryExecutor;
+import at.tfr.pfad.util.SessionBean;
+import at.tfr.pfad.util.TemplateUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateful;
 import jakarta.enterprise.inject.Instance;
@@ -33,7 +32,6 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.ws.rs.core.HttpHeaders;
-
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -42,21 +40,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
 import org.joda.time.DateTime;
-import org.omnifaces.util.Messages;
 
-import at.tfr.pfad.ConfigurationType;
-import at.tfr.pfad.dao.SquadRepository;
-import at.tfr.pfad.model.Activity;
-import at.tfr.pfad.model.Configuration;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Squad;
-import at.tfr.pfad.processing.RegistrationDataGenerator;
-import at.tfr.pfad.processing.RegistrationDataGenerator.DataStructure;
-import at.tfr.pfad.processing.RegistrationDataGenerator.RegConfig;
-import at.tfr.pfad.util.ColumnModel;
-import at.tfr.pfad.util.QueryExecutor;
-import at.tfr.pfad.util.SessionBean;
-import at.tfr.pfad.util.TemplateUtils;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Named
 @ViewScoped
@@ -77,6 +68,8 @@ public class DownloadBean implements Serializable {
 	private Instance<RegistrationDataGenerator> regDataGenerator;
 	@Inject
 	private TemplateUtils templateUtils;
+	@Inject
+	private PfadCommandExecutor cmdExecutor;
 	private Configuration configuration = new Configuration().withCkey("undef").withUiName("undef");
 	private boolean updateRegistered;
 	private boolean notRegisteredOnly;
@@ -322,6 +315,11 @@ public class DownloadBean implements Serializable {
 		if (replQuery != null) {
 			replQuery = templateUtils.replace(replQuery, beans);
 		}
+
+		if (replQuery.startsWith("cmd:")) {
+
+		}
+
 		results = qExec.get().execute(replQuery, configuration.isNative());
 		if (results.size() > 0) {
 			resultModel.setWrappedData(results);

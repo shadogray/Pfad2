@@ -1,20 +1,18 @@
 package at.tfr.pfad.dao;
 
-import java.util.Collection;
-import java.util.List;
-
+import at.tfr.pfad.model.Activity;
+import at.tfr.pfad.model.Booking;
+import at.tfr.pfad.model.Member;
+import at.tfr.pfad.model.Payment;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-
 import org.apache.deltaspike.data.api.EntityManagerDelegate;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.data.api.Query;
 import org.apache.deltaspike.data.api.Repository;
 
-import at.tfr.pfad.model.Activity;
-import at.tfr.pfad.model.Booking;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Payment;
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 public abstract class PaymentRepository implements EntityRepository<Payment, Long>, EntityManagerDelegate<Payment> {
@@ -40,5 +38,7 @@ public abstract class PaymentRepository implements EntityRepository<Payment, Lon
 				.setParameter("finished", finished)
 				.getResultList();
 	}
+
+	public abstract List<Payment> findByPayer(Member payer);
 	
 }

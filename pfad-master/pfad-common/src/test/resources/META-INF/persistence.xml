@@ -35,4 +35,40 @@
 			<property name="org.hibernate.envers.revision_on_collection_change" value="false" />
 		</properties>
 	</persistence-unit>
+
+
+	<persistence-unit name="pfadTestLarge" transaction-type="RESOURCE_LOCAL">
+		<description>Forge Persistence Unit</description>
+		<class>at.tfr.pfad.model.Member</class>
+		<class>at.tfr.pfad.model.Payment</class>
+		<class>at.tfr.pfad.model.Booking</class>
+		<class>at.tfr.pfad.model.Function</class>
+		<class>at.tfr.pfad.model.Configuration</class>
+		<class>at.tfr.pfad.model.Activity</class>
+		<class>at.tfr.pfad.model.Squad</class>
+		<class>at.tfr.pfad.model.Registration</class>
+		<class>at.tfr.pfad.model.Training</class>
+		<class>at.tfr.pfad.model.Participation</class>
+		<class>at.tfr.pfad.model.Registration</class>
+		<class>at.tfr.pfad.model.MailTemplate</class>
+		<class>at.tfr.pfad.model.MailMessage</class>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
+			<property name="javax.persistence.jdbc.user" value="sa" />
+			<property name="javax.persistence.jdbc.password" value="sa" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:h2:${project.build.directory}/testPfadLarge" />
+
+			<property name="hibernate.transaction.flush_before_completion" value="true" />
+
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+
+			<property name="hibernate.jpa.compliance.query" value="false"/>
+			<!--property name="hibernate.hbm2ddl.auto" value="create" /-->
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+
+			<property name="org.hibernate.envers.revision_on_collection_change" value="false" />
+		</properties>
+	</persistence-unit>
 </persistence>

@@ -1,18 +1,17 @@
 package at.tfr.pfad.util;
 
-import java.util.Collections;
-import java.util.Map;
-
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.PolyglotAccess;
 import org.graalvm.polyglot.Value;
 import org.graalvm.polyglot.io.IOAccess;
 import org.jboss.logging.Logger;
+
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.util.Collections;
+import java.util.Map;
 
 public class EngineUtil {
 	
@@ -86,8 +85,22 @@ public class EngineUtil {
 	public static String evalStr(String expression) {
 		return evalStr(expression, Collections.emptyMap());
 	}
-	
+
 	public static String evalStr(String expression, Map<String, ?> values) {
+		try {
+			Object val = evalObject(expression, values);
+			if (val == null) {
+				return null;
+			}
+			return val.toString();
+		} catch (Throwable e) {
+			log.info("script: " + expression + ": " + e.toString());
+			log.debug("script: " + expression + ": " + e.toString(), e);
+			return e.toString();
+		}
+	}
+
+	public static Object evalObject(String expression, Map<String, ?> values) throws Exception {
 		if (sem != null) {
 			try {
 				Bindings b = sem.createBindings();
@@ -99,7 +112,7 @@ public class EngineUtil {
 			} catch (Throwable e) {
 				log.info("jscript: " + expression + ": " + e.toString());
 				log.debug("jscript: " + expression + ": " + e.toString(), e);
-				return e.toString();
+				throw e;
 			}
 		}
 		try (Context ctx = getContext()) {
@@ -107,11 +120,15 @@ public class EngineUtil {
 			if (val == null) {
 				return null;
 			}
-			return val.toString();
+			if (val.isHostObject()) {
+				return val.asHostObject();
+			} else {
+				return val.toString();
+			}
 		} catch (Throwable e) {
 			log.info("script: " + expression + ": " + e.toString());
 			log.debug("script: " + expression + ": " + e.toString(), e);
-			return e.toString();
+			throw e;
 		}
 	}
 	

@@ -1,18 +1,18 @@
 package at.tfr.pfad.dao;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
+import at.tfr.pfad.ParticipationStatus;
+import at.tfr.pfad.model.Member;
+import at.tfr.pfad.model.Participation;
+import at.tfr.pfad.model.Participation_;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.data.api.Repository;
 import org.apache.deltaspike.data.api.criteria.Criteria;
 import org.apache.deltaspike.data.api.criteria.CriteriaSupport;
 import org.joda.time.DateTime;
 
-import at.tfr.pfad.ParticipationStatus;
-import at.tfr.pfad.model.Participation;
-import at.tfr.pfad.model.Participation_;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public abstract class ParticipationRepository implements EntityRepository<Participation, Long>, CriteriaSupport<Participation> {
@@ -22,7 +22,9 @@ public abstract class ParticipationRepository implements EntityRepository<Partic
 	public abstract List<Participation> findByStatusAndEndGreaterThanOrderByNameAsc(ParticipationStatus status, Date end);
 	
 	public abstract List<Participation> findByStatusNotEqualAndEndGreaterThanOrderByNameAsc(ParticipationStatus status, Date end);
-	
+
+	public abstract List<Participation> findByMember(Member member);
+
 	public List<Participation> findActive() {
 		return findActive(ACTIVE, null, new Date());
 	}

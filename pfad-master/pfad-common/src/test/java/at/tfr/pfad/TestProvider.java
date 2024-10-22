@@ -7,10 +7,6 @@
 
 package at.tfr.pfad;
 
-import org.hibernate.Session;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
-
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
@@ -22,6 +18,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.SynchronizationType;
+import org.hibernate.Session;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Specializes
 @Alternative
@@ -31,6 +35,11 @@ public class TestProvider extends at.tfr.pfad.Provider {
 	
 	//@PersistenceUnit(unitName = "pfadTest")
 	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("pfadTest");
+
+	private EntityManagerFactory entityManagerFactoryLarge = Persistence.createEntityManagerFactory("pfadTestLarge");
+	private EntityManager entityManagerLarge;
+
+	private boolean large;
 
 	//@PersistenceContext(unitName = "pfadTest")
 	//private EntityManager entityManager;
@@ -46,13 +55,52 @@ public class TestProvider extends at.tfr.pfad.Provider {
 	public EntityManager getExtendedEntityManager() {
 		return entityManagerFactory.createEntityManager();
 	}
-	
+
+	public EntityManager getExtendedEntityManagerLarge() {
+		if (entityManagerLarge == null) {
+			try {
+				URL dbFileUrl = getClass().getResource("/testPfad2_Backup_20240709.sql");
+				if (dbFileUrl != null) {
+					Path path = Paths.get(dbFileUrl.getFile()).getParent().resolveSibling("testPfadLarge.mv.db");
+					Files.deleteIfExists(path);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+			entityManagerLarge = entityManagerFactoryLarge.createEntityManager();
+			Session session = entityManagerLarge.unwrap(Session.class);
+			try {
+				session.getTransaction().begin();
+				session.createNativeMutationQuery("RUNSCRIPT FROM '" + getClass().getResource("/testPfad2_Backup_20240709.sql").getFile()+"';")
+						.executeUpdate();
+				session.getTransaction().commit();
+			} catch (Exception e) {
+				e.printStackTrace();
+				try {
+					session.createNativeMutationQuery("SHUTDOWN;").executeUpdate();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				throw new RuntimeException(e);
+			}
+		}
+		return entityManagerLarge;
+	}
+
 	@Override
 	@Produces
 	@RequestScoped
 	public EntityManager getEntityManager() {
-		EntityManager em = entityManagerFactory.createEntityManager();
-		em.getTransaction().begin();
+		EntityManager em;
+		if (!large) {
+			em = entityManagerFactory.createEntityManager();
+		} else {
+			em = getExtendedEntityManagerLarge();
+		}
+		if (!em.getTransaction().isActive()) {
+			em.getTransaction().begin();
+		}
 		return em;
 	}
 	
@@ -60,5 +108,13 @@ public class TestProvider extends at.tfr.pfad.Provider {
 	@Produces
 	public AuditReader getAuditReader() {
 		return AuditReaderFactory.get(entityManagerFactory.createEntityManager(SynchronizationType.UNSYNCHRONIZED).unwrap(Session.class));
+	}
+
+	public boolean isLarge() {
+		return large;
+	}
+
+	public void setLarge(boolean large) {
+		this.large = large;
 	}
 }

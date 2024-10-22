@@ -7,35 +7,19 @@
 
 package at.tfr.pfad.model;
 
-import java.util.Date;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Version;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlID;
-import jakarta.xml.bind.annotation.XmlRootElement;
-
-import org.hibernate.envers.Audited;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import at.tfr.pfad.Pfad;
 import at.tfr.pfad.RegistrationStatus;
 import at.tfr.pfad.Sex;
 import at.tfr.pfad.dao.AuditListener;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import org.hibernate.envers.Audited;
+
+import java.util.Date;
 
 @NamedQueries({ 
 		@NamedQuery(name = "Registration.distName", query = "select distinct r.name from Registration r where r.name is not null order by r.name"),
@@ -47,7 +31,8 @@ import at.tfr.pfad.dao.AuditListener;
 		@NamedQuery(name = "Registration.distSchoolEntry", query = "select distinct r.schoolEntry from Registration r where r.schoolEntry is not null order by r.schoolEntry"),
 		@NamedQuery(name = "Registration.duplicateCheck", query = "select r from Registration r where r.name = ?1 and r.vorname = ?2 "
 				+ " and r.gebJahr = ?3 and r.gebMonat = ?4 and r.gebTag = ?5"),
-		@NamedQuery(name = "Registration.memberOrParent", query = "select r from Registration r where r.member = ?1 or r.parent = ?1")
+		@NamedQuery(name = "Registration.memberOrParent", query = "select r from Registration r where r.member = ?1 or r.parent = ?1"),
+		@NamedQuery(name = "Registration.parent", query = "select r from Registration r where r.parent = ?1")
 	})
 @Audited(withModifiedFlag = true)
 @Entity

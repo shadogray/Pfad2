@@ -7,22 +7,16 @@
 
 package at.tfr.pfad.dao;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.deltaspike.data.api.EntityGraph;
-import org.apache.deltaspike.data.api.EntityManagerDelegate;
-import org.apache.deltaspike.data.api.EntityRepository;
-import org.apache.deltaspike.data.api.Query;
-import org.apache.deltaspike.data.api.QueryResult;
-import org.apache.deltaspike.data.api.Repository;
-import org.apache.deltaspike.data.api.criteria.Criteria;
-import org.apache.deltaspike.data.api.criteria.CriteriaSupport;
-
 import at.tfr.pfad.RegistrationStatus;
 import at.tfr.pfad.model.Member;
 import at.tfr.pfad.model.Registration;
 import at.tfr.pfad.model.Registration_;
+import org.apache.deltaspike.data.api.*;
+import org.apache.deltaspike.data.api.criteria.Criteria;
+import org.apache.deltaspike.data.api.criteria.CriteriaSupport;
+
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 public abstract class RegistrationRepository implements EntityRepository<Registration, Long>, CriteriaSupport<Registration>, EntityManagerDelegate<Registration> {
@@ -156,4 +150,7 @@ public abstract class RegistrationRepository implements EntityRepository<Registr
 
 	@Query(named="Registration.memberOrParent")
 	public abstract List<Registration> findByMember(Member member);
+
+	@Query(named="Registration.parent")
+	public abstract List<Registration> findByParent(Member member);
 }
