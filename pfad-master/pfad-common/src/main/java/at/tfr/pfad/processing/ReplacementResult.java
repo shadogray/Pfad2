@@ -74,5 +74,11 @@ public class ReplacementResult extends ExecutionResult {
             return replaced;
         }
     }
+
+    @Override
+    public String toString() {
+        return "ReplacementResult[" + "sibs=" + siblings + ", regs=" + registrations + ", mMss=" + mailMessages +
+                ", bkgs=" + bookings + ", pays=" + payments + ']';
+    }
 }
 

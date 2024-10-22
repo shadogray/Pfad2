@@ -1,27 +1,23 @@
 package at.tfr.pfad.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.query.Query;
-import org.hibernate.query.TupleTransformer;
-
 import at.tfr.pfad.ConfigurationType;
 import at.tfr.pfad.dao.ConfigurationRepository;
 import at.tfr.pfad.model.Configuration;
+import at.tfr.pfad.processing.ExecutionResult;
+import at.tfr.pfad.processing.PfadCommandExecutor;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.query.Query;
+import org.hibernate.query.TupleTransformer;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Stateless
 public class QueryExecutor {
@@ -32,6 +28,8 @@ public class QueryExecutor {
 	private EntityManager em;
 	@Inject
 	private ConfigurationRepository configRepo;
+	@Inject
+	private PfadCommandExecutor cmdExecutor;
 	private String securityFilter = "(?)password";
 	private final Pattern limitPattern = Pattern.compile("(?ims)^(.*)\\s+LIMIT\\s+(\\d+)(\\s*,\\s*(\\d+))?$");
 	
@@ -62,6 +60,15 @@ public class QueryExecutor {
 		
 		if (query != null && query.matches("(?).*password.*")) {
 			throw new SecurityException("security check failed");
+		}
+		
+		if (query.startsWith(PfadCommandExecutor.PFX)) {
+			try {
+				ExecutionResult result = cmdExecutor.executeCommand(query);
+				return toResult("result:", result);
+			} catch (Exception e) {
+				return toResult("Exception:", e);
+			}
 		}
 		
 		// JPA reserved words:
@@ -105,10 +112,14 @@ public class QueryExecutor {
 	}
 
 	public List<List<Entry<String, Object>>> toResult(int updated) {
+		return toResult("updated:", updated);
+	}
+
+	public List<List<Entry<String, Object>>> toResult(String key, Object value) {
 		List<List<Entry<String,Object>>> result = new ArrayList<>();
 		List<Entry<String,Object>> e = new ArrayList<>();
 		Map<String,Object> entries = new HashMap<>();
-		entries.put("updated", updated);
+		entries.put(key, value);
 		e.addAll(entries.entrySet());
 		result.add(e);
 		return result;
