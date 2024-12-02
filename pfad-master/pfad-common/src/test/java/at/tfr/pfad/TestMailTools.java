@@ -78,14 +78,14 @@ public class TestMailTools {
 				false, new ExecutorContext(sessionBean));
 		assertFalse(listLimit.get().isEmpty());
 		assertEquals("LIMIT not working: "+listLimit, 2, listLimit.get().size());
-		assertEquals("LIMIT produces wrong sublist: "+listLimit, list.get().subList(0,2), listLimit);
+		assertEquals("LIMIT produces wrong sublist: "+listLimit, list.get().subList(0,2), listLimit.get());
 
 		listLimit = qe.execute(
 				"select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id \t \n limit \t 2, \t \n 2",
 				false, new ExecutorContext(sessionBean));
 		assertFalse(listLimit.get().isEmpty());
 		assertEquals("FirstResult not working: "+listLimit, 2, listLimit.get().size());
-		assertEquals("FirstResult produces wrong sublist: "+listLimit,list.get().subList(2,4), listLimit);
+		assertEquals("FirstResult produces wrong sublist: "+listLimit,list.get().subList(2,4), listLimit.get());
 		em.getTransaction().rollback();
 	}
 	
