@@ -84,7 +84,8 @@ public class DownloadBean implements Serializable {
 	private boolean activeOnly = true;
 	private Activity payedActivity;
 	private List<Configuration> queries = Collections.emptyList();
-	
+	private Throwable lastException;
+
 	@PostConstruct
 	public void init() {
 		Squad responsibleFor = sessionBean.isResponsibleFor();
@@ -170,6 +171,7 @@ public class DownloadBean implements Serializable {
 	}
 	
 	public String downloadData(RegConfig config, Predicate<Member> filter, Squad... squads) throws Exception {
+		lastException = null;
 		try {
 
 			if (!isDownloadAllowed(squads))
@@ -184,6 +186,7 @@ public class DownloadBean implements Serializable {
 			FacesContext.getCurrentInstance().responseComplete();
 
 		} catch (Exception e) {
+			lastException = e;
 			log.info("executeQuery: " + e, e);
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getLocalizedMessage(), null));
@@ -314,7 +317,7 @@ public class DownloadBean implements Serializable {
 	}
 
 	public void executeQuery(Configuration config) {
-		this.configuration = config;
+		this.configuration = config.copy();
 		executeQueryIntern();
 	}
 
@@ -327,17 +330,29 @@ public class DownloadBean implements Serializable {
 		return "";
 	}
 
+	public void updateErrorMessages() {
+		if (lastException != null) {
+			errorMessage(lastException);
+		}
+	}
+
 	public boolean isQueryActive() {
 		return resultsFuture != null && !resultsFuture.isDone();
 	}
 
 	private void error(Throwable e) {
+		lastException = e;
 		log.info("cannot execute: " + configuration + " : " + e, e);
-		FacesContext.getCurrentInstance().addMessage(null, 
+		errorMessage(e);
+	}
+
+	private void errorMessage(Throwable e) {
+		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, getMessage(e) + " : " + e.getLocalizedMessage(), null));
 	}
 
 	private void executeQueryIntern() {
+		lastException = null;
 		resultModelLoaded = false;
 		resultsFuture = null;
 		results = Collections.emptyList();
@@ -369,6 +384,10 @@ public class DownloadBean implements Serializable {
 	
 	public String downloadResults() {
 		return downloadConfiguration(configuration);
+	}
+
+	public Throwable getLastException() {
+		return lastException;
 	}
 
 	public String downloadConfiguration(Configuration config) {
@@ -415,5 +434,4 @@ public class DownloadBean implements Serializable {
 		}
 		return wb;
 	}
-	
 }

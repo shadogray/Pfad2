@@ -7,35 +7,23 @@
 
 package at.tfr.pfad.model;
 
+import at.tfr.pfad.ConfigurationType;
+import at.tfr.pfad.Role;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Length;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
-import jakarta.xml.bind.annotation.XmlID;
-import jakarta.xml.bind.annotation.XmlRootElement;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Length;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import at.tfr.pfad.ConfigurationType;
-import at.tfr.pfad.Role;
-
 @Entity
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown=true, value = {"handler", "hibernateLazyInitializer"})
-public class Configuration extends BaseEntity implements Comparable<Configuration> {
+public class Configuration extends BaseEntity implements Comparable<Configuration>, Cloneable {
 
 	public static final String BADEN_KEY = "BAD";
 	public static final String BADEN_KEYPFX = "3-BAD-";
@@ -238,5 +226,18 @@ public class Configuration extends BaseEntity implements Comparable<Configuratio
 	
 	public String toTitle() {
 		return ckey + ": " + (description != null ? description + "\n" : "") + "\nAbfrage: \n" + cvalue;
+	}
+
+	public Configuration copy() {
+		try {
+			return (Configuration) clone();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }
