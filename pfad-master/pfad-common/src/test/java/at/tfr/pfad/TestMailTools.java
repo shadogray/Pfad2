@@ -1,28 +1,8 @@
 package at.tfr.pfad;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.jboss.weld.environment.se.Weld;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import at.tfr.pfad.dao.MemberRepository;
 import at.tfr.pfad.model.Member;
-import at.tfr.pfad.util.EmailValidator;
-import at.tfr.pfad.util.QueryExecutor;
-import at.tfr.pfad.util.TemplateUtils;
+import at.tfr.pfad.util.*;
 import jakarta.inject.Inject;
 import jakarta.mail.Message.RecipientType;
 import jakarta.mail.Session;
@@ -32,6 +12,21 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.validation.ValidationException;
+import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
+import org.jboss.weld.environment.se.Weld;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.concurrent.Future;
+
+import static org.junit.Assert.*;
 
 @RunWith(CdiTestRunner.class)
 public class TestMailTools {
@@ -46,13 +41,16 @@ public class TestMailTools {
 	private TemplateUtils tu;
 	@Inject
 	private EmailValidator emailValidator;
+	@Inject
+	private SessionBean sessionBean;
 	
 	private Member member;
 	
 	@Test
 	public void testExecutor() throws Exception {
-		List<List<Entry<String, Object>>> list = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m", false);
-		assertFalse(list.isEmpty());
+		Future<List<List<Entry<String, Object>>>> list = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m",
+				false, new ExecutorContext(sessionBean));
+		assertFalse(list.get().isEmpty());
 	}
 	
 	@Test
@@ -67,39 +65,47 @@ public class TestMailTools {
 			em.persist(m);
 			em.flush();
 		}
-		
-		List<List<Entry<String, Object>>> list = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id", false);
-		assertFalse(list.isEmpty());
-		assertTrue(list.size() >= 4);
+
+		Future<List<List<Entry<String, Object>>>> list = qe.execute(
+				"select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id",
+				false, new ExecutorContext(sessionBean));
+		assertFalse(list.get().isEmpty());
+		assertTrue(list.get().size() >= 4);
 		System.out.println("members: " + list);
 
-		List<List<Entry<String, Object>>> listLimit = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id limit 2", false);
-		assertFalse(listLimit.isEmpty());
-		assertEquals("LIMIT not working: "+listLimit, 2, listLimit.size());
-		assertEquals("LIMIT produces wrong sublist: "+listLimit, list.subList(0,2), listLimit);
+		Future<List<List<Entry<String, Object>>>> listLimit = qe.execute(
+				"select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id limit 2",
+				false, new ExecutorContext(sessionBean));
+		assertFalse(listLimit.get().isEmpty());
+		assertEquals("LIMIT not working: "+listLimit, 2, listLimit.get().size());
+		assertEquals("LIMIT produces wrong sublist: "+listLimit, list.get().subList(0,2), listLimit);
 
-		listLimit = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id \t \n limit \t 2, \t \n 2", false);
-		assertFalse(listLimit.isEmpty());
-		assertEquals("FirstResult not working: "+listLimit, 2, listLimit.size());
-		assertEquals("FirstResult produces wrong sublist: "+listLimit,list.subList(2,4), listLimit);
+		listLimit = qe.execute(
+				"select m.name as Name, m.vorname as Vorname, m.email as Email from Member m order by id \t \n limit \t 2, \t \n 2",
+				false, new ExecutorContext(sessionBean));
+		assertFalse(listLimit.get().isEmpty());
+		assertEquals("FirstResult not working: "+listLimit, 2, listLimit.get().size());
+		assertEquals("FirstResult produces wrong sublist: "+listLimit,list.get().subList(2,4), listLimit);
 		em.getTransaction().rollback();
 	}
 	
 	@Test
 	public void testExecutorNoNames() throws Exception {
-		List<List<Entry<String, Object>>> list = qe.execute("select m.name, m.vorname, m.email from Member m", false);
-		assertFalse(list.isEmpty());
+		Future<List<List<Entry<String, Object>>>> list = qe.execute("select m.name, m.vorname, m.email from Member m",
+				false, new ExecutorContext(sessionBean));
+		assertFalse(list.get().isEmpty());
 	}
 	
 	@Test
 	public void testMailTemplate() throws Exception {
 		
 		String template = "Das ist eine Nachricht an ${Email}.";
-		
-		List<List<Entry<String, Object>>> list = qe.execute("select m.name as Name, m.vorname as Vorname, m.email as Email "
-				+ " from Member m where m.id = "+member.getId(), false);
 
-		List<Entry<String,Object>> map = list.get(0);
+		Future<List<List<Entry<String, Object>>>> list = qe.execute(
+				"select m.name as Name, m.vorname as Vorname, m.email as Email "
+				+ " from Member m where m.id = "+member.getId(), false, new ExecutorContext(sessionBean));
+
+		List<Entry<String,Object>> map = list.get().get(0);
 		String res = tu.replace(template, map);
 		assertEquals("Replacement failed.", "Das ist eine Nachricht an email.", res);
 	}
@@ -108,11 +114,12 @@ public class TestMailTools {
 	public void testMailTemplatePropNav() throws Exception {
 		
 		String template = "Das ist eine Nachricht an ${Member.email}.";
-		
-		List<List<Entry<String, Object>>> list = qe.execute("select m as Member, m.name as Name, m.vorname as Vorname, m.email as Email "
-				+ " from Member m where m.id = "+member.getId(), false);
 
-		List<Entry<String,Object>> map = list.get(0);
+		Future<List<List<Entry<String, Object>>>> list = qe.execute(
+				"select m as Member, m.name as Name, m.vorname as Vorname, m.email as Email "
+				+ " from Member m where m.id = "+member.getId(), false, new ExecutorContext(sessionBean));
+
+		List<Entry<String,Object>> map = list.get().get(0);
 		String res = tu.replace(template, map);
 		assertEquals("Replacement failed.", "Das ist eine Nachricht an email.", res);
 	}

@@ -1,14 +1,14 @@
 package at.tfr.pfad.view;
 
-import java.util.Properties;
-
+import jakarta.mail.Message;
 import jakarta.mail.Message.RecipientType;
 import jakarta.mail.Session;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-
 import org.junit.Test;
+
+import java.util.Properties;
 
 public class TestMailerBean {
 
@@ -23,8 +23,8 @@ public class TestMailerBean {
 	public void testMailerBeanMailAddresses() throws Exception {
 		String addr = "test@test@test.at;";
 		MimeMessage mail = new MimeMessage(Session.getDefaultInstance(new Properties()));
-		MailerBean mailerBean = new MailerBean();
-		mailerBean.addAddresses(mail, addr, RecipientType.TO);
+		MailerMailHandlerBean mailerBean = new MailerMailHandlerBean();
+		mailerBean.addAddresses(mail, addr, Message.RecipientType.TO);
 	}
 	
 	

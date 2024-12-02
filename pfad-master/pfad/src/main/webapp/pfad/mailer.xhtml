@@ -36,7 +36,7 @@
 			<h:panelGrid columns="2" columnClasses="width6">
 				<h:outputLabel value="Vorlage: " />
 				<h:panelGrid columns="8">
-					<p:autoComplete value="#{mailerBean.mailTemplate}" completeMethod="#{mailTemplates.filtered}" emptyMessage="..." 
+					<p:autoComplete value="#{mailerBean.mailTemplate}" completeMethod="#{mailTemplates.filteredSimple}" emptyMessage="..."
 						var="t" itemLabel="#{t.name}" itemValue="#{t.idStr}" converter="#{mailerBean.converter}" forceSelection="true"
 						styleClass="width10">
 						<p:ajax event="itemSelect" process="@this" update="@form :mailer"/>
@@ -60,172 +60,176 @@
 		<h:form id="mailer">
 
 			<p:messages id="messages" autoUpdate="true"/>
-			
-			<h:panelGrid columns="2">
-				<h:outputLabel value="Mail: "/>			
-				<h:panelGrid columns="9" width="100%">
-					<h:outputLabel value="Sender:" />
-					<h:outputText value="#{mailerBean.mailConfig.from}"/>
-					<h:outputLabel value="Alias:" />
-					<h:inputText value="#{mailerBean.mailConfig.alias}"/>
-					<h:outputLabel value="Username:" />
-					<h:outputText value="#{mailerBean.mailConfig.username}"/>
-					<h:outputLabel value="Berechtigt:" />
-					<p:inputText value="#{mailerBean.mailTemplate.owner}" disabled="#{!mailerBean.changeOwnerAllowed}"/>
-					<p:outputLabel value=""/>
 
-					<h:outputLabel value="CC:" />
-					<h:inputText value="#{mailerBean.mailConfig.cc}"/>
-					<h:outputLabel value="BCC:" />
-					<h:inputText value="#{mailerBean.mailConfig.bcc}"/>
-					<h:outputLabel value="Test-TO:" />
-					<h:inputText value="#{mailerBean.testTo}"/>
-					<h:outputLabel value="Vorlagenname:" />
-					<p:inputText value="#{mailerBean.mailTemplate.name}" />
-					<h:commandButton value="Copy" action="#{mailerBean.copyTemplate()}" process="@form" update=":mailConfig :mailer" styleClass="btn btn-primary" />
-				</h:panelGrid>
-				
-				<h:outputLabel value="Query: "/>			
-				<h:panelGrid columns="2" style="width:100%" columnClasses="width40,width30">
-					<p:inputTextarea value="#{mailerBean.mailTemplate.query}" rows="3" cols="100" autoResize="false" disabled="#{!mailerBean.updateQueryAllowed}"
-						style="width:95%;height:5em;overflow:hidden;white-space:pre;resize:both;font-size:smaller;" pt:wrap="off">
-						<p:ajax event="keypress" onstart="return ctrlEnter(event)" process="@this" listener="#{mailerBean.executeQuery}" 
-							update="mailer:acc messages"/>
-						<f:ajax listener="#{mailerBean.executeQuery}" render="mailer:acc messages"/>
-					</p:inputTextarea>
-					<p:fieldset legend="#{configurationBean.getValue('mailer.props','Mail Einstellungen')}" title="#{configurationBean.getValue('mailer.props','Mail Einstellungen')}" >
-						<h:panelGrid columns="12">
-							<h:outputLabel value="CC:" title="#{configurationBean.getValue('mailer.cc','Nachricht an CC')}"/>
-							<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.cc}" title="#{configurationBean.getValue('mailer.cc','Nachricht an CC')}"/>
-							<h:outputLabel value="BCC:" title="#{configurationBean.getValue('mailer.bcc','Nachricht an BCC')}"/>
-							<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.bcc}" title="#{configurationBean.getValue('mailer.bcc','Nachricht an BCC')}"/>
-							<h:outputLabel value="Text:" title="#{configurationBean.getValue('mailer.saveText','Text abspeichern')}"/>
-							<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.saveText}" title="#{configurationBean.getValue('mailer.saveText','Text abspeichern')}"/>
-							<h:outputLabel value="Alt-Text:" title="#{configurationBean.getValue('mailer.alternativeText','HTML auch als Alternativ-Text senden')}"/>
-							<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.alternativeText}" title="#{configurationBean.getValue('mailer.alternativeText','HTML auch als Alternativ-Text senden')}"/>
-							<h:outputLabel value="SMS:" title="#{configurationBean.getValue('mailer.sms','Als SMS senden')}"/>
-							<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.sms}" title="#{configurationBean.getValue('mailer.sms','Als SMS senden')}">
-								<f:ajax execute="#{mailerBean.reinit()}" render="mailer"/>
-							</h:selectBooleanCheckbox>
-							<h:outputLabel value="SQL:" title="#{configurationBean.getValue('mailer.sql','Query in SQL')}"/>
-							<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.sql}" title="#{configurationBean.getValue('mailer.sql','Query in SQL')}"/>
-						</h:panelGrid>
-					</p:fieldset>
-				</h:panelGrid>
-	
-				<h:outputLabel value="Betreff: "/>
-				<h:panelGrid columns="2" width="100%" columnClasses="width40,width30">
-					<p:inputText value="#{mailerBean.mailTemplate.subject}" size="80"/>
-	
-					<p:fieldset legend="Anhänge">
-						<h:panelGrid id="filePanel" columns="2" columnClasses="width30,width10">
-							<p:chips value="#{mailerBean.fileNames}" style="width:95%">
-								<f:ajax event="itemUnselect" render="filePanel"/>
-							</p:chips>
-							<p:fileUpload listener="#{mailerBean.handleFileUpload}" auto="true" update="filePanel"
-								sizeLimit="10000000" invalidSizeMessage="Datei zu groß!" skinSimple="true" chooseButtonStyleClass="btn btn-primary" 
-								fileLimit="1024000" fileLimitMessage="Datei zu groß!"/>
-						</h:panelGrid>
-					</p:fieldset>
-				</h:panelGrid>			
-				
-				<h:outputLabel value="Text: "/>			
-				<p:textEditor value="#{mailerBean.mailTemplate.text}" height="400" secure="false"/>
+			<h:panelGroup id="mailerInput">
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Mail: "/>
+					<h:panelGrid columns="9" width="100%">
+						<h:outputLabel value="Sender:" />
+						<h:outputText value="#{mailerBean.mailConfig.from}"/>
+						<h:outputLabel value="Alias:" />
+						<h:inputText value="#{mailerBean.mailConfig.alias}"/>
+						<h:outputLabel value="Username:" />
+						<h:outputText value="#{mailerBean.mailConfig.username}"/>
+						<h:outputLabel value="Berechtigt:" />
+						<p:inputText value="#{mailerBean.mailTemplate.owner}" disabled="#{!mailerBean.changeOwnerAllowed}"/>
+						<p:outputLabel value=""/>
 
-				<h:outputLabel value="Aktionen: "/>			
-				<h:panelGrid id="buttons" columns="4" with="100%">	
-					<h:commandButton value="Vorlage Speichern" action="#{mailerBean.saveTemplate}" disabled="#{!mailerBean.updateAllowed}"/>
-					<h:commandButton value="Vorbereiten" action="#{mailerBean.executeQuery}" disabled="#{!mailerBean.updateAllowed}"/>
-					<h:commandButton value="Test-#{mailerBean.mailTemplate.sms ? 'SMS':'Email'}" action="#{mailerBean.sendTestMessage()}" disabled="#{!mailerBean.updateAllowed}"/>
-					<h:commandButton value="#{mailerBean.mailMessagesToSend} Echt-#{mailerBean.mailTemplate.sms ? 'SMS':'Emails'} Versenden!!" action="#{mailerBean.sendRealMessages()}" disabled="#{!mailerBean.updateAllowed}"
-						onclick="return confirm('Möchtest Du #{mailerBean.mailMessagesToSend} Emails senden?')">
-					</h:commandButton>
-				</h:panelGrid>
-			</h:panelGrid>
+						<h:outputLabel value="CC:" />
+						<h:inputText value="#{mailerBean.mailConfig.cc}"/>
+						<h:outputLabel value="BCC:" />
+						<h:inputText value="#{mailerBean.mailConfig.bcc}"/>
+						<h:outputLabel value="Test-TO:" />
+						<h:inputText value="#{mailerBean.testTo}"/>
+						<h:outputLabel value="Vorlagenname:" />
+						<p:inputText value="#{mailerBean.mailTemplate.name}" />
+						<h:commandButton value="Copy" action="#{mailerBean.copyTemplate()}" process="@form" update=":mailConfig :mailer" styleClass="btn btn-primary" />
+					</h:panelGrid>
 
-
-			<p:accordionPanel id="acc" activeIndex="1" multiple="false" dynamic="true">
-				<p:ajax event="tabChange" update="mailer:acc"/>
-				<p:tab title="Nachrichten-Daten" closable="true" >
-					<p:dataTable id="values" rendered="#{mailerBean.values != null}" value="#{mailerBean.values}" var="v" rowIndexVar="rowIndex"
-						style="table-layout:auto;" styleClass="data-table" rowStyleClass="#{mailerBean.mailMessages.wrappedData[rowIndex].send ? '' : 'removed'}">
-						<f:facet name="header">
-							<h:panelGrid columns="3" columnClasses="width10,width80" style="border: solid red;">
-								<h:panelGroup>
-									<h:commandButton value="Alle umschalten!">
-										<f:ajax listener="#{mailerBean.toggleAllMessageSend()}" render="mailer:acc mailer:buttons" />
-									</h:commandButton>
-								</h:panelGroup>
-								<h:outputText value="Emails zu versenden" />
+					<h:outputLabel value="Query: "/>
+					<h:panelGrid columns="2" style="width:100%" columnClasses="width40,width30">
+						<p:inputTextarea value="#{mailerBean.mailTemplate.query}" rows="3" cols="100" autoResize="false" disabled="#{!mailerBean.updateQueryAllowed}"
+							style="width:95%;height:5em;overflow:hidden;white-space:pre;resize:both;font-size:smaller;" pt:wrap="off">
+							<p:ajax event="keypress" onstart="return ctrlEnter(event)" process="@this" listener="#{mailerBean.executeQuery}"
+								update="mailer:mailResults messages"/>
+							<f:ajax listener="#{mailerBean.executeQuery}" render="mailer:mailResults messages"/>
+						</p:inputTextarea>
+						<p:fieldset legend="#{configurationBean.getValue('mailer.props','Mail Einstellungen')}" title="#{configurationBean.getValue('mailer.props','Mail Einstellungen')}" >
+							<h:panelGrid columns="12">
+								<h:outputLabel value="CC:" title="#{configurationBean.getValue('mailer.cc','Nachricht an CC')}"/>
+								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.cc}" title="#{configurationBean.getValue('mailer.cc','Nachricht an CC')}"/>
+								<h:outputLabel value="BCC:" title="#{configurationBean.getValue('mailer.bcc','Nachricht an BCC')}"/>
+								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.bcc}" title="#{configurationBean.getValue('mailer.bcc','Nachricht an BCC')}"/>
+								<h:outputLabel value="Text:" title="#{configurationBean.getValue('mailer.saveText','Text abspeichern')}"/>
+								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.saveText}" title="#{configurationBean.getValue('mailer.saveText','Text abspeichern')}"/>
+								<h:outputLabel value="Alt-Text:" title="#{configurationBean.getValue('mailer.alternativeText','HTML auch als Alternativ-Text senden')}"/>
+								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.alternativeText}" title="#{configurationBean.getValue('mailer.alternativeText','HTML auch als Alternativ-Text senden')}"/>
+								<h:outputLabel value="SMS:" title="#{configurationBean.getValue('mailer.sms','Als SMS senden')}"/>
+								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.sms}" title="#{configurationBean.getValue('mailer.sms','Als SMS senden')}">
+									<f:ajax execute="#{mailerBean.reinit()}" render="mailer"/>
+								</h:selectBooleanCheckbox>
+								<h:outputLabel value="SQL:" title="#{configurationBean.getValue('mailer.sql','Query in SQL')}"/>
+								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.sql}" title="#{configurationBean.getValue('mailer.sql','Query in SQL')}"/>
 							</h:panelGrid>
-						</f:facet>
-						<p:column width="25">
-							<f:facet name="header">ID</f:facet>
-							<h:outputText value="#{rowIndex+1}" />
-						</p:column>
-						<p:column width="35">
-							<f:facet name="header">OK</f:facet>
-							<p:selectBooleanCheckbox value="#{mailerBean.mailMessages.wrappedData[rowIndex].send}"> 	
-								<f:ajax render="mailer:acc mailer:buttons" />
-							</p:selectBooleanCheckbox>
-						</p:column>
-						<p:columns value="#{mailerBean.columns}" var="c">
-							<f:facet name="header">#{c.value}</f:facet>
-							<h:outputText value="#{v[c.index].value}" />
-						</p:columns>
-					</p:dataTable>
-				</p:tab>
+						</p:fieldset>
+					</h:panelGrid>
 
-				<p:tab title="Emails zur Versendung" closable="true">
-					<p:dataTable id="mailMessages" rendered="#{mailerBean.mailMessages != null}"  value="#{mailerBean.mailMessages}" 
-						var="m" rowIndexVar="rowIndex" style="table-layout:auto;" styleClass="data-table" rowStyleClass="#{m.send ? '' : 'removed'}" resizableColumns="true">
-						<f:facet name="header">
-							<h:panelGrid columns="3" columnClasses="width10,width80" style="border: solid red;">
-								<h:panelGroup>
-									<h:commandButton value="Alle umschalten!">
-										<f:ajax listener="#{mailerBean.toggleAllMessageSend()}" render="mailer:acc mailer:buttons" />
-									</h:commandButton>
-								</h:panelGroup>
-								<h:outputText value="Emails zu versenden" />
+					<h:outputLabel value="Betreff: "/>
+					<h:panelGrid columns="2" width="100%" columnClasses="width40,width30">
+						<p:inputText value="#{mailerBean.mailTemplate.subject}" size="80"/>
+
+						<p:fieldset legend="Anhänge">
+							<h:panelGrid id="filePanel" columns="2" columnClasses="width30,width10">
+								<p:chips value="#{mailerBean.fileNames}" style="width:95%">
+									<f:ajax event="itemUnselect" render="filePanel"/>
+								</p:chips>
+								<p:fileUpload listener="#{mailerBean.handleFileUpload}" auto="true" update="filePanel"
+									sizeLimit="10000000" invalidSizeMessage="Datei zu groß!" skinSimple="true" chooseButtonStyleClass="btn btn-primary"
+									fileLimit="1024000" fileLimitMessage="Datei zu groß!"/>
 							</h:panelGrid>
-						</f:facet>
-						<p:column width="25">
-							<f:facet name="header">ID</f:facet>
-							<h:outputText value="#{rowIndex+1}" />
-						</p:column>
-						<p:column width="35">
-							<f:facet name="header">OK</f:facet>
-							<p:selectBooleanCheckbox value="#{m.send}" >
-								<f:ajax render="mailer:acc mailer:buttons" />
-							</p:selectBooleanCheckbox>
-						</p:column>
-						<p:column>
-							<f:facet name="header">An</f:facet>
-							<h:outputText value="#{m.receiver}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">CC</f:facet>
-							<h:outputText value="#{m.cc}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">BCC</f:facet>
-							<h:outputText value="#{m.bcc}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">Subject</f:facet>
-							<h:outputText value="#{m.subject}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">Mitglied</f:facet>
-							<h:outputText value="#{m.member}" />
-						</p:column>
-						<p:column>
-							<f:facet name="header">Nachricht</f:facet>
-							<h:outputText value="#{fn:substring(m.plainText,0,20)}" title="#{m.plainText}"/>
-						</p:column>
-					</p:dataTable>
-				</p:tab>
-			</p:accordionPanel>
+						</p:fieldset>
+					</h:panelGrid>
+
+					<h:outputLabel value="Text: "/>
+					<p:textEditor value="#{mailerBean.mailTemplate.text}" height="400" secure="false"/>
+
+					<h:outputLabel value="Aktionen: "/>
+					<h:panelGrid id="buttons" columns="4" with="100%">
+						<h:commandButton value="Vorlage Speichern" action="#{mailerBean.saveTemplate}" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary"/>
+						<h:commandButton value="Vorbereiten" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary">
+							<f:ajax execute="@this" listener="#{mailerBean.executeQuery}" render="@form"/>
+						</h:commandButton>
+						<h:commandButton value="Test-#{mailerBean.mailTemplate.sms ? 'SMS':'Email'}" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary">
+							<f:ajax execute="@this" listener="#{mailerBean.sendTestMessage()}" render="@form"/>
+						</h:commandButton>
+						<h:commandButton value="#{mailerBean.mailMessagesToSend} Echt-#{mailerBean.mailTemplate.sms ? 'SMS':'Emails'} Versenden!!" disabled="#{!mailerBean.updateAllowed}"
+							onclick="return confirm('Möchtest Du #{mailerBean.mailMessagesToSend} Emails senden?')" styleClass="btn btn-primary">
+							<f:ajax execute="@this" listener="#{mailerBean.sendRealMessages()}" render="@form"/>
+						</h:commandButton>
+					</h:panelGrid>
+				</h:panelGrid>
+			</h:panelGroup>
+
+			<h:panelGroup id="mailResults" >
+				<p:poll process="@this" update="mailResults" rendered="#{mailerBean.inProgress}"/>
+				<p:progressBar mode="indeterminate" rendered="#{mailerBean.inProgress }" style="width: 100%"/>
+
+				<p:accordionPanel id="acc" widgetVar="acc" activeIndex="1" multiple="false" dynamic="true">
+					<p:ajax event="tabChange" update="mailer:acc"/>
+					<p:tab title="Nachrichten-Daten" closable="true" >
+						<p:dataTable id="values" rendered="#{mailerBean.values != null}" value="#{mailerBean.values}" var="v" rowIndexVar="rowIndex"
+							style="table-layout:auto;" styleClass="data-table" >
+							<f:facet name="header">
+								<h:panelGrid columns="3" columnClasses="width10,width80" style="border: solid red;">
+									<h:outputText value="Emails zu versenden" />
+								</h:panelGrid>
+							</f:facet>
+							<p:column width="25">
+								<f:facet name="header">ID</f:facet>
+								<h:outputText value="#{rowIndex+1}" />
+							</p:column>
+							<p:column width="35">
+								<f:facet name="header">OK</f:facet>
+							</p:column>
+							<p:columns value="#{mailerBean.columns}" var="c">
+								<f:facet name="header">#{c.value}</f:facet>
+								<h:outputText value="#{v[c.index].value}" />
+							</p:columns>
+						</p:dataTable>
+					</p:tab>
+
+					<p:tab title="Emails zur Versendung" closable="true">
+						<p:dataTable id="mailMessages" rendered="#{mailerBean.mailMessages != null}" value="#{mailerBean.mailMessages}"
+							var="m" rowIndexVar="rowIndex" style="table-layout:auto;" styleClass="data-table" rowStyleClass="#{m.send ? '' : 'removed'}"
+							resizableColumns="true" sortMode="single" allowUnsorting="true">
+							<f:facet name="header">
+								<h:panelGrid columns="3" columnClasses="width10,width80" style="border: solid red;">
+									<h:panelGroup>
+										<h:commandButton value="Alle umschalten!">
+											<f:ajax execute="@this" listener="#{mailerBean.toggleAllMessageSend()}" render="mailer:mailResults mailer:buttons" />
+										</h:commandButton>
+									</h:panelGroup>
+									<h:outputText value="Emails zu versenden" />
+								</h:panelGrid>
+							</f:facet>
+							<p:column width="25">
+								<f:facet name="header">ID</f:facet>
+								<h:outputText value="#{rowIndex+1}" />
+							</p:column>
+							<p:column width="35" sortBy="#{m.send}">
+								<f:facet name="header">OK</f:facet>
+								<p:selectBooleanCheckbox value="#{m.send}">
+									<f:ajax execute="@this" render="mailer:mailResults mailer:buttons" />
+								</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column sortBy="#{m.receiver}">
+								<f:facet name="header">An</f:facet>
+								<h:outputText value="#{m.receiver}" />
+							</p:column>
+							<p:column sortBy="#{m.cc}">
+								<f:facet name="header">CC</f:facet>
+								<h:outputText value="#{m.cc}" />
+							</p:column>
+							<p:column sortBy="#{m.bcc}">
+								<f:facet name="header">BCC</f:facet>
+								<h:outputText value="#{m.bcc}" />
+							</p:column>
+							<p:column sortBy="#{m.subject}">
+								<f:facet name="header">Subject</f:facet>
+								<h:outputText value="#{m.subject}" />
+							</p:column>
+							<p:column sortBy="#{m.member}">
+								<f:facet name="header">Mitglied</f:facet>
+								<h:outputText value="#{m.member}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">Nachricht</f:facet>
+								<h:outputText value="#{fn:substring(m.plainText,0,20)}" title="#{m.plainText}"/>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:accordionPanel>
+			</h:panelGroup>
 		
 		</h:form>
 

@@ -1,28 +1,11 @@
 package at.tfr.pfad.view;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import jakarta.activation.DataHandler;
-import jakarta.activation.FileDataSource;
+import at.tfr.pfad.dao.MailTemplateRepository;
+import at.tfr.pfad.model.*;
+import at.tfr.pfad.util.ColumnModel;
+import at.tfr.pfad.util.ExecutorContext;
+import at.tfr.pfad.util.QueryExecutor;
+import at.tfr.pfad.util.TemplateUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.AccessTimeout;
 import jakarta.ejb.ConcurrencyManagement;
@@ -36,42 +19,30 @@ import jakarta.faces.model.ListDataModel;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message.RecipientType;
-import jakarta.mail.MessagingException;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
-import jakarta.mail.internet.MimePart;
-
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.logging.Logger;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-import at.tfr.pfad.dao.MailTemplateRepository;
-import at.tfr.pfad.model.Activity;
-import at.tfr.pfad.model.Configuration;
-import at.tfr.pfad.model.MailMessage;
-import at.tfr.pfad.model.MailTemplate;
-import at.tfr.pfad.model.MailTemplate_;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Registration;
-import at.tfr.pfad.util.ColumnModel;
-import at.tfr.pfad.util.QueryExecutor;
-import at.tfr.pfad.util.TemplateUtils;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.security.InvalidParameterException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Named
 @ViewScoped
 @Stateful
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class MailerBean extends BaseBean<MailMessage> {
-
-	private Logger log = Logger.getLogger(getClass());
 
 	@Inject
 	private Instance<QueryExecutor> queryExec;
@@ -80,10 +51,8 @@ public class MailerBean extends BaseBean<MailMessage> {
 	@Inject
 	private MailTemplateBean mailTemplateBean;
 	@Inject
-	private Instance<MailSender> mailSender;
-	@Inject
-	private Instance<SmsSender> smsSender;
-
+	private Instance<MailerMailHandlerBean> mailerMailHandlerBeans;
+	private MailerMailHandlerBean mailerMailHandlerBean;
 	private MailConfig mailConfig;
 	private String mailConfigKey;
 	private String testTo;
@@ -94,10 +63,12 @@ public class MailerBean extends BaseBean<MailMessage> {
 	private final Pattern phoneNumber = Pattern.compile("[+\\d]{7,}");
 	private final Pattern phoneNumberFilter = Pattern.compile("[ /()-]");
 	private transient Map<String, MailConfig> mailConfigs;
+	private transient Future<List<List<Entry<String, Object>>>> valuesFuture;
 	private transient List<List<Entry<String, Object>>> values = Collections.emptyList();
 	private transient List<MailMessage> mailMessages = Collections.emptyList();
 	private transient ListDataModel<List<Entry<String, Object>>> valuesModel = new ListDataModel<>();
 	private transient ListDataModel<MailMessage> mailMessagesModel = new ListDataModel<>();
+	private boolean mailMessagesModelLoaded;
 	private transient final Map<String,UpFile> files = new LinkedHashMap<>();
 
 	public enum MailProps {
@@ -133,120 +104,145 @@ public class MailerBean extends BaseBean<MailMessage> {
 
 	@AccessTimeout(unit = TimeUnit.SECONDS, value = 30)
 	public void executeQuery() {
+		mailMessagesModelLoaded = false;
+		values = Collections.emptyList();
+		mailMessages = Collections.emptyList();
+		valuesModel = new ListDataModel<>();
+		mailMessagesModel = new ListDataModel<>();
+
 		if (mailConfig == null) {
 			error("Cannot execute Template for empty MailConfiguration!");
 			return;
 		}
-		List<String> realColHeaders = Collections.emptyList();
-		columnHeaders.clear();
-		columns.clear();
-		mailMessages = new ArrayList<>();
 		try {
 			String query = mailTemplate.getQuery();
 			boolean isNative = Boolean.TRUE.equals(mailTemplate.getSql());
-			if (query.startsWith("Configuration:")) {
-				Optional<Configuration> optConf = sessionBean.getConfig(query.replace("Configuration:", ""));
-				if (optConf.isPresent()) {
-					query = optConf.get().getCvalue();
-					isNative = optConf.get().isNative();
-				}
-			}
-			values = queryExec.get().execute(query
-					.replaceAll("\\$\\{templateId\\}", ""+mailTemplate.getId())
-					.replaceAll("\\$\\{templateName\\}", mailTemplate.getName())
-					.replaceAll("\\$\\{templateOwner\\}", mailTemplate.getOwner())
-					.replaceAll("\\$\\{user\\}", sessionBean.getUser().getName())
-					.replaceAll("\\$\\{role\\}", sessionBean.getRole().name())
-					.replaceAll("\\$\\{activityId\\}", activity != null ? activity.getIdStr() : "null")
-					.replaceAll("\\$\\{subject\\}", mailTemplate.getSubject()), 
-					isNative);
-			if (values.size() > 0) {
-				realColHeaders = values.get(0).stream().map(Entry::getKey).collect(Collectors.toList());
-				columnHeaders.addAll(realColHeaders);
-				for (int i=0; i<columnHeaders.size(); i++)
-					columns.add(new ColumnModel(columnHeaders.get(i), columnHeaders.get(i), i));
-			}
-			
-			if (values.size() > 0) {
-				List<String> lcHeadrs = realColHeaders.stream().map(String::toLowerCase).collect(Collectors.toList());
-				final int toIdx = lcHeadrs.indexOf("to");
-				final int ccIdx = lcHeadrs.indexOf("cc");
-				if  (toIdx >= 0 && ccIdx >= 0) {
-					Map<String, List<List<Entry<String, Object>>>> groups = values.stream()
-							.filter(v -> StringUtils.isNotBlank((String)v.get(toIdx).getValue()))
-							.collect(Collectors.groupingBy(v -> (String)v.get(toIdx).getValue(), 
-									LinkedHashMap::new, Collectors.toList()));
-					groups.entrySet().forEach(e -> {
-						String join = e.getValue().stream()
-								.map(line -> (String)line.get(ccIdx).getValue())
-								.filter(StringUtils::isNotBlank)
-								.filter(v -> !v.equalsIgnoreCase(e.getKey()) && !e.getKey().contains(v))
-								.distinct()
-								.collect(Collectors.joining(","));
-						e.getValue().get(0).get(ccIdx).setValue(join);
-					});
-					values = groups.entrySet().stream().map(e -> e.getValue().get(0)).collect(Collectors.toList());
-				}
-			}
-			
-			valuesModel = new ListDataModel<>(values);
-			
-			Map<String,Object> beans = new HashMap<>();
-			beans.put("sb", sessionBean);
-			beans.put("mt", mailTemplate);
-			beans.put("activity", activity);
-			
-			for (List<Entry<String, Object>> vals : values) {
-				
-				vals.addAll(beans.entrySet());
-				
-				MailMessage msg = new MailMessage();
-				msg.setValues(vals);
-				msg.setTemplate(mailTemplate);
-				String text = mailTemplate.getText();
-				if (text != null) {
-					text = templateUtils.replace(mailTemplate.getText(), vals);
-					text = text.replaceAll("<p style=\"", "<p style=\"margin:0; ");
-					text = text.replaceAll("<p>", "<p style='margin:0;'>");
-				}
-				msg.setText(text);
-				msg.setReceiver(templateUtils.replace("${to}", vals));
-				msg.setPlainText(TemplateUtils.htmlToText(msg.getText()));
-				
-				if (mailTemplate.isSms()) {
-					msg.setReceiver(msg.getReceiver().replaceAll(phoneNumberFilter.pattern(),""));
-				}
-				if (mailTemplate.isCc()) {
-					String ccVal = templateUtils.replace("${cc}", vals, mailConfig.getCc());
-					if (StringUtils.isNotBlank(ccVal)) {
-						msg.setCc(ccVal);
+			if (query != null) {
+				if (query.startsWith("Configuration:")) {
+					Optional<Configuration> optConf = sessionBean.getConfig(query.replace("Configuration:", ""));
+					if (optConf.isPresent()) {
+						query = optConf.get().getCvalue();
+						isNative = optConf.get().isNative();
 					}
 				}
-				if (mailTemplate.isBcc()) {
-					String bccVal = templateUtils.replace("${bcc}", vals, mailConfig.getBcc());
-					if (StringUtils.isNotBlank(bccVal)) {
-						msg.setBcc(bccVal);
-					}
-				}
-				
-				msg.setSubject(templateUtils.replace(mailTemplate.getSubject(), msg.getValues()));
-				msg.setMember(vals.stream().filter(e -> e.getValue() instanceof Member)
-						.map(e -> (Member) e.getValue()).findFirst().orElse(null));
-				msg.setRegistration(vals.stream().filter(e -> e.getValue() instanceof Registration)
-						.map(e -> (Registration) e.getValue()).findFirst().orElse(null));
-				mailMessages.add(msg);
+				valuesFuture = queryExec.get().execute(query
+								.replaceAll("\\$\\{templateId\\}", "" + mailTemplate.getId())
+								.replaceAll("\\$\\{templateName\\}", mailTemplate.getName())
+								.replaceAll("\\$\\{templateOwner\\}", mailTemplate.getOwner())
+								.replaceAll("\\$\\{user\\}", sessionBean.getUser().getName())
+								.replaceAll("\\$\\{role\\}", sessionBean.getRole().name())
+								.replaceAll("\\$\\{activityId\\}", activity != null ? activity.getIdStr() : "null")
+								.replaceAll("\\$\\{subject\\}", mailTemplate.getSubject()),
+						isNative, new ExecutorContext(sessionBean));
+			} else {
+				warn("No Query defined!");
 			}
-			
-			// Validate message addresses: 
-			validate(mailMessages, mailTemplate.isSms());
-			
-			mailMessagesModel = new ListDataModel<>(mailMessages);
-			
 		} catch (Exception e) {
 			log.warn("Cannot execute: " + mailTemplate + e, e);
 			error("Cannot execute: " + mailTemplate + e);
 		}
 		
+	}
+
+	public void loadModels() {
+		if (valuesFuture != null && valuesFuture.isDone()) {
+			try {
+				try {
+					values = valuesFuture.get();
+				} catch (ExecutionException e) {
+					valuesFuture = null;
+					throw e;
+				}
+				List<String> realColHeaders = Collections.emptyList();
+				columnHeaders.clear();
+				columns.clear();
+				mailMessages = new ArrayList<>();
+				if (values.size() > 0) {
+					realColHeaders = values.get(0).stream().map(Entry::getKey).collect(Collectors.toList());
+					columnHeaders.addAll(realColHeaders);
+					for (int i=0; i<columnHeaders.size(); i++)
+						columns.add(new ColumnModel(columnHeaders.get(i), columnHeaders.get(i), i));
+				}
+
+				if (values.size() > 0) {
+					List<String> lcHeadrs = realColHeaders.stream().map(String::toLowerCase).collect(Collectors.toList());
+					final int toIdx = lcHeadrs.indexOf("to");
+					final int ccIdx = lcHeadrs.indexOf("cc");
+					if  (toIdx >= 0 && ccIdx >= 0) {
+						Map<String, List<List<Entry<String, Object>>>> groups = values.stream()
+								.filter(v -> StringUtils.isNotBlank((String)v.get(toIdx).getValue()))
+								.collect(Collectors.groupingBy(v -> (String)v.get(toIdx).getValue(),
+										LinkedHashMap::new, Collectors.toList()));
+						groups.entrySet().forEach(e -> {
+							String join = e.getValue().stream()
+									.map(line -> (String)line.get(ccIdx).getValue())
+									.filter(StringUtils::isNotBlank)
+									.filter(v -> !v.equalsIgnoreCase(e.getKey()) && !e.getKey().contains(v))
+									.distinct()
+									.collect(Collectors.joining(","));
+							e.getValue().get(0).get(ccIdx).setValue(join);
+						});
+						values = groups.entrySet().stream().map(e -> e.getValue().get(0)).collect(Collectors.toList());
+					}
+				}
+
+				valuesModel = new ListDataModel<>(values);
+
+				Map<String,Object> beans = new HashMap<>();
+				beans.put("sb", sessionBean);
+				beans.put("mt", mailTemplate);
+				beans.put("activity", activity);
+
+				for (List<Entry<String, Object>> vals : values) {
+
+					vals.addAll(beans.entrySet());
+
+					MailMessage msg = new MailMessage();
+					msg.setValues(vals);
+					msg.setTemplate(mailTemplate);
+					String text = mailTemplate.getText();
+					if (text != null) {
+						text = templateUtils.replace(mailTemplate.getText(), vals);
+						text = text.replaceAll("<p style=\"", "<p style=\"margin:0; ");
+						text = text.replaceAll("<p>", "<p style='margin:0;'>");
+					}
+					msg.setText(text);
+					msg.setReceiver(templateUtils.replace("${to}", vals));
+					msg.setPlainText(TemplateUtils.htmlToText(msg.getText()));
+
+					if (mailTemplate.isSms()) {
+						msg.setReceiver(msg.getReceiver().replaceAll(phoneNumberFilter.pattern(),""));
+					}
+					if (mailTemplate.isCc()) {
+						String ccVal = templateUtils.replace("${cc}", vals, mailConfig.getCc());
+						if (StringUtils.isNotBlank(ccVal)) {
+							msg.setCc(ccVal);
+						}
+					}
+					if (mailTemplate.isBcc()) {
+						String bccVal = templateUtils.replace("${bcc}", vals, mailConfig.getBcc());
+						if (StringUtils.isNotBlank(bccVal)) {
+							msg.setBcc(bccVal);
+						}
+					}
+
+					msg.setSubject(templateUtils.replace(mailTemplate.getSubject(), msg.getValues()));
+					msg.setMember(vals.stream().filter(e -> e.getValue() instanceof Member)
+							.map(e -> (Member) e.getValue()).findFirst().orElse(null));
+					msg.setRegistration(vals.stream().filter(e -> e.getValue() instanceof Registration)
+							.map(e -> (Registration) e.getValue()).findFirst().orElse(null));
+					mailMessages.add(msg);
+				}
+
+				// Validate message addresses:
+				validate(mailMessages, mailTemplate.isSms());
+
+				mailMessagesModel = new ListDataModel<>(mailMessages);
+				mailMessagesModelLoaded = true;
+			} catch (Exception e) {
+				error("Cannot load QueryData: " + e);
+			}
+		}
 	}
 
 	public void validate(List<MailMessage> mailMessgs, boolean isSms) {
@@ -321,8 +317,10 @@ public class MailerBean extends BaseBean<MailMessage> {
 	}
 
 	public void toggleForIndex(final int index) {
-		MailMessage m = mailMessages.get(index);
-		m.setSend(!m.isSend());
+		if (mailMessages.size() > index) {
+			MailMessage m = mailMessages.get(index);
+			m.setSend(!m.isSend());
+		}
 	}
 
 	public void sendTestMessage() {
@@ -333,175 +331,37 @@ public class MailerBean extends BaseBean<MailMessage> {
 	public void sendRealMessages() {
 		sendMessages(false);
 	}
-		
-	protected void sendMessages(boolean testOnly) {
-		if (mailConfig == null) {
-			error("Cannot execute Template for empty MailConfiguration!");
-			return;
-		}
-		if (mailConfig.getFrom() == null) {
-			error("Cannot execute Template for empty FROM address in MailConfiguration!");
-			return;
-		}
-		
+
+	protected void sendMessages(boolean test) {
 		try {
-
-			final boolean saveTemplate = mailTemplate.getId() != null;
-
-			Session session = Session.getInstance(mailConfig.getProperties(), new Authenticator() {
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(mailConfig.getUsername(), mailConfig.getPassword());
-				}
-			});
-			InternetAddress sender = new InternetAddress(mailConfig.getFrom());
-			if (mailConfig.getAlias() != null) {
-				sender.setPersonal(mailConfig.getAlias());
-			}
-
-			for (MailMessage msg : mailMessages) {
-				if (!msg.isSend()) {
-					log.info("not sending: " + msg);
-					continue;
-				}
-				
-				try {
-					if (StringUtils.isBlank(msg.getReceiver()) || "null".equals(msg.getReceiver())) {
-						warn("invalid Receiver: " + msg);
-						continue;
-					}
-					if (!mailTemplate.isSms()) {
-						try {
-							InternetAddress[] ia = InternetAddress.parse(msg.getReceiver());
-						} catch (Exception e) {
-							warn("invalid Receiver: "+e.getMessage()+ " : " + msg);
-							continue;
-						}
-						if (StringUtils.isBlank(msg.getSubject())) {
-							warn("empty Subject: " + msg);
-							continue;
-						}
-					}
-					if (StringUtils.isBlank(msg.getText())) {
-						warn("empty MessageText: " + msg);
-						continue;
-					}
-					
-					MimeMessage mail = new MimeMessage(session);
-					mail.setFrom(sender);
-					mail.setSubject(msg.getSubject());
-
-					MimeMultipart mixed = new MimeMultipart("mixed");
-					
-					MimeMultipart alternative = new MimeMultipart("alternative");
-					
-					if (Boolean.TRUE.equals(mailTemplate.getAlternativeText())) {
-						MimeBodyPart body = new MimeBodyPart();
-						body.setContent(msg.getPlainText(), "text/plain; charset=UTF-8");
-						alternative.addBodyPart(body);
-					}
-					
-					MimeBodyPart htmlBody = new MimeBodyPart();
-					htmlBody.setContent(msg.getText(), "text/html; charset=UTF-8");
-					alternative.addBodyPart(htmlBody);
-					MimeBodyPart alternativeBody = new MimeBodyPart();
-					alternativeBody.setContent(alternative);
-					
-					if (false) { /// if embedded images are supported
-						MimeMultipart related = new MimeMultipart();
-						MimeBodyPart relatedBody = new MimeBodyPart();
-						relatedBody.setContent(alternative);
-						related.addBodyPart(relatedBody);
-						//for each image:
-						//  MimeBodyPart imgBody = new MimeBodyPart();
-						//  imgBody.setContent(image);
-						//	related.addBodyPart(imgBody);
-						relatedBody.setContent(related);
-						mixed.addBodyPart(relatedBody);
-					} else {
-						mixed.addBodyPart(alternativeBody);
-					}
-					
-					for (Entry<String, UpFile> fup : files.entrySet()) {
-						MimeBodyPart filePart = new MimeBodyPart();
-						filePart.setDisposition(MimePart.ATTACHMENT);
-						filePart.setFileName(fup.getKey());
-						filePart.setDataHandler(new DataHandler(new FileDataSource(fup.getValue().content.toFile())));
-						mixed.addBodyPart(filePart);
-					}
-					
-					mail.setContent(mixed);
-					
-					RecipientType to = RecipientType.TO;
-					if (testOnly) {
-						msg = msg.getClone();
-						if (!mailTemplate.isSms()) {
-							addAddresses(mail, testTo, to);
-							msg.setReceiver(testTo);
-							if (mailTemplate.isCc()) 
-								msg.setCc(testTo);
-						} else {
-							msg.setReceiver(testTo);
-							if (mailTemplate.isCc()) 
-								msg.setCc(testTo);
-						}
-					} else {
-						addAddresses(mail, msg.getReceiver(), to);
-						if (mailTemplate.isCc() && StringUtils.isNotBlank(msg.getCc())) {
-							addAddresses(mail, msg.getCc(), RecipientType.CC);
-						}
-						if (mailTemplate.isBcc() && StringUtils.isNotBlank(msg.getBcc())) {
-							addAddresses(mail, msg.getBcc(), RecipientType.BCC);
-						}
-					}
-					
-
-					if (saveTemplate) {
-						msg.setTemplate(mailTemplate);
-					} else {
-						msg.setTemplate(null);
-					}
-					msg.setSender(sender.getAddress()
-							+ (StringUtils.isNotBlank(sender.getPersonal()) ? ":" + sender.getPersonal() : ""));
-					msg.setTest(testOnly);
-					msg.setCreatedBy(sessionBean.getUser().getName());
-
-					MailMessage sentMsg;
-					if (!mailTemplate.isSms()) {
-						sentMsg = mailSender.get().sendMail(mail, msg, mailTemplate.isSaveText());
-					} else {
-						sentMsg = smsSender.get().sendMail(msg, mailConfig, mailTemplate.isSaveText());
-					}
-					msg.setSend(false);
-					msg.setCreated(sentMsg.getCreated());
-					
-					if (testOnly) {
-						break;
-					}
-					
-				} catch (MessagingException me) {
-					log.info("send failed: " + me + " msg: " + msg, me);
-					warn("send failed: " + me + " to: " + msg.getReceiver());
-				}
-			}
-
+			getMailerMailHandlerBean().sendMessages(mailMessages, mailTemplate, mailConfig, files, test, testTo, sessionBean.getUser().getName());
 		} catch (Exception e) {
-			log.warn("Cannot send messages: " + mailTemplate + " : " + e, e);
-			error("cannot send messages: " + e);
+			error("Cannot send Messages: " + e);
 		}
 	}
 
-	public void addAddresses(MimeMessage mail, String receivers, RecipientType type)
-			throws MessagingException, AddressException {
-		Arrays.stream(receivers.split("[,; ]+")).forEach(r -> {
+	public boolean isInProgress() {
+		return isQueryActive() || isSending();
+	}
+
+	public boolean isQueryActive() {
+		return valuesFuture != null && !valuesFuture.isDone();
+	}
+
+	public boolean isSending() {
+		return getMailerMailHandlerBean().isSending();
+	}
+
+	public MailerMailHandlerBean getMailerMailHandlerBean() {
+		if (mailerMailHandlerBean != null){
 			try {
-				if (StringUtils.isNotBlank(r)) {
-					mail.addRecipients(type, InternetAddress.parse(r));
-				}
+				mailerMailHandlerBean.isSending();
+				return mailerMailHandlerBean;
 			} catch (Exception e) {
-				log.info("cannot convert to Address: " + r + " : " + e);
+				log.info("cannot access mailHandler: " + e);
 			}
-		});
+		}
+		return mailerMailHandlerBeans.get();
 	}
 
 	public boolean isChangeTemplateAllowed() {
@@ -594,6 +454,9 @@ public class MailerBean extends BaseBean<MailMessage> {
 	}
 
 	public ListDataModel<MailMessage> getMailMessages() {
+		if (!mailMessagesModelLoaded) {
+			loadModels();
+		}
 		return mailMessagesModel;
 	}
 	

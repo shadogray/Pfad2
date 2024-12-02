@@ -1,27 +1,16 @@
 package at.tfr.pfad.model;
 
-import java.util.Date;
-import java.util.List;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
+import at.tfr.pfad.dao.AuditListener;
+import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
-import at.tfr.pfad.dao.AuditListener;
+import java.util.Date;
+import java.util.List;
 
 @Audited(withModifiedFlag = true)
 @Entity
@@ -88,7 +77,7 @@ public class MailTemplate extends BaseEntity implements Auditable {
 	}
 	
 	public String getName() {
-		return name;
+		return name != null ? name : "";
 	}
 	
 	public void setName(String name) {
@@ -104,7 +93,7 @@ public class MailTemplate extends BaseEntity implements Auditable {
 	}
 	
 	public String getText() {
-		return text;
+		return text != null ? text : "";
 	}
 
 	public void setText(String text) {

@@ -6,6 +6,8 @@ import at.tfr.pfad.model.Configuration;
 import at.tfr.pfad.processing.ExecutionResult;
 import at.tfr.pfad.processing.PfadCommandExecutor;
 import jakarta.annotation.PostConstruct;
+import jakarta.ejb.AsyncResult;
+import jakarta.ejb.Asynchronous;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -15,6 +17,7 @@ import org.hibernate.query.TupleTransformer;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -22,8 +25,6 @@ import java.util.stream.Collectors;
 @Stateless
 public class QueryExecutor {
 
-	@Inject
-	private SessionBean sessionBean;
 	@Inject
 	private EntityManager em;
 	@Inject
@@ -46,17 +47,18 @@ public class QueryExecutor {
 		}
 	}
 	
-	public List<List<Entry<String, Object>>> execute(Configuration config) {
-		return execute(config.getCvalue(), ConfigurationType.nativeQuery.equals(config.getType()));
+	public Future<List<List<Entry<String, Object>>>> execute(Configuration config, ExecutorContext ctx) {
+		return execute(config.getCvalue(), ConfigurationType.nativeQuery.equals(config.getType()), ctx);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<List<Entry<String, Object>>> execute(String query, boolean nativeQuery) {
+	@Asynchronous
+	public Future<List<List<Entry<String, Object>>>> execute(String query, boolean nativeQuery, ExecutorContext ctx) {
 		
 		Integer maxResults = null;
 		Integer firstResult = null;
 		
-		if (query == null) return Collections.emptyList();
+		if (query == null) return new AsyncResult<>(Collections.emptyList());
 		
 		if (query != null && query.matches("(?).*password.*")) {
 			throw new SecurityException("security check failed");
@@ -83,7 +85,7 @@ public class QueryExecutor {
 			}
 		}
 		Query q;
-		if (sessionBean.isAdmin() && (query.startsWith("update ") || query.startsWith("delete "))) {
+		if (ctx.isAdmin() && (query.startsWith("update ") || query.startsWith("delete "))) {
 			int updated;
 			if (nativeQuery) {
 				updated = em.createNativeQuery(query).executeUpdate();
@@ -108,21 +110,21 @@ public class QueryExecutor {
 		q.setTupleTransformer(new AliasTransformer());
 		List<List<Entry<String,Object>>> list = q.list();
 		
-		return list;
+		return new AsyncResult<>(list);
 	}
 
-	public List<List<Entry<String, Object>>> toResult(int updated) {
+	public Future<List<List<Entry<String, Object>>>> toResult(int updated) {
 		return toResult("updated:", updated);
 	}
 
-	public List<List<Entry<String, Object>>> toResult(String key, Object value) {
+	public Future<List<List<Entry<String, Object>>>> toResult(String key, Object value) {
 		List<List<Entry<String,Object>>> result = new ArrayList<>();
 		List<Entry<String,Object>> e = new ArrayList<>();
 		Map<String,Object> entries = new HashMap<>();
 		entries.put(key, value);
 		e.addAll(entries.entrySet());
 		result.add(e);
-		return result;
+		return new AsyncResult<>(result);
 	}
 	
 	class AliasTransformer implements TupleTransformer<List<Entry<String, Object>>> {

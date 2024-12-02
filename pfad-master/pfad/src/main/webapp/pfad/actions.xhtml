@@ -82,12 +82,14 @@
 		</h:form>
 
 		<h:form id="query">
-			<p:hotkey id="hotKey" bind="ctrl+x" handler="alert($('#ExecuteQuery')); $('#ExecuteQuery').click()"/>
+			<p:poll process="@none" update="query" rendered="#{downloadBean.queryActive}"/>
+			<p:hotkey id="hotKey" bind="ctrl+x" handler="alert($('#ExecuteQuery')); $('#ExecuteQuery').click()" rendered="#{!downloadBean.queryActive}"/>
 			<p:messages />
 			<h:panelGroup id="queryPanel">
 				<h:panelGroup layout="block" id="actionsQueries">
 					<ui:repeat value="#{downloadBean.queries}" var="query">
 						<h:commandLink actionListener="#{downloadBean.executeQuery(query.id)}" value="#{query.uiName}"
+							disabled="#{downloadBean.queryActive}"
 							styleClass="btn btn-primary" style="font-size:smaller" title="#{query.toTitle()}">
 							<f:ajax execute="@this" render="@form" />
 						</h:commandLink>
@@ -96,8 +98,8 @@
 				<h:panelGrid columns="4" rendered="#{not empty downloadBean.results}">
 					<h:outputLabel value="Query:" />
 					<h:outputText value="#{downloadBean.configuration.uiName}" />
-					<h:commandLink action="#{downloadBean.downloadResults()}" value="Download" styleClass="btn btn-primary"
-						title="Download von: #{downloadBean.configuration.uiName}"/>
+					<h:commandLink action="#{downloadBean.downloadResults()}" value="Download" disabled="#{downloadBean.queryActive}"
+						styleClass="btn btn-primary" title="Download von: #{downloadBean.configuration.uiName}"/>
 					<h:outputText value="" />
 				</h:panelGrid>
 
@@ -109,8 +111,9 @@
 								<h:outputLabel value="NativeQuery" />
 								<h:selectBooleanCheckbox value="#{downloadBean.nativeQuery}" immediate="true" />
 							</h:panelGroup>
-							<h:commandLink id="ExecuteQuery" actionListener="#{downloadBean.executeQuery()}" value="Query" styleClass="btn btn-primary" title="Abfrage: #{downloadBean.query}">
-								<f:ajax execute="@form" render="results messages" />
+							<h:commandLink id="ExecuteQuery" actionListener="#{downloadBean.executeQuery}" value="Query"
+								styleClass="btn btn-primary" title="Abfrage: #{downloadBean.query}" disabled="#{downloadBean.queryActive}">
+								<f:ajax execute="@form" render="@form" />
 							</h:commandLink>
 							<h:outputText value="" />
 						</h:panelGrid>
@@ -120,19 +123,23 @@
 							<h:outputText value="" />
 						</h:panelGroup>
 					</h:panelGroup>
-					<h:messages id="messages" />
 
-					<h:panelGroup id="results" layout="block" rendered="#{not empty downloadBean.results}">
-						<p:dataTable value="#{downloadBean.results}" var="row" rowIndexVar="rowIndex" resizableColumns="true" styleClass="data-table">
-							<p:column width="15">
-								<f:facet name="header">Nr</f:facet>
-								<h:outputText value="#{rowIndex+1}" />
-							</p:column>
-							<p:columns var="c" value="#{downloadBean.columns}" sortable="true" sortBy="#{row[c.index].value}">
-								<f:facet name="header">#{c.value}</f:facet>
-								<h:outputText value="#{row[c.index].value}" />
-							</p:columns>
-						</p:dataTable>
+					<h:panelGroup id="queryResult" >
+						<p:progressBar mode="indeterminate" style="width:100%; height:5px;" rendered="#{downloadBean.queryActive}"/>
+						<h:messages id="messages" />
+
+						<h:panelGroup id="results" layout="block" rendered="#{not empty downloadBean.results}">
+							<p:dataTable value="#{downloadBean.results}" var="row" rowIndexVar="rowIndex" resizableColumns="true" styleClass="data-table">
+								<p:column width="15">
+									<f:facet name="header">Nr</f:facet>
+									<h:outputText value="#{rowIndex+1}" />
+								</p:column>
+								<p:columns var="c" value="#{downloadBean.columns}" sortable="true" sortBy="#{row[c.index].value}">
+									<f:facet name="header">#{c.value}</f:facet>
+									<h:outputText value="#{row[c.index].value}" />
+								</p:columns>
+							</p:dataTable>
+						</h:panelGroup>
 					</h:panelGroup>
 				</f:ajax>
 			</h:panelGroup>

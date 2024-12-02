@@ -1,20 +1,11 @@
 package at.tfr.pfad.model;
 
+import jakarta.persistence.*;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
-
-import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class MailMessage extends BaseEntity implements Cloneable {
@@ -194,7 +185,7 @@ public class MailMessage extends BaseEntity implements Cloneable {
 	}
 	
 	public String getPlainText() {
-		return plainText;
+		return plainText != null ? plainText : "";
 	}
 	
 	public void setPlainText(String plainText) {

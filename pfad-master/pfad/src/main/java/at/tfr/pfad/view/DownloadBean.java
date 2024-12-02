@@ -17,10 +17,7 @@ import at.tfr.pfad.processing.PfadCommandExecutor;
 import at.tfr.pfad.processing.RegistrationDataGenerator;
 import at.tfr.pfad.processing.RegistrationDataGenerator.DataStructure;
 import at.tfr.pfad.processing.RegistrationDataGenerator.RegConfig;
-import at.tfr.pfad.util.ColumnModel;
-import at.tfr.pfad.util.QueryExecutor;
-import at.tfr.pfad.util.SessionBean;
-import at.tfr.pfad.util.TemplateUtils;
+import at.tfr.pfad.util.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateful;
 import jakarta.enterprise.inject.Instance;
@@ -45,6 +42,8 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -73,8 +72,10 @@ public class DownloadBean implements Serializable {
 	private Configuration configuration = new Configuration().withCkey("undef").withUiName("undef");
 	private boolean updateRegistered;
 	private boolean notRegisteredOnly;
-	private List<List<Entry<String,Object>>> results = Collections.emptyList();
+	private Future<List<List<Entry<String,Object>>>> resultsFuture;
+	List<List<Entry<String,Object>>> results = Collections.emptyList();
 	private ListDataModel<List<Entry<String,Object>>> resultModel = new ListDataModel<>(new ArrayList<>());
+	private boolean resultModelLoaded;
 	private final List<ColumnModel> columns = new ArrayList<>();
 	private final List<String> columnHeaders = new ArrayList<>();
 	public static final String SafeDatePattern = "yyyy.MM.dd_HHmm";
@@ -244,6 +245,29 @@ public class DownloadBean implements Serializable {
 	}
 
 	public ListDataModel<List<Entry<String,Object>>> getResults() {
+		if (resultsFuture != null && resultsFuture.isDone() && !resultModelLoaded) {
+			try {
+				try {
+					results = resultsFuture.get();
+				} catch (ExecutionException e) {
+					resultsFuture = null;
+					throw e;
+				}
+				if (results.size() > 0) {
+					resultModel.setWrappedData(results);
+					List<String> columnNames = results.get(0).stream().map(Entry::getKey).collect(Collectors.toList());
+
+					if (configuration != null)
+						columnHeaders.addAll(Arrays.asList(configuration.toHeaders(columnNames)));
+					for (int i = 0; i < columnNames.size(); i++)
+						columns.add(new ColumnModel(columnNames.get(i),
+								columnHeaders.size() > i ? columnHeaders.get(i) : columnNames.get(i), i));
+				}
+				resultModelLoaded = true;
+			} catch (Exception e) {
+				error(e);
+			}
+		}
 		return resultModel;
 	}
 	
@@ -258,6 +282,10 @@ public class DownloadBean implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<List<Entry<String,Object>>> getResultList() {
 		return results;
+	}
+
+	public Future<List<List<Entry<String, Object>>>> getResultsFuture() {
+		return resultsFuture;
 	}
 
 	public List<Configuration> getQueries() {
@@ -299,6 +327,10 @@ public class DownloadBean implements Serializable {
 		return "";
 	}
 
+	public boolean isQueryActive() {
+		return resultsFuture != null && !resultsFuture.isDone();
+	}
+
 	private void error(Throwable e) {
 		log.info("cannot execute: " + configuration + " : " + e, e);
 		FacesContext.getCurrentInstance().addMessage(null, 
@@ -306,31 +338,20 @@ public class DownloadBean implements Serializable {
 	}
 
 	private void executeQueryIntern() {
+		resultModelLoaded = false;
+		resultsFuture = null;
 		results = Collections.emptyList();
 		columnHeaders.clear();
 		columns.clear();
-		resultModel = new ListDataModel<List<Entry<String,Object>>>(new ArrayList<List<Entry<String,Object>>>());
+		resultModel = new ListDataModel<List<Entry<String,Object>>>(results);
 
 		String replQuery = configuration.getCvalue();
 		if (replQuery != null) {
 			replQuery = templateUtils.replace(replQuery, beans);
+			replQuery = replQuery.replaceAll("\\$\\{activityId\\}", payedActivity != null ? payedActivity.getIdStr() : "null");
 		}
 
-		if (replQuery.startsWith("cmd:")) {
-
-		}
-
-		results = qExec.get().execute(replQuery, configuration.isNative());
-		if (results.size() > 0) {
-			resultModel.setWrappedData(results);
-			List<String> columnNames = results.get(0).stream().map(Entry::getKey).collect(Collectors.toList());
-
-			if (configuration != null) 
-				columnHeaders.addAll(Arrays.asList(configuration.toHeaders(columnNames)));
-			for (int i=0; i<columnNames.size(); i++) 
-				columns.add(new ColumnModel(columnNames.get(i), 
-						columnHeaders.size()>i ? columnHeaders.get(i) : columnNames.get(i), i));
-		}
+		resultsFuture = qExec.get().execute(replQuery, configuration.isNative(), new ExecutorContext(sessionBean));
 	}
 
 	String getMessage(Throwable e) {
