@@ -139,13 +139,13 @@
 					<h:outputLabel value="Aktionen: "/>
 					<h:panelGrid id="buttons" columns="8" with="100%">
 						<h:commandButton value="Vorlage Speichern" action="#{mailerBean.saveTemplate}" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary"/>
-						<h:commandButton value="Vorbereiten" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary">
+						<h:commandButton value="Vorbereiten" disabled="#{!mailerBean.updateAllowed or mailerBean.sending}" styleClass="btn btn-primary">
 							<f:ajax execute="@this" listener="#{mailerBean.executeQuery}" render="@form"/>
 						</h:commandButton>
-						<h:commandButton value="Test-#{mailerBean.mailTemplate.sms ? 'SMS':'Email'}" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary">
+						<h:commandButton value="Test-#{mailerBean.mailTemplate.sms ? 'SMS':'Email'}" disabled="#{!mailerBean.updateAllowed or mailerBean.sending}" styleClass="btn btn-primary">
 							<f:ajax execute="@this" listener="#{mailerBean.sendTestMessage()}" render="@form"/>
 						</h:commandButton>
-						<h:commandButton value="#{mailerBean.mailMessagesToSend} Echt-#{mailerBean.mailTemplate.sms ? 'SMS':'Emails'} Versenden!!" disabled="#{!mailerBean.updateAllowed}"
+						<h:commandButton value="#{mailerBean.mailMessagesToSend} Echt-#{mailerBean.mailTemplate.sms ? 'SMS':'Emails'} Versenden!!" disabled="#{!mailerBean.updateAllowed or mailerBean.sending}"
 							onclick="return confirm('Möchtest Du #{mailerBean.mailMessagesToSend} Emails senden?')" styleClass="btn btn-primary">
 							<f:ajax execute="@this" listener="#{mailerBean.sendRealMessages()}" render="@form"/>
 						</h:commandButton>
