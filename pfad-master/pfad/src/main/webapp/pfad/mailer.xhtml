@@ -9,6 +9,7 @@
 	<f:metadata>
 		<f:viewParam name="id" value="#{mailerBean.mailTemplate}" converter="#{mailerBean.converter}"/>
 		<o:viewParam name="menu" value="#{pfadUI.menuSelect}" />
+		<f:viewAction onPostback="true" action="#{mailerBean.loadModels()}" />
 	</f:metadata>
 	
 	<ui:param name="pageTitle" value="Mailversendung" />
@@ -68,7 +69,9 @@
 						<h:outputLabel value="Sender:" />
 						<h:outputText value="#{mailerBean.mailConfig.from}"/>
 						<h:outputLabel value="Alias:" />
-						<h:inputText value="#{mailerBean.mailConfig.alias}"/>
+						<p:inputText value="#{mailerBean.mailConfig.alias}">
+							<f:ajax/>
+						</p:inputText>
 						<h:outputLabel value="Username:" />
 						<h:outputText value="#{mailerBean.mailConfig.username}"/>
 						<h:outputLabel value="Berechtigt:" />
@@ -76,11 +79,13 @@
 						<p:outputLabel value=""/>
 
 						<h:outputLabel value="CC:" />
-						<h:inputText value="#{mailerBean.mailConfig.cc}"/>
+						<p:inputText value="#{mailerBean.mailConfig.cc}"/>
 						<h:outputLabel value="BCC:" />
-						<h:inputText value="#{mailerBean.mailConfig.bcc}"/>
+						<p:inputText value="#{mailerBean.mailConfig.bcc}" />
 						<h:outputLabel value="Test-TO:" />
-						<h:inputText value="#{mailerBean.testTo}"/>
+						<p:inputText value="#{mailerBean.testTo}">
+							<f:ajax/>
+						</p:inputText>
 						<h:outputLabel value="Vorlagenname:" />
 						<p:inputText value="#{mailerBean.mailTemplate.name}" />
 						<h:commandButton value="Copy" action="#{mailerBean.copyTemplate()}" process="@form" update=":mailConfig :mailer" styleClass="btn btn-primary" />
@@ -105,9 +110,7 @@
 								<h:outputLabel value="Alt-Text:" title="#{configurationBean.getValue('mailer.alternativeText','HTML auch als Alternativ-Text senden')}"/>
 								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.alternativeText}" title="#{configurationBean.getValue('mailer.alternativeText','HTML auch als Alternativ-Text senden')}"/>
 								<h:outputLabel value="SMS:" title="#{configurationBean.getValue('mailer.sms','Als SMS senden')}"/>
-								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.sms}" title="#{configurationBean.getValue('mailer.sms','Als SMS senden')}">
-									<f:ajax execute="#{mailerBean.reinit()}" render="mailer"/>
-								</h:selectBooleanCheckbox>
+								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.sms}" title="#{configurationBean.getValue('mailer.sms','Als SMS senden')}"/>
 								<h:outputLabel value="SQL:" title="#{configurationBean.getValue('mailer.sql','Query in SQL')}"/>
 								<h:selectBooleanCheckbox value="#{mailerBean.mailTemplate.sql}" title="#{configurationBean.getValue('mailer.sql','Query in SQL')}"/>
 							</h:panelGrid>
@@ -134,7 +137,7 @@
 					<p:textEditor value="#{mailerBean.mailTemplate.text}" height="400" secure="false"/>
 
 					<h:outputLabel value="Aktionen: "/>
-					<h:panelGrid id="buttons" columns="4" with="100%">
+					<h:panelGrid id="buttons" columns="8" with="100%">
 						<h:commandButton value="Vorlage Speichern" action="#{mailerBean.saveTemplate}" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary"/>
 						<h:commandButton value="Vorbereiten" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary">
 							<f:ajax execute="@this" listener="#{mailerBean.executeQuery}" render="@form"/>
@@ -146,13 +149,26 @@
 							onclick="return confirm('Möchtest Du #{mailerBean.mailMessagesToSend} Emails senden?')" styleClass="btn btn-primary">
 							<f:ajax execute="@this" listener="#{mailerBean.sendRealMessages()}" render="@form"/>
 						</h:commandButton>
+						<h:outputLabel value="Jiffies: "/>
+						<h:outputText value="#{mailerBean.mailJiffies}"/>
+						<h:commandButton value="Stop" disabled="#{!mailerBean.sending}" styleClass="btn btn-primary">
+							<f:ajax execute="@this" listener="#{mailerBean.stopSending()}" render="mailResults"/>
+						</h:commandButton>
 					</h:panelGrid>
 				</h:panelGrid>
 			</h:panelGroup>
 
 			<h:panelGroup id="mailResults" >
-				<p:poll process="@this" update="mailResults" rendered="#{mailerBean.inProgress}"/>
-				<p:progressBar mode="indeterminate" rendered="#{mailerBean.inProgress }" style="width: 100%"/>
+				<p:poll process="@this" update="buttons mailResults" rendered="#{mailerBean.inProgress}"/>
+				<p:progressBar mode="indeterminate" rendered="#{mailerBean.inProgress}" style="width: 100%"/>
+
+				<h:panelGrid columns="1" style="width: 100%" rendered="#{!empty mailerBean.sendingMessages}">
+					<p:dataTable value="#{mailerBean.sendingMessages}" var="m" >
+						<p:column >
+							<h:outputText value="#{m}"/>
+						</p:column>
+					</p:dataTable>
+				</h:panelGrid>
 
 				<p:accordionPanel id="acc" widgetVar="acc" activeIndex="1" multiple="false" dynamic="true">
 					<p:ajax event="tabChange" update="mailer:acc"/>

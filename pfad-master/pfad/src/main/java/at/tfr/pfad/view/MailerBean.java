@@ -52,6 +52,8 @@ public class MailerBean extends BaseBean<MailMessage> {
 	private MailTemplateBean mailTemplateBean;
 	@Inject
 	private Instance<MailerMailHandlerBean> mailerMailHandlerBeans;
+	@Inject
+	private Instance<MailerServiceBean> mailerServiceBeans;
 	private MailerMailHandlerBean mailerMailHandlerBean;
 	private MailConfig mailConfig;
 	private String mailConfigKey;
@@ -68,6 +70,7 @@ public class MailerBean extends BaseBean<MailMessage> {
 	private transient List<MailMessage> mailMessages = Collections.emptyList();
 	private transient ListDataModel<List<Entry<String, Object>>> valuesModel = new ListDataModel<>();
 	private transient ListDataModel<MailMessage> mailMessagesModel = new ListDataModel<>();
+	private transient Future<Integer> mailSendingFuture;
 	private boolean mailMessagesModelLoaded;
 	private transient final Map<String,UpFile> files = new LinkedHashMap<>();
 
@@ -80,6 +83,7 @@ public class MailerBean extends BaseBean<MailMessage> {
 		mailConfigs = MailConfig.generateConfigs(sessionBean.getConfig(), log.isDebugEnabled()).entrySet().stream()
 				.filter(mc -> StringUtils.isNotBlank(mc.getValue().getPassword()))
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+		mailerServiceBeans.get().setMailQueues(mailConfigs);
 		Entry<String,MailConfig> myMc = mailConfigs.entrySet().stream()
 				.filter(mc -> mc.getKey().toLowerCase().startsWith(sessionBean.getUser().getName())).findFirst().orElse(null);
 		if (myMc == null) {
@@ -99,7 +103,6 @@ public class MailerBean extends BaseBean<MailMessage> {
 	}
 
 	public void reinit() {
-		testTo = null;
 	}
 
 	@AccessTimeout(unit = TimeUnit.SECONDS, value = 30)
@@ -145,7 +148,7 @@ public class MailerBean extends BaseBean<MailMessage> {
 	}
 
 	public void loadModels() {
-		if (valuesFuture != null && valuesFuture.isDone()) {
+		if (!mailMessagesModelLoaded && valuesFuture != null && valuesFuture.isDone()) {
 			try {
 				try {
 					values = valuesFuture.get();
@@ -333,11 +336,28 @@ public class MailerBean extends BaseBean<MailMessage> {
 	}
 
 	protected void sendMessages(boolean test) {
+		mailSendingFuture = null;
 		try {
-			getMailerMailHandlerBean().sendMessages(mailMessages, mailTemplate, mailConfig, files, test, testTo, sessionBean.getUser().getName());
+			if (test && StringUtils.isBlank(testTo)) {
+				throw new IllegalArgumentException("If Test testTo may not be empty!");
+			}
+			mailSendingFuture = getMailerMailHandlerBean().sendMessages(mailMessages, mailTemplate, mailConfig, files, test, testTo, sessionBean.getUser().getName());
 		} catch (Exception e) {
 			error("Cannot send Messages: " + e);
 		}
+	}
+
+	public void stopSending() {
+		if (mailerMailHandlerBean != null) {
+			mailerMailHandlerBean.setStopRequest(true);
+		}
+	}
+
+	public List<String> getSendingMessages() {
+		if (mailerMailHandlerBean == null) {
+			return Collections.emptyList();
+		}
+		return mailerMailHandlerBean.getMessages();
 	}
 
 	public boolean isInProgress() {
@@ -349,7 +369,7 @@ public class MailerBean extends BaseBean<MailMessage> {
 	}
 
 	public boolean isSending() {
-		return getMailerMailHandlerBean().isSending();
+		return mailSendingFuture != null && !mailSendingFuture.isDone() && getMailerMailHandlerBean().isSending();
 	}
 
 	public MailerMailHandlerBean getMailerMailHandlerBean() {
@@ -361,7 +381,8 @@ public class MailerBean extends BaseBean<MailMessage> {
 				log.info("cannot access mailHandler: " + e);
 			}
 		}
-		return mailerMailHandlerBeans.get();
+		mailerMailHandlerBean = mailerMailHandlerBeans.get();
+		return mailerMailHandlerBean;
 	}
 
 	public boolean isChangeTemplateAllowed() {
@@ -446,6 +467,7 @@ public class MailerBean extends BaseBean<MailMessage> {
 		this.mailConfigKey = mailConfigKey;
 		if (mailConfigKey != null && mailConfigs.containsKey(mailConfigKey)) {
 			mailConfig = mailConfigs.get(mailConfigKey);
+			testTo = mailConfig.getTestTo();
 		}
 	}
 	
@@ -453,10 +475,14 @@ public class MailerBean extends BaseBean<MailMessage> {
 		return mailConfig;
 	}
 
-	public ListDataModel<MailMessage> getMailMessages() {
-		if (!mailMessagesModelLoaded) {
-			loadModels();
+	public int getMailJiffies() {
+		if (mailConfig != null) {
+			return mailerServiceBeans.get().jiffies(mailConfig.key);
 		}
+		return -1;
+	}
+
+	public ListDataModel<MailMessage> getMailMessages() {
 		return mailMessagesModel;
 	}
 	
@@ -580,7 +606,7 @@ public class MailerBean extends BaseBean<MailMessage> {
 			alias = getValue(configs, "mail_alias");
 			cc = getValue(configs, "mail_cc");
 			bcc = getValue(configs, "mail_bcc", from);
-			testTo = getValue(configs, "mail_testTo", from != null ? from : testTo);
+			setTestTo(getValue(configs, "mail_testTo", from != null ? from : testTo));
 			smsUsername = getValue(configs, "mail_smsUsername", null);
 			smsPassword = getValueIntern(configs, "mail_smsPassword", null);
 			smsService = getValue(configs, "mail_smsService", null);

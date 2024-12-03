@@ -4,45 +4,59 @@ import at.tfr.pfad.model.MailMessage;
 import at.tfr.pfad.model.MailTemplate;
 import jakarta.activation.DataHandler;
 import jakarta.activation.FileDataSource;
-import jakarta.ejb.AccessTimeout;
-import jakarta.ejb.Asynchronous;
-import jakarta.ejb.Stateful;
+import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 
-@Stateful
-public class MailerMailHandlerBean extends BaseBean<MailMessage> {
+@Default
+public class MailerMailHandlerBean {
 
+    protected Logger log = Logger.getLogger(getClass());
+
+    @Inject
+    private MailerServiceBean mailerServiceBean;
     @Inject
     private Instance<MailSender> mailSender;
     @Inject
     private Instance<SmsSender> smsSender;
     private boolean sending;
+    private final List<String> errorMessages = new ArrayList<>();
+    private final List<String> warnMessages = new ArrayList<>();
+    private boolean stopRequest;
 
-    @AccessTimeout(value = 60, unit = TimeUnit.MINUTES)
     @Asynchronous
-    public void sendMessages(List<MailMessage> mailMessages, MailTemplate mailTemplate, MailerBean.MailConfig mailConfig,
-                                Map<String, MailerBean.UpFile> files, boolean testOnly, String testTo, String currentUser) throws Exception {
+    public CompletableFuture<Integer> sendMessages(List<MailMessage> mailMessages, MailTemplate mailTemplate, MailerBean.MailConfig mailConfig,
+                                                          Map<String, MailerBean.UpFile> files, boolean testOnly, String testTo, String currentUser) throws Exception {
+        if (sending) {
+            return Asynchronous.Result.complete(0);
+        }
+        stopRequest = false;
         sending = true;
+        errorMessages.clear();
+        warnMessages.clear();
+
+        int messageCount = 0;
         if (mailConfig == null) {
             error("Cannot execute Template for empty MailConfiguration!");
-            return;
+            return Asynchronous.Result.complete(0);
         }
         if (mailConfig.getFrom() == null) {
             error("Cannot execute Template for empty FROM address in MailConfiguration!");
-            return;
+            return Asynchronous.Result.complete(0);
         }
 
         try {
-
             final boolean saveTemplate = mailTemplate.getId() != null;
 
             Session session = Session.getInstance(mailConfig.getProperties(), new Authenticator() {
@@ -57,6 +71,10 @@ public class MailerMailHandlerBean extends BaseBean<MailMessage> {
             }
 
             for (MailMessage msg : mailMessages) {
+                if (stopRequest) {
+                    break;
+                }
+
                 if (!msg.isSend()) {
                     log.info("not sending: " + msg);
                     continue;
@@ -165,21 +183,34 @@ public class MailerMailHandlerBean extends BaseBean<MailMessage> {
 
                     MailMessage sentMsg;
                     if (!mailTemplate.isSms()) {
+                        int addrCount = mail.getAllRecipients().length;
+                        for (int i=0; i<10; i++) {
+                            int jiffies = mailerServiceBean.jiffies(mailConfig.getKey());
+                            if (jiffies < addrCount) {
+                                Thread.sleep(1000); // wait for 1 second
+                            } else {
+                                break;
+                            }
+                        }
+                        mailerServiceBean.take(mailConfig.getKey(), addrCount);
                         sentMsg = mailSender.get().sendMail(mail, msg, mailTemplate.isSaveText());
+                        messageCount++;
                     } else {
                         sentMsg = smsSender.get().sendMail(msg, mailConfig, mailTemplate.isSaveText());
+                        messageCount++;
                     }
                     msg.setSend(false);
                     msg.setCreated(sentMsg.getCreated());
 
-                    if (testOnly) {
-                        break;
-                    }
-
-                } catch (MessagingException me) {
+                } catch (Throwable me) {
                     log.info("send failed: " + me + " msg: " + msg, me);
                     warn("send failed: " + me + " to: " + msg.getReceiver());
                 }
+
+                if (testOnly) {
+                    break;
+                }
+
             }
 
         } catch (Exception e) {
@@ -188,36 +219,57 @@ public class MailerMailHandlerBean extends BaseBean<MailMessage> {
         } finally {
             sending = false;
         }
+        return Asynchronous.Result.complete(messageCount);
     }
 
     public void addAddresses(MimeMessage mail, String receivers, Message.RecipientType type)
             throws MessagingException, AddressException {
-        Arrays.stream(receivers.split("[,; ]+")).forEach(r -> {
-            try {
-                if (StringUtils.isNotBlank(r)) {
-                    mail.addRecipients(type, InternetAddress.parse(r));
+        if (receivers != null) {
+            Arrays.stream(receivers.split("[,; ]+")).forEach(r -> {
+                try {
+                    if (StringUtils.isNotBlank(r)) {
+                        mail.addRecipients(type, InternetAddress.parse(r));
+                    }
+                } catch (Exception e) {
+                    log.info("cannot convert to Address: " + r + " : " + e);
                 }
-            } catch (Exception e) {
-                log.info("cannot convert to Address: " + r + " : " + e);
-            }
-        });
+            });
+        }
+    }
+
+    private void error(String message) {
+        log.error(message);
+        errorMessages.add(message);
+    }
+
+    private void warn(String message) {
+        log.warn(message);
+        warnMessages.add(message);
     }
 
     public boolean isSending() {
         return sending;
     }
 
-    @Override
-    public String update() {
-        return "";
+    public void setStopRequest(boolean stopRequest) {
+        this.stopRequest = stopRequest;
     }
 
-    @Override
-    public boolean isUpdateAllowed() {
-        return false;
+    public boolean isStopRequest() {
+        return stopRequest;
     }
 
-    @Override
-    public void retrieve() {
+    public List<String> getErrorMessages() {
+        return errorMessages;
+    }
+
+    public List<String> getWarnMessages() {
+        return warnMessages;
+    }
+
+    public List<String> getMessages() {
+        var all = new ArrayList<>(errorMessages);
+        all.addAll(warnMessages);
+        return all;
     }
 }
