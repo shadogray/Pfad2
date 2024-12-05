@@ -104,11 +104,11 @@ public class DownloadBean implements Serializable {
 	}
 
 	public String downloadRegistrierung() throws Exception {
-		return downloadData(getRegConfig().withUpdateRegistered(updateRegistered), null);
+		return downloadData(getRegConfig().withActiveOnly(activeOnly).withUpdateRegistered(updateRegistered), null);
 	}
 
 	public String downloadNachRegistrierung() throws Exception {
-		return downloadData(getRegConfig().withUpdateRegistered(updateRegistered).notRegistered(notRegisteredOnly), null);
+		return downloadData(getRegConfig().withActiveOnly(activeOnly).withUpdateRegistered(updateRegistered).notRegistered(notRegisteredOnly), null);
 	}
 
 	public String downloadAll() throws Exception {

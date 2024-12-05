@@ -134,7 +134,11 @@ public class QueryExecutor {
 			for ( int i=0; i<tuple.length; i++ ) {
 				String alias = aliases[i];
 				if (alias != null) alias = alias.replaceAll("^_?", "");
-				result.put( alias != null ? alias : Integer.toString(i), tuple[i] );
+				Object value = tuple[i];
+				if (value != null && value.getClass().isArray()) {
+					value = Arrays.toString((Object[]) value);
+				}
+				result.put( alias != null ? alias : Integer.toString(i), value);
 			}
 			return result.entrySet().stream().collect(Collectors.toList());
 		}
