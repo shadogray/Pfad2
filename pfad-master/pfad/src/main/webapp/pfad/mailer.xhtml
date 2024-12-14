@@ -141,10 +141,10 @@
 					<h:outputLabel value="Aktionen: "/>
 					<h:panelGrid id="buttons" columns="8" with="100%">
 						<h:commandButton value="Vorlage Speichern" action="#{mailerBean.saveTemplate}" disabled="#{!mailerBean.updateAllowed}" styleClass="btn btn-primary">
-							<p:ajax process="@form"/>
+							<p:ajax process="mailerInput"/>
 						</h:commandButton>
 						<h:commandButton value="Vorbereiten" disabled="#{!mailerBean.updateAllowed or mailerBean.sending}" styleClass="btn btn-primary">
-							<f:ajax execute="@this" listener="#{mailerBean.executeQuery}" render="@form"/>
+							<f:ajax execute="mailerInput" listener="#{mailerBean.executeQuery}" render="@form"/>
 						</h:commandButton>
 						<h:commandButton value="Test-#{mailerBean.mailTemplate.sms ? 'SMS':'Email'}" disabled="#{!mailerBean.updateAllowed or mailerBean.sending}" styleClass="btn btn-primary">
 							<f:ajax execute="@this" listener="#{mailerBean.sendTestMessage()}" render="@form"/>
