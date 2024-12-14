@@ -134,7 +134,9 @@
 					</h:panelGrid>
 
 					<h:outputLabel value="Text: "/>
-					<p:textEditor value="#{mailerBean.mailTemplate.text}" height="400" secure="false"/>
+					<p:textEditor value="#{mailerBean.mailTemplate.text}" height="400" secure="false">
+						<p:ajax process="@this"/>
+					</p:textEditor>
 
 					<h:outputLabel value="Aktionen: "/>
 					<h:panelGrid id="buttons" columns="8" with="100%">
