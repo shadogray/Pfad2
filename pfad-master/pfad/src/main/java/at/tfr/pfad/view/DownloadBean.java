@@ -395,7 +395,7 @@ public class DownloadBean implements Serializable {
 			executeQuery(config);
 			ExternalContext ectx = setHeaders(config.getUiName());
 			try (OutputStream os = ectx.getResponseOutputStream()) {
-				Workbook wb = generateResultsWorkbook(config, results);
+				Workbook wb = generateResultsWorkbook(config, resultsFuture.get());
 				wb.write(os);
 			}
 			FacesContext.getCurrentInstance().responseComplete();
