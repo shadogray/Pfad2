@@ -54,11 +54,11 @@
 					<p:column width="3em">
 						<f:facet name="header">Edit</f:facet>
 						<p:commandLink action="#{bookingBean.show('/pfad/booking/editBooking', record.id, '800x200')}">
-							<f:param name="dialogSize" value="800x200"/>
+							<f:param name="dialogSize" value="850x250"/>
 							<h:graphicImage name="edit.jpeg" alt="Edit" style="width: 1.5em; height:1.5em;" />
 							<p:ajax event="dialogReturn" listener="#{bookingTableBean.dataModel.reloadRowData()}" update="@form" />
 						</p:commandLink>
-						<p:commandLink value="EUR" action="#{bookingBean.show('/pfad/booking/editPayment', record.id, '800x500')}" rendered="#{paymentBean.viewAllowed}">
+						<p:commandLink value="EUR" action="#{bookingBean.show('/pfad/booking/editPayment', record.id, '900x550')}" rendered="#{paymentBean.viewAllowed}">
 							<p:ajax event="dialogReturn" listener="#{bookingTableBean.dataModel.reloadRowData()}" update="@form" />
 						</p:commandLink>
 					</p:column>
