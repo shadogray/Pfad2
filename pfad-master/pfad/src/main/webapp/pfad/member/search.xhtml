@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"   
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:o="http://omnifaces.org/ui" template="/resources/scaffold/pageTemplate.xhtml">
 
 	<f:metadata>
@@ -33,14 +33,14 @@
 	<ui:define name="main">
 
 		<h:form id="searchForm" >
-			
+
 			<f:validateBean disabled="true">
 				<h:panelGroup id="searchPanel" styleClass="search">
 
 					<p:focus />
-			
+
 					<h:panelGrid columnClasses="label3,component3,label3,component3" columns="6">
-					
+
 						<h:outputLabel for="mbeName" value="Name:" />
 						<h:panelGroup>
 							<p:inputText id="mbeName" value="#{memberBean.example.name}">
@@ -76,7 +76,7 @@
 									<f:ajax event="keyup" delay="250" onstart="return filterKey(event)" listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:inputText>
 							</h:panelGroup>
-							
+
 							<h:outputLabel for="mbeBVKey" value="BVKey:" styleClass="w40"/>
 							<h:panelGroup>
 								<h:inputText id="mbeBVKey" value="#{memberBean.example.BVKey}" styleClass="w50">
@@ -84,9 +84,9 @@
 								</h:inputText>
 							</h:panelGroup>
 						</h:panelGrid>
-						
+
 						<h:outputText value="" style="width:100%"/>
-						
+
 						<h:outputLabel for="squadBeanExampleTrupp" value="Trupp:" />
 						<h:panelGroup>
 							<p:selectCheckboxMenu id="squadBeanExampleTrupp" value="#{memberBean.exampleTrupps}" converter="#{squadBean.converter}" multiple="true" >
@@ -106,9 +106,9 @@
 						</h:panelGroup>
 
 						<h:panelGroup>
-							<h:panelGrid columns="20">
-							
-								<h:outputLabel for="mbeGeschlecht" value="Geschl:" />
+							<h:panelGrid columns="20" columnClasses="pad0 mrg2">
+
+								<h:outputLabel for="mbeGeschlecht" value="Geschl:" styleClass="pad0 mrg2"/>
 								<h:panelGroup>
 									<h:selectOneMenu id="mbeGeschlecht" value="#{memberBean.example.geschlecht}" >
 										<f:selectItem noSelectionOption="true"/>
@@ -117,38 +117,48 @@
 									</h:selectOneMenu>
 									<h:message for="mbeAktiv" styleClass="error" />
 								</h:panelGroup>
-								
-								<h:outputLabel for="mbeAktiv" value="Aktiv:" />
+
+								<h:outputLabel for="mbeAktiv" value="Aktiv:" styleClass="pad0 mrg2"/>
 								<h:selectOneMenu id="mbeAktiv" value="#{memberBean.exampleActive}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
-							
-								<h:outputLabel for="mbeFree" value="Frei:" />
+
+								<h:outputLabel for="mbeFree" value="Frei:" styleClass="pad0 mrg2"/>
 								<h:selectOneMenu id="mbeFree" value="#{memberBean.exampleFree}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
-	
-								<h:outputLabel for="mbeGilde" value="Gilde:" />
+
+								<h:outputLabel for="mbeGilde" value="Gilde:" styleClass="pad0 mrg2"/>
 								<h:selectOneMenu id="mbeGilde" value="#{memberBean.exampleGilde}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
-								<h:outputLabel for="mbeSupport" value="Support:" />
+
+								<h:outputLabel for="mbeSupport" value="Support:" styleClass="pad0 mrg2"/>
 								<h:selectOneMenu id="mbeSupport" value="#{memberBean.exampleSupport}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
 									<f:selectItem itemLabel="Nein" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
-								<h:outputLabel for="mbeInfoMail" value="InfoMail:" />
+
+								<h:outputLabel for="mbeTrail" value="Trail:" styleClass="pad0 mrg2"/>
+								<h:selectOneMenu id="mbeTrail" value="#{memberBean.exampleTrail}" >
+									<f:selectItem noSelectionOption="true"/>
+									<f:selectItem itemLabel="Ja" itemValue="true"/>
+									<f:selectItem itemLabel="Nein" itemValue="false"/>
+									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
+								</h:selectOneMenu>
+
+								<h:outputLabel for="mbeInfoMail" value="InfoMail:" styleClass="pad0 mrg2"/>
 								<h:selectOneMenu id="mbeInfoMail" value="#{memberBean.exampleInfoMail}" >
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
@@ -159,7 +169,7 @@
 						</h:panelGroup>
 
 						<h:outputText value="" style="width:100%"/>
-						
+
 					</h:panelGrid>
 
 					<h:panelGroup styleClass="buttons">
@@ -179,7 +189,7 @@
 			</f:validateBean>
 
 			<h:panelGroup id="memberBeanPageItems">
-				<p:dataTable id="memberBeanPageItemsTable" value="#{memberBean.dataModel}" var="_item" liveResize="true" resizableColumns="true" 
+				<p:dataTable id="memberBeanPageItemsTable" value="#{memberBean.dataModel}" var="_item" liveResize="true" resizableColumns="true"
 					tableStyle="width:auto" styleClass="data-table">
 					<p:column>
 						<f:facet name="header">

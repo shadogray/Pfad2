@@ -7,21 +7,15 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import jakarta.ejb.ConcurrencyManagement;
-import jakarta.ejb.ConcurrencyManagementType;
-import jakarta.ejb.Stateful;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
+import at.tfr.pfad.ScoutRole;
+import at.tfr.pfad.Sex;
+import at.tfr.pfad.model.*;
+import at.tfr.pfad.processing.MemberValidator;
+import at.tfr.pfad.svc.MemberDao;
+import at.tfr.pfad.util.CollectionUtil;
+import at.tfr.pfad.util.ValidationResult;
+import at.tfr.pfad.view.ViewUtils.Month;
+import jakarta.ejb.*;
 import jakarta.enterprise.inject.Instance;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -33,31 +27,16 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.omnifaces.util.Faces;
 
-import at.tfr.pfad.ScoutRole;
-import at.tfr.pfad.Sex;
-import at.tfr.pfad.model.Configuration;
-import at.tfr.pfad.model.DelMember;
-import at.tfr.pfad.model.Function;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Member_;
-import at.tfr.pfad.model.Registration;
-import at.tfr.pfad.model.Squad;
-import at.tfr.pfad.processing.MemberValidator;
-import at.tfr.pfad.svc.MemberDao;
-import at.tfr.pfad.util.CollectionUtil;
-import at.tfr.pfad.util.ValidationResult;
-import at.tfr.pfad.view.ViewUtils.Month;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Backing bean for Member entities.
@@ -83,6 +62,7 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 	private Boolean exampleGilde;
 	private Boolean exampleSupport;
 	private Boolean exampleInfoMail;
+	private Boolean exampleTrail;
 	private List<Function> exampleFunctions;
 	private List<Squad> exampleTrupps;
 	private List<Squad> leaderOf;
@@ -364,6 +344,9 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 		if (exampleInfoMail != null) {
 			predicatesList.add(builder.equal(root.get(Member_.infoMail), exampleInfoMail));
 		}
+		if (exampleTrail != null) {
+			predicatesList.add(builder.equal(root.get(Member_.trail), exampleTrail));
+		}
 
 		Squad trupp = getMemberExample().getTrupp();
 		if (trupp != null) {
@@ -433,7 +416,15 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 	public void setExampleInfoMail(Boolean exampleInfoMail) {
 		this.exampleInfoMail = exampleInfoMail;
 	}
-	
+
+	public Boolean getExampleTrail() {
+		return exampleTrail;
+	}
+
+	public void setExampleTrail(Boolean exampleTrail) {
+		this.exampleTrail = exampleTrail;
+	}
+
 	public List<Function> getExampleFunctions() {
 		return exampleFunctions;
 	}

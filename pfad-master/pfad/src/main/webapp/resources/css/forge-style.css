@@ -427,7 +427,7 @@ footer p {
 }
 
 .content table .label3 {
-	width: 5em;
+	/*width: 5em;*/
 	text-align: left;
 	vertical-align: top;
 	white-space: nowrap;
@@ -521,6 +521,22 @@ footer p {
 
 .width80 {
 	width: 80em;
+}
+
+.pad0 {
+	padding: 0px;
+}
+
+.mrg0 {
+	margin: 0px;
+}
+
+.mrg1 {
+	margin: 1px;
+}
+
+.mrg2 {
+	margin: 2px;
 }
 
 .content table .component input {
