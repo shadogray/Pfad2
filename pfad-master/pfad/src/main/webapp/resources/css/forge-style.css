@@ -5,6 +5,11 @@
 /*	font-size: .7rem;*/
 /*	text-decoration: none;*/
 /*}*/
+body .ui-datatable thead th .ui-column-title {
+	font-weight: 700;
+	vertical-align: middle;
+	font-size: smaller;
+}
 body .ui-selectonemenu-panel .ui-selectonemenu-items .ui-selectonemenu-item {
 	padding: .2rem 1rem;
 	font-size: .9rem;
@@ -112,6 +117,7 @@ legend {
 	margin-right: 2px;
 	text-align: center;
 	font-weight: bold;
+	font-size: inherit;
 }
 
 body .ui-dialog .ui-dialog-titlebar .ui-dialog-title {
@@ -786,6 +792,7 @@ input.rf-au-inp {
 
 label {
 	font-weight: bold;
+	font-size: smaller;
 }
 
 #menu {
