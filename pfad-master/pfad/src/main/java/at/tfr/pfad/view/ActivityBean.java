@@ -7,15 +7,12 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import at.tfr.pfad.ActivityStatus;
+import at.tfr.pfad.ActivityType;
+import at.tfr.pfad.Role;
+import at.tfr.pfad.dao.ActivityRepository;
+import at.tfr.pfad.model.Activity;
+import at.tfr.pfad.model.Activity_;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
 import jakarta.ejb.Stateful;
@@ -31,15 +28,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.ActivityStatus;
-import at.tfr.pfad.ActivityType;
-import at.tfr.pfad.Role;
-import at.tfr.pfad.dao.ActivityRepository;
-import at.tfr.pfad.model.Activity;
-import at.tfr.pfad.model.Activity_;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Backing bean for Activity entities.
@@ -54,7 +48,7 @@ import at.tfr.pfad.model.Activity_;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class ActivityBean extends BaseBean<Activity> implements Serializable {
+public class ActivityBean extends BaseBean<Activity,ActivityUI> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -168,14 +162,6 @@ public class ActivityBean extends BaseBean<Activity> implements Serializable {
 	private List<ActivityUI> pageItems;
 
 	private Activity example = new Activity();
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public Activity getExample() {
 		return this.example;

@@ -51,7 +51,7 @@ import java.util.stream.Stream;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class MemberBean extends BaseBean<Member> implements Serializable {
+public class MemberBean extends BaseBean<Member,Member> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -236,14 +236,6 @@ public class MemberBean extends BaseBean<Member> implements Serializable {
 
 	private List<Member> pageItems;
 	private DataModel<MemberDao> dataModel;
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public Member getExample() {
 		return getMemberExample();

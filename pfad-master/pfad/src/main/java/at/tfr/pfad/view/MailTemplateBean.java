@@ -7,11 +7,10 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import at.tfr.pfad.Role;
+import at.tfr.pfad.dao.MailTemplateRepository;
+import at.tfr.pfad.model.MailTemplate;
+import at.tfr.pfad.model.MailTemplate_;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
@@ -28,13 +27,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.Role;
-import at.tfr.pfad.dao.MailTemplateRepository;
-import at.tfr.pfad.model.MailTemplate;
-import at.tfr.pfad.model.MailTemplate_;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Backing bean for MailTemplate entities.
@@ -49,7 +47,7 @@ import at.tfr.pfad.model.MailTemplate_;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class MailTemplateBean extends BaseBean<MailTemplate> implements Serializable {
+public class MailTemplateBean extends BaseBean<MailTemplate,MailTemplate> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -167,14 +165,6 @@ public class MailTemplateBean extends BaseBean<MailTemplate> implements Serializ
 	private List<MailTemplate> pageItems;
 
 	private MailTemplate example = new MailTemplate();
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public MailTemplate getExample() {
 		return this.example;

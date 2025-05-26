@@ -7,16 +7,11 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import at.tfr.pfad.SquadType;
+import at.tfr.pfad.model.Configuration;
+import at.tfr.pfad.model.Member;
+import at.tfr.pfad.model.Squad;
+import at.tfr.pfad.model.Squad_;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
@@ -34,14 +29,11 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.SquadType;
-import at.tfr.pfad.model.Configuration;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Squad;
-import at.tfr.pfad.model.Squad_;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Backing bean for Squad entities.
@@ -56,7 +48,7 @@ import at.tfr.pfad.model.Squad_;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class SquadBean extends BaseBean<Squad> implements Serializable {
+public class SquadBean extends BaseBean<Squad,Squad> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -219,14 +211,6 @@ public class SquadBean extends BaseBean<Squad> implements Serializable {
 	private List<Squad> pageItems;
 
 	private Squad example = new Squad();
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public Squad getExample() {
 		return this.example;

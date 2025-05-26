@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 @ViewScoped
 @Stateful
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class MailerBean extends BaseBean<MailMessage> {
+public class MailerBean extends BaseBean<MailMessage,MailMessage> {
 
 	@Inject
 	private Instance<QueryExecutor> queryExec;
@@ -741,5 +741,14 @@ public class MailerBean extends BaseBean<MailMessage> {
 		public String getSmsTestTo() {
 			return smsTestTo;
 		}
+	}
+
+	@Override
+	public List<MailMessage> getPageItems() {
+		return mailMessages;
+	}
+
+	@Override
+	public void paginate() {
 	}
 }

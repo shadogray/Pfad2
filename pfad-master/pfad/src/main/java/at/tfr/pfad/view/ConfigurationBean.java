@@ -7,11 +7,11 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import at.tfr.pfad.ConfigurationType;
+import at.tfr.pfad.Role;
+import at.tfr.pfad.model.Configuration;
+import at.tfr.pfad.model.Configuration_;
+import at.tfr.pfad.util.SessionBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
@@ -28,14 +28,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.ConfigurationType;
-import at.tfr.pfad.Role;
-import at.tfr.pfad.model.Configuration;
-import at.tfr.pfad.model.Configuration_;
-import at.tfr.pfad.util.SessionBean;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Backing bean for Configuration entities.
@@ -50,7 +48,7 @@ import at.tfr.pfad.util.SessionBean;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class ConfigurationBean extends BaseBean<Configuration> implements Serializable {
+public class ConfigurationBean extends BaseBean<Configuration,Configuration> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -170,14 +168,6 @@ public class ConfigurationBean extends BaseBean<Configuration> implements Serial
 	private List<Configuration> pageItems;
 
 	private Configuration example = new Configuration();
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public Configuration getExample() {
 		return this.example;

@@ -7,11 +7,11 @@
 
 package at.tfr.pfad.view;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import at.tfr.pfad.BookingStatus;
+import at.tfr.pfad.model.Booking;
+import at.tfr.pfad.util.ColumnModel;
+import at.tfr.pfad.view.convert.BookingStatusConverter;
+import at.tfr.pfad.view.convert.TrueFalseTristateConverter;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
@@ -20,17 +20,16 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import at.tfr.pfad.BookingStatus;
-import at.tfr.pfad.model.Booking;
-import at.tfr.pfad.util.ColumnModel;
-import at.tfr.pfad.view.convert.BookingStatusConverter;
-import at.tfr.pfad.view.convert.TrueFalseTristateConverter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
 @Stateful
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class BookingTableBean extends BaseBean<Booking> {
+public class BookingTableBean extends BaseBean<Booking,BookingUI> {
 
 	private static int cnt = 0;
 	private String selectionMode = "multiple";
@@ -89,6 +88,11 @@ public class BookingTableBean extends BaseBean<Booking> {
 		return columns;
 	}
 
+	@Override
+	public List<BookingUI> getPageItems() {
+		return bookingDataModel.getData();
+	}
+
 	public BookingDataModel getDataModel() {
 		return bookingDataModel;
 	}
@@ -118,5 +122,10 @@ public class BookingTableBean extends BaseBean<Booking> {
 	
 	@Override
 	public void retrieve() {
+	}
+
+	@Override
+	public void paginate() {
+		bookingDataModel.reloadRowData();
 	}
 }

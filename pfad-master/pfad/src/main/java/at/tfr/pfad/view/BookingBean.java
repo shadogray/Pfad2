@@ -7,15 +7,10 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import at.tfr.pfad.ActivityStatus;
+import at.tfr.pfad.BookingStatus;
+import at.tfr.pfad.dao.ActivityRepository;
+import at.tfr.pfad.model.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
@@ -30,25 +25,13 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
+import jakarta.persistence.criteria.*;
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.ActivityStatus;
-import at.tfr.pfad.BookingStatus;
-import at.tfr.pfad.dao.ActivityRepository;
-import at.tfr.pfad.model.Activity;
-import at.tfr.pfad.model.Activity_;
-import at.tfr.pfad.model.Booking;
-import at.tfr.pfad.model.Booking_;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Member_;
-import at.tfr.pfad.model.Payment;
-import at.tfr.pfad.model.Squad;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Backing bean for Booking entities. This class provides CRUD functionality for
@@ -62,7 +45,7 @@ import at.tfr.pfad.model.Squad;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class BookingBean extends BaseBean<Booking> implements Serializable {
+public class BookingBean extends BaseBean<Booking,BookingUI> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

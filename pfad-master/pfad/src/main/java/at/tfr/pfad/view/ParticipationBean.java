@@ -7,15 +7,15 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import at.tfr.pfad.ParticipationCostType;
+import at.tfr.pfad.ParticipationStatus;
+import at.tfr.pfad.TrainingForm;
+import at.tfr.pfad.TrainingPhase;
+import at.tfr.pfad.dao.ParticipationRepository;
+import at.tfr.pfad.model.Member_;
+import at.tfr.pfad.model.Participation;
+import at.tfr.pfad.model.Participation_;
+import at.tfr.pfad.model.Training_;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
 import jakarta.ejb.Stateful;
@@ -31,18 +31,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.ParticipationCostType;
-import at.tfr.pfad.ParticipationStatus;
-import at.tfr.pfad.TrainingForm;
-import at.tfr.pfad.TrainingPhase;
-import at.tfr.pfad.dao.ParticipationRepository;
-import at.tfr.pfad.model.Member_;
-import at.tfr.pfad.model.Participation;
-import at.tfr.pfad.model.Participation_;
-import at.tfr.pfad.model.Training_;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Backing bean for Participation entities.
@@ -57,7 +51,7 @@ import at.tfr.pfad.model.Training_;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class ParticipationBean extends BaseBean<Participation> implements Serializable {
+public class ParticipationBean extends BaseBean<Participation,Participation> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -181,14 +175,6 @@ public class ParticipationBean extends BaseBean<Participation> implements Serial
 	private List<Participation> pageItems;
 
 	private Participation example = new Participation();
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public Participation getExample() {
 		return this.example;

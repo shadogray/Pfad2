@@ -7,10 +7,16 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import at.tfr.pfad.PaymentType;
+import at.tfr.pfad.dao.*;
+import at.tfr.pfad.model.*;
+import at.tfr.pfad.svc.BookingMapper;
+import at.tfr.pfad.svc.MemberMapper;
+import at.tfr.pfad.svc.PaymentMapper;
+import at.tfr.pfad.util.Bookings;
+import at.tfr.pfad.util.Payments;
+import at.tfr.pfad.util.SessionBean;
+import at.tfr.pfad.util.TemplateUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.ejb.SessionContext;
@@ -22,46 +28,22 @@ import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.Validator;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
-import org.omnifaces.cdi.Param;
-import org.omnifaces.util.Faces;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
-
-import at.tfr.pfad.PaymentType;
-import at.tfr.pfad.dao.ActivityRepository;
-import at.tfr.pfad.dao.BookingRepository;
-import at.tfr.pfad.dao.MemberRepository;
-import at.tfr.pfad.dao.Members;
-import at.tfr.pfad.dao.ParticipationRepository;
-import at.tfr.pfad.dao.PaymentRepository;
-import at.tfr.pfad.dao.RegistrationRepository;
-import at.tfr.pfad.dao.SquadRepository;
-import at.tfr.pfad.dao.TrainingRepository;
-import at.tfr.pfad.model.Activity;
-import at.tfr.pfad.model.Booking;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Participation;
-import at.tfr.pfad.model.Payment;
-import at.tfr.pfad.model.Training;
-import at.tfr.pfad.model.TypeUtils;
-import at.tfr.pfad.svc.BookingMapper;
-import at.tfr.pfad.svc.MemberMapper;
-import at.tfr.pfad.svc.PaymentMapper;
-import at.tfr.pfad.util.Bookings;
-import at.tfr.pfad.util.Payments;
-import at.tfr.pfad.util.SessionBean;
-import at.tfr.pfad.util.TemplateUtils;
 import org.primefaces.model.DialogFrameworkOptions;
 import org.primefaces.util.Constants;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author u0x27vo
  *
  */
-public abstract class BaseBean<T> implements Serializable {
+public abstract class BaseBean<T,D> implements Serializable {
 
 	protected Logger log = Logger.getLogger(getClass());
 	protected String menuItem = "base";
@@ -167,6 +149,18 @@ public abstract class BaseBean<T> implements Serializable {
 
 	public boolean isRegistrationEnd() {
 		return sessionBean.getRegistrationEndDate() != null && sessionBean.getRegistrationEndDate().before(new Date());
+	}
+
+	public void paginate(int page) {
+		this.page = page;
+		paginate();
+	}
+	abstract public void paginate();
+
+	abstract public List<D> getPageItems();
+
+	public int getPageItemsSize() {
+		return getPageItems() != null ? getPageItems().size() : 0;
 	}
 
 	public int getPageSize() {

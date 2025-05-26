@@ -7,13 +7,8 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import at.tfr.pfad.model.Function;
+import at.tfr.pfad.model.Function_;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
@@ -29,11 +24,14 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.model.Function;
-import at.tfr.pfad.model.Function_;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Backing bean for Function entities.
@@ -48,7 +46,7 @@ import at.tfr.pfad.model.Function_;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class FunctionBean extends BaseBean<Function> implements Serializable {
+public class FunctionBean extends BaseBean<Function,Function> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -164,14 +162,6 @@ public class FunctionBean extends BaseBean<Function> implements Serializable {
 	private List<Function> pageItems;
 
 	private Function example = new Function();
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public Function getExample() {
 		return this.example;

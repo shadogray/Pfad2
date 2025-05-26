@@ -7,11 +7,12 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import at.tfr.pfad.Role;
+import at.tfr.pfad.dao.MailMessageRepository;
+import at.tfr.pfad.model.MailMessage;
+import at.tfr.pfad.model.MailMessage_;
+import at.tfr.pfad.model.Member_;
+import at.tfr.pfad.model.Registration_;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
@@ -28,15 +29,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.Role;
-import at.tfr.pfad.dao.MailMessageRepository;
-import at.tfr.pfad.model.MailMessage;
-import at.tfr.pfad.model.MailMessage_;
-import at.tfr.pfad.model.Member_;
-import at.tfr.pfad.model.Registration_;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Backing bean for MailMessage entities.
@@ -51,7 +49,7 @@ import at.tfr.pfad.model.Registration_;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class MailMessageBean extends BaseBean<MailMessage> implements Serializable {
+public class MailMessageBean extends BaseBean<MailMessage,MailMessage> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -171,14 +169,6 @@ public class MailMessageBean extends BaseBean<MailMessage> implements Serializab
 	private List<MailMessage> pageItems;
 
 	private MailMessage example = new MailMessage();
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public MailMessage getExample() {
 		return this.example;

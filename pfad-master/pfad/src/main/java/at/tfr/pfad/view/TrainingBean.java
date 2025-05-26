@@ -7,14 +7,11 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import at.tfr.pfad.TrainingForm;
+import at.tfr.pfad.TrainingPhase;
+import at.tfr.pfad.dao.TrainingRepository;
+import at.tfr.pfad.model.Training;
+import at.tfr.pfad.model.Training_;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateful;
 import jakarta.faces.application.FacesMessage;
@@ -29,14 +26,15 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
-import at.tfr.pfad.TrainingForm;
-import at.tfr.pfad.TrainingPhase;
-import at.tfr.pfad.dao.TrainingRepository;
-import at.tfr.pfad.model.Training;
-import at.tfr.pfad.model.Training_;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Backing bean for Training entities.
@@ -50,7 +48,7 @@ import at.tfr.pfad.model.Training_;
 @Named
 @Stateful
 @ViewScoped
-public class TrainingBean extends BaseBean<Training> implements Serializable {
+public class TrainingBean extends BaseBean<Training,Training> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -165,14 +163,6 @@ public class TrainingBean extends BaseBean<Training> implements Serializable {
 	private List<Training> pageItems;
 
 	private Training example = new Training();
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public Training getExample() {
 		return this.example;

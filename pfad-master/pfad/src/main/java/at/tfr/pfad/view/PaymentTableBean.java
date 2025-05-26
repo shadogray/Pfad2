@@ -7,9 +7,8 @@
 
 package at.tfr.pfad.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import at.tfr.pfad.model.Payment;
+import at.tfr.pfad.util.ColumnModel;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
@@ -17,14 +16,15 @@ import jakarta.ejb.Stateful;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import at.tfr.pfad.model.Payment;
-import at.tfr.pfad.util.ColumnModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Named
 @ViewScoped
 @Stateful
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class PaymentTableBean extends BaseBean<Payment> {
+public class PaymentTableBean extends BaseBean<Payment,PaymentUI> {
 
 	private static int cnt = 0;
 	private String selectionMode = "multiple";
@@ -98,5 +98,15 @@ public class PaymentTableBean extends BaseBean<Payment> {
 	
 	@Override
 	public void retrieve() {
+	}
+
+	@Override
+	public List<PaymentUI> getPageItems() {
+		return paymentDataModel.getData();
+	}
+
+	@Override
+	public void paginate() {
+		paymentDataModel.reloadRowData();
 	}
 }

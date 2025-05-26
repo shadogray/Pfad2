@@ -1,12 +1,10 @@
 package at.tfr.pfad.view;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import at.tfr.pfad.RegistrationStatus;
+import at.tfr.pfad.dao.RegistrationRepository;
+import at.tfr.pfad.model.Member;
+import at.tfr.pfad.model.Registration;
+import at.tfr.pfad.view.convert.TriStateConverter;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.ejb.ConcurrencyManagement;
@@ -20,24 +18,20 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.validation.ValidationException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.omnifaces.util.Faces;
 import org.primefaces.component.selectonemenu.SelectOneMenu;
 import org.primefaces.event.RowEditEvent;
 
-import at.tfr.pfad.RegistrationStatus;
-import at.tfr.pfad.dao.RegistrationRepository;
-import at.tfr.pfad.model.Member;
-import at.tfr.pfad.model.Registration;
-import at.tfr.pfad.view.convert.TriStateConverter;
+import java.util.*;
+import java.util.Map.Entry;
 
 @Named
 @ViewScoped
 @Stateful
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class RegistrationBean extends BaseBean<Registration> {
+public class RegistrationBean extends BaseBean<Registration,Registration> {
 
 	private Logger log = Logger.getLogger(getClass());
 	
@@ -280,6 +274,11 @@ public class RegistrationBean extends BaseBean<Registration> {
 
 	public ListDataModel<Registration> getDataModel() {
 		return new ListDataModel<Registration>(dataModel);
+	}
+
+	@Override
+	public List<Registration> getPageItems() {
+		return dataModel;
 	}
 
 	public Registration getExample() {

@@ -7,16 +7,8 @@
 
 package at.tfr.pfad.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import at.tfr.pfad.PaymentType;
+import at.tfr.pfad.model.*;
 import jakarta.ejb.ConcurrencyManagement;
 import jakarta.ejb.ConcurrencyManagementType;
 import jakarta.ejb.Stateful;
@@ -30,23 +22,14 @@ import jakarta.faces.model.ListDataModel;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
-
+import jakarta.persistence.criteria.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 
-import at.tfr.pfad.PaymentType;
-import at.tfr.pfad.model.Activity;
-import at.tfr.pfad.model.Booking;
-import at.tfr.pfad.model.Booking_;
-import at.tfr.pfad.model.Member_;
-import at.tfr.pfad.model.Payment;
-import at.tfr.pfad.model.Payment_;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Backing bean for Payment entities. This class provides CRUD functionality for
@@ -60,7 +43,7 @@ import at.tfr.pfad.model.Payment_;
 @Stateful
 @ViewScoped
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class PaymentBean extends BaseBean<Payment> implements Serializable {
+public class PaymentBean extends BaseBean<Payment,PaymentUI> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -219,14 +202,6 @@ public class PaymentBean extends BaseBean<Payment> implements Serializable {
 	private Boolean exampleAconto;
 	private Date examplePaymentDateStart;
 	private Date examplePaymentDateEnd;
-
-	public int getPage() {
-		return this.page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
 
 	public Payment getExample() {
 		return this.getPaymentExample();
