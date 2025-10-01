@@ -173,6 +173,7 @@ public class ActivityBean extends BaseBean<Activity,ActivityUI> implements Seria
 
 	public String search() {
 		this.page = 0;
+		paginate();
 		return null;
 	}
 
