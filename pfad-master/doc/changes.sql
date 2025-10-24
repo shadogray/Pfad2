@@ -25,3 +25,8 @@ create index payment_search on payment (finished, aconto, payer_id, comment);
 
 --registration: 
 create index registration_search on registration (storno, aktiv, name, vorname, strasse, telefon, email, plz, ort, member_id, parent_id);
+
+--noPics
+alter table if exists MEMBER add column noPics boolean default 'false' not null;
+alter table if exists MEMBER_AUD add column noPics boolean;
+alter table if exists MEMBER_AUD add column noPics_MOD boolean;

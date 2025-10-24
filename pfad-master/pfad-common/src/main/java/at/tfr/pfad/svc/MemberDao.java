@@ -7,21 +7,19 @@
 
 package at.tfr.pfad.svc;
 
+import at.tfr.pfad.Pfad;
+import at.tfr.pfad.ScoutRole;
+import at.tfr.pfad.Sex;
+import at.tfr.pfad.model.Configuration;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import jakarta.xml.bind.annotation.XmlID;
-import jakarta.xml.bind.annotation.XmlRootElement;
-
-import org.apache.commons.lang3.StringUtils;
-
-import at.tfr.pfad.Pfad;
-import at.tfr.pfad.ScoutRole;
-import at.tfr.pfad.Sex;
-import at.tfr.pfad.model.Configuration;
 
 @XmlRootElement
 public class MemberDao extends BaseDao {
@@ -54,6 +52,8 @@ public class MemberDao extends BaseDao {
 	protected boolean support;
 	protected boolean infoMail;
 	protected boolean free;
+	protected boolean dead;
+	protected boolean noPics;
 	protected ScoutRole rolle;
 	protected Long truppId;
 	protected Long vollzahlerId;
@@ -453,6 +453,24 @@ public class MemberDao extends BaseDao {
 
 	public void setFree(boolean free) {
 		this.free = free;
+	}
+
+	@Pfad
+	public boolean isNoPics() {
+		return noPics;
+	}
+
+	public void setNoPics(boolean noPics) {
+		this.noPics = noPics;
+	}
+
+	@Pfad
+	public boolean isDead() {
+		return dead;
+	}
+
+	public void setDead(boolean dead) {
+		this.dead = dead;
 	}
 
 	public Long getTruppId() {

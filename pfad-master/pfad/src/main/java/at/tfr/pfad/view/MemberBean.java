@@ -63,6 +63,8 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 	private Boolean exampleSupport;
 	private Boolean exampleInfoMail;
 	private Boolean exampleTrail;
+	private Boolean exampleNoPics;
+	private Boolean exampleDead;
 	private List<Function> exampleFunctions;
 	private List<Squad> exampleTrupps;
 	private List<Squad> leaderOf;
@@ -339,6 +341,12 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 		if (exampleTrail != null) {
 			predicatesList.add(builder.equal(root.get(Member_.trail), exampleTrail));
 		}
+		if (exampleNoPics != null) {
+			predicatesList.add(builder.equal(root.get(Member_.noPics), exampleNoPics));
+		}
+		if (exampleDead != null) {
+			predicatesList.add(builder.equal(root.get(Member_.dead), exampleDead));
+		}
 
 		Squad trupp = getMemberExample().getTrupp();
 		if (trupp != null) {
@@ -415,6 +423,22 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 
 	public void setExampleTrail(Boolean exampleTrail) {
 		this.exampleTrail = exampleTrail;
+	}
+
+	public Boolean getExampleNoPics() {
+		return exampleNoPics;
+	}
+
+	public void setExampleNoPics(Boolean exampleNoPics) {
+		this.exampleNoPics = exampleNoPics;
+	}
+
+	public Boolean getExampleDead() {
+		return exampleDead;
+	}
+
+	public void setExampleDead(Boolean exampleDead) {
+		this.exampleDead = exampleDead;
 	}
 
 	public List<Function> getExampleFunctions() {

@@ -307,6 +307,11 @@
 					<h:selectBooleanCheckbox id="memberBeanMemberFree" value="#{memberBean.member.free}" title="#{configurationBean.getDescription('free')}" />
 					<h:message for="memberBeanMemberFree" styleClass="error" />
 				</h:panelGroup>
+				<h:outputLabel for="memberBeanMemberDead" value="NoPics:" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="memberBeanMemberNoPics" value="#{memberBean.member.noPics}" title="#{configurationBean.getDescription('noPics')}" />
+					<h:message for="memberBeanMemberNoPics" styleClass="error" />
+				</h:panelGroup>
 				<h:outputLabel for="memberBeanMemberDead" value="Verstorben:" />
 				<h:panelGroup>
 					<h:selectBooleanCheckbox id="memberBeanMemberDead" value="#{memberBean.member.dead}" title="#{configurationBean.getDescription('dead')}" />

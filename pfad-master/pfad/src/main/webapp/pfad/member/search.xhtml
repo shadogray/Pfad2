@@ -108,7 +108,7 @@
 
 								<h:outputLabel for="mbeGeschlecht" value="Geschl:" styleClass="pad0 mrg2"/>
 								<h:panelGroup>
-									<h:selectOneMenu id="mbeGeschlecht" value="#{memberBean.example.geschlecht}" >
+									<h:selectOneMenu id="mbeGeschlecht" value="#{memberBean.example.geschlecht}" style="max-width: 3em">
 										<f:selectItem noSelectionOption="true"/>
 										<f:selectItems value="#{memberBean.sexes}"/>
 										<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
@@ -117,50 +117,66 @@
 								</h:panelGroup>
 
 								<h:outputLabel for="mbeAktiv" value="Aktiv:" styleClass="pad0 mrg2"/>
-								<h:selectOneMenu id="mbeAktiv" value="#{memberBean.exampleActive}" >
+								<h:selectOneMenu id="mbeAktiv" value="#{memberBean.exampleActive}" style="max-width: 3em">
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="Ja" itemValue="true"/>
-									<f:selectItem itemLabel="Nein" itemValue="false"/>
+									<f:selectItem itemLabel="N" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
 
 								<h:outputLabel for="mbeFree" value="Frei:" styleClass="pad0 mrg2"/>
-								<h:selectOneMenu id="mbeFree" value="#{memberBean.exampleFree}" >
+								<h:selectOneMenu id="mbeFree" value="#{memberBean.exampleFree}" style="max-width: 3em">
 									<f:selectItem noSelectionOption="true"/>
-									<f:selectItem itemLabel="Ja" itemValue="true"/>
-									<f:selectItem itemLabel="Nein" itemValue="false"/>
+									<f:selectItem itemLabel="J" itemValue="true"/>
+									<f:selectItem itemLabel="N" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
 
 								<h:outputLabel for="mbeGilde" value="Gilde:" styleClass="pad0 mrg2"/>
-								<h:selectOneMenu id="mbeGilde" value="#{memberBean.exampleGilde}" >
+								<h:selectOneMenu id="mbeGilde" value="#{memberBean.exampleGilde}" style="max-width: 3em">
 									<f:selectItem noSelectionOption="true"/>
-									<f:selectItem itemLabel="Ja" itemValue="true"/>
-									<f:selectItem itemLabel="Nein" itemValue="false"/>
+									<f:selectItem itemLabel="J" itemValue="true"/>
+									<f:selectItem itemLabel="N" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
 
 								<h:outputLabel for="mbeSupport" value="Support:" styleClass="pad0 mrg2"/>
-								<h:selectOneMenu id="mbeSupport" value="#{memberBean.exampleSupport}" >
+								<h:selectOneMenu id="mbeSupport" value="#{memberBean.exampleSupport}" style="max-width: 3em">
 									<f:selectItem noSelectionOption="true"/>
-									<f:selectItem itemLabel="Ja" itemValue="true"/>
-									<f:selectItem itemLabel="Nein" itemValue="false"/>
+									<f:selectItem itemLabel="J" itemValue="true"/>
+									<f:selectItem itemLabel="N" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
 
 								<h:outputLabel for="mbeTrail" value="Trail:" styleClass="pad0 mrg2"/>
-								<h:selectOneMenu id="mbeTrail" value="#{memberBean.exampleTrail}" >
+								<h:selectOneMenu id="mbeTrail" value="#{memberBean.exampleTrail}" style="max-width: 3em">
 									<f:selectItem noSelectionOption="true"/>
-									<f:selectItem itemLabel="Ja" itemValue="true"/>
-									<f:selectItem itemLabel="Nein" itemValue="false"/>
+									<f:selectItem itemLabel="J" itemValue="true"/>
+									<f:selectItem itemLabel="N" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
 
 								<h:outputLabel for="mbeInfoMail" value="InfoMail:" styleClass="pad0 mrg2"/>
-								<h:selectOneMenu id="mbeInfoMail" value="#{memberBean.exampleInfoMail}" >
+								<h:selectOneMenu id="mbeInfoMail" value="#{memberBean.exampleInfoMail}" style="max-width: 3em">
 									<f:selectItem noSelectionOption="true"/>
-									<f:selectItem itemLabel="Ja" itemValue="true"/>
-									<f:selectItem itemLabel="Nein" itemValue="false"/>
+									<f:selectItem itemLabel="J" itemValue="true"/>
+									<f:selectItem itemLabel="N" itemValue="false"/>
+									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
+								</h:selectOneMenu>
+
+								<h:outputLabel for="mbeNoPics" value="NoPics:" styleClass="pad0 mrg2"/>
+								<h:selectOneMenu id="mbeNoPics" value="#{memberBean.exampleNoPics}" style="max-width: 3em">
+									<f:selectItem noSelectionOption="true"/>
+									<f:selectItem itemLabel="J" itemValue="true"/>
+									<f:selectItem itemLabel="N" itemValue="false"/>
+									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
+								</h:selectOneMenu>
+
+								<h:outputLabel for="mbeDead" value="V:" styleClass="pad0 mrg2" title="Verstorben"/>
+								<h:selectOneMenu id="mbeDead" value="#{memberBean.exampleDead}" style="max-width: 3em">
+									<f:selectItem noSelectionOption="true"/>
+									<f:selectItem itemLabel="J" itemValue="true"/>
+									<f:selectItem itemLabel="N" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
 							</h:panelGrid>

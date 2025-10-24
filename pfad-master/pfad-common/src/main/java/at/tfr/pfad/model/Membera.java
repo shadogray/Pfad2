@@ -7,60 +7,22 @@
 
 package at.tfr.pfad.model;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedEntityGraphs;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import at.tfr.pfad.Pfad;
+import at.tfr.pfad.ScoutRole;
+import at.tfr.pfad.Sex;
+import at.tfr.pfad.dao.AuditListener;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlID;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.joda.time.DateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import at.tfr.pfad.Pfad;
-import at.tfr.pfad.ScoutRole;
-import at.tfr.pfad.Sex;
-import at.tfr.pfad.dao.AuditListener;
+import java.util.Date;
 
 @Audited(withModifiedFlag = true)
 @Entity
@@ -160,6 +122,9 @@ public class Membera extends BaseEntity implements Comparable<Membera>, Auditabl
 
 	@Column(columnDefinition = "boolean default 'false' not null")
 	protected boolean dead;
+
+	@Column(columnDefinition = "boolean default 'false' not null")
+	protected boolean noPics;
 
 	@Enumerated(EnumType.STRING)
 	protected ScoutRole rolle;
@@ -557,11 +522,20 @@ public class Membera extends BaseEntity implements Comparable<Membera>, Auditabl
 	public boolean isDead() {
 		return dead;
 	}
-	
+
 	public void setDead(boolean dead) {
 		this.dead = dead;
 	}
-	
+
+	@Pfad
+	public boolean isNoPics() {
+		return noPics;
+	}
+
+	public void setNoPics(boolean noPics) {
+		this.noPics = noPics;
+	}
+
 	public DateTime geburtstag() {
 		return new DateTime(gebJahr, gebMonat > 0 ? gebMonat : 1, gebTag > 0 ? gebTag : 1, 0, 0);
 	}

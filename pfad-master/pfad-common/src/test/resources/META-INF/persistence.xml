@@ -21,7 +21,7 @@
 			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
 			<property name="javax.persistence.jdbc.user" value="sa" />
 			<property name="javax.persistence.jdbc.password" value="" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:h2:${project.build.directory}/testPfad" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:h2:${project.build.directory}/testPfadTEST;DB_CLOSE_ON_EXIT=FALSE" />
 
 			<property name="hibernate.transaction.flush_before_completion" value="true" />
 
@@ -57,7 +57,7 @@
 			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
 			<property name="javax.persistence.jdbc.user" value="sa" />
 			<property name="javax.persistence.jdbc.password" value="sa" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:h2:${project.build.directory}/testPfadLarge" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:h2:${project.build.directory}/testPfadLarge;DB_CLOSE_ON_EXIT=FALSE" />
 
 			<property name="hibernate.transaction.flush_before_completion" value="true" />
 

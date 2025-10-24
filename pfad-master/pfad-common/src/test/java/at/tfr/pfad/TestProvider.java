@@ -40,6 +40,7 @@ public class TestProvider extends at.tfr.pfad.Provider {
 	private EntityManager entityManagerLarge;
 
 	private boolean large;
+	final String BACKUP_SQL = "sql/testPfad2_Backup_20240709.sql";
 
 	//@PersistenceContext(unitName = "pfadTest")
 	//private EntityManager entityManager;
@@ -57,11 +58,11 @@ public class TestProvider extends at.tfr.pfad.Provider {
 	}
 
 	public EntityManager getExtendedEntityManagerLarge() {
+		URL dbFileUrl = getClass().getClassLoader().getResource(BACKUP_SQL);
 		if (entityManagerLarge == null) {
 			try {
-				URL dbFileUrl = getClass().getResource("/testPfad2_Backup_20240709.sql");
 				if (dbFileUrl != null) {
-					Path path = Paths.get(dbFileUrl.getFile()).getParent().resolveSibling("testPfadLarge.mv.db");
+					Path path = Paths.get(dbFileUrl.getFile()).getParent().getParent().resolveSibling("testPfadLarge.mv.db");
 					Files.deleteIfExists(path);
 				}
 			} catch (Exception e) {
@@ -72,7 +73,7 @@ public class TestProvider extends at.tfr.pfad.Provider {
 			Session session = entityManagerLarge.unwrap(Session.class);
 			try {
 				session.getTransaction().begin();
-				session.createNativeMutationQuery("RUNSCRIPT FROM '" + getClass().getResource("/testPfad2_Backup_20240709.sql").getFile()+"';")
+				session.createNativeMutationQuery("RUNSCRIPT FROM '" + dbFileUrl.getFile()+"';")
 						.executeUpdate();
 				session.getTransaction().commit();
 			} catch (Exception e) {

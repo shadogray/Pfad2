@@ -11,6 +11,8 @@
             <AppenderRef ref="Console" />
         </Root>
         <logger name="at.tfr.pfad.util" level="DEBUG"/>
+        <logger name="org.hibernate" level="INFO"/>
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
         <logger name="org.jboss.weld" level="INFO"/>
         <logger name="org.apache.deltaspike" level="INFO"/>
     </Loggers>
