@@ -1,21 +1,15 @@
 package at.tfr.pfad.util;
 
-import java.io.IOException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
+
+import java.io.IOException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @WebFilter(urlPatterns="*")
 public class RequestDumperFilter implements Filter {
@@ -42,8 +36,12 @@ public class RequestDumperFilter implements Filter {
 		} catch (Throwable t) {
 			log.warn("cannot handle request: " + t);
 		}
-		
-		chain.doFilter(request, response);
+
+        try {
+            chain.doFilter(request, response);
+        } catch (Throwable t) {
+            log.warn("cannot handle request: " + ((HttpServletRequest)request).getRequestURI(), t);
+        }
 	}
 
 	@Override

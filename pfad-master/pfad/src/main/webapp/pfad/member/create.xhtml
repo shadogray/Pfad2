@@ -31,7 +31,8 @@
 
 	<ui:define name="main">
 		<h:form id="createForm">
-			
+
+            <p:growl id="growl"/>
 			<p:messages />
 			<h:panelGrid id="messages" columns="2" rendered="#{!empty memberBean.validationResults}">
 				<ui:repeat value="#{memberBean.validationResults}" var="vr">
@@ -176,9 +177,21 @@
 				</h:panelGroup>
 				<h:outputText />
 
-				<h:outputText />
-				<h:outputText />
-				<h:outputText />
+                <h:outputLabel for="memberBeanMemberMemDeclUrl" value="MitglErklg:" />
+                <h:panelGroup id="memberDeclaration" >
+                    <h:panelGrid columns="4" >
+                        <h:inputText value="#{memberBean.member.memDeclUrl}" disabled="false" rendered="#{!memberBean.member.memberDeclarationSet}"
+                                     pass:placeholder="#{configurationBean.getValue('memDeclUrl')}" title="#{configurationBean.getDescription('memDeclUrl')}"/>
+                        <p:commandLink id="memberBeanMemberMemDeclDownload" value="#{memberBean.member.memDeclUrl}" ajax="false" rendered="#{memberBean.member.memberDeclarationSet}">
+                            <p:fileDownload value="#{downloadFileBean.getMemberDeclarationFile(memberBean.member.id)}"/>
+                        </p:commandLink>
+                        <p:fileUpload id="memberBeanMemberMemDeclUrl" value="#{memberBean.memberDeclaration}" uploadLabel="Hochladen" mode="simple" auto="true" skinSimple="true"
+                                      process="@this" listener="#{memberBean.handleFileUpload}" update="memberDeclaration growl" style="padding: .1rem 1rem"
+                                      pass:placeholder="#{configurationBean.getValue('memDeclUrl')}" title="#{configurationBean.getDescription('memDeclUrl')}" />
+                    </h:panelGrid>
+                    <h:message for="memberBeanMemberMemDeclUrl" styleClass="error" />
+                </h:panelGroup>
+                <h:outputText />
 
 				<h:outputLabel for="memberBeanMemberTrupp" value="Trupp:" />
 				<h:panelGroup>
@@ -312,11 +325,16 @@
 					<h:selectBooleanCheckbox id="memberBeanMemberNoPics" value="#{memberBean.member.noPics}" title="#{configurationBean.getDescription('noPics')}" />
 					<h:message for="memberBeanMemberNoPics" styleClass="error" />
 				</h:panelGroup>
+                <h:outputLabel for="memberBeanMemberMemDecl" value="MitErkl:" />
+                <h:panelGroup>
+                    <h:selectBooleanCheckbox id="memberBeanMemberMemDecl" value="#{memberBean.member.memDecl}" title="#{configurationBean.getDescription('memDecl')}" />
+                    <h:message for="memberBeanMemberMemDecl" styleClass="error" />
+                </h:panelGroup>
 				<h:outputLabel for="memberBeanMemberDead" value="Verstorben:" />
-				<h:panelGroup>
-					<h:selectBooleanCheckbox id="memberBeanMemberDead" value="#{memberBean.member.dead}" title="#{configurationBean.getDescription('dead')}" />
-					<h:message for="memberBeanMemberDead" styleClass="error" />
-				</h:panelGroup>
+                <h:panelGroup>
+                    <h:selectBooleanCheckbox id="memberBeanMemberDead" value="#{memberBean.member.dead}" title="#{configurationBean.getDescription('dead')}" />
+                    <h:message for="memberBeanMemberDead" styleClass="error" />
+                </h:panelGroup>
 			</h:panelGrid>
 			<h:panelGrid columns="8">
 				<h:outputLabel value="Erstellt:" />

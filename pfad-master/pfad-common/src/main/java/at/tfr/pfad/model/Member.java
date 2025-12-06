@@ -1,34 +1,14 @@
 package at.tfr.pfad.model;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedEntityGraphs;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
+import at.tfr.pfad.Pfad;
+import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlTransient;
-
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
-import at.tfr.pfad.Pfad;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @NamedQueries({ 
 	@NamedQuery(name = "Member.distName", query = "select distinct m.name from Member m where m.name is not null order by m.name"),
@@ -263,7 +243,11 @@ public class Member extends Membera {
 	public boolean isAnyFree() {
 		return free || (funktionen != null && funktionen.stream().anyMatch(f->Boolean.TRUE.equals(f.isFree())));
 	}
-	
+
+    public boolean isMemberDeclarationSet() {
+        return StringUtils.isNotBlank(memDeclUrl);
+    }
+
 	/**
 	 * property for REST API
 	 * 

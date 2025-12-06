@@ -30,3 +30,10 @@ create index registration_search on registration (storno, aktiv, name, vorname, 
 alter table if exists MEMBER add column noPics boolean default 'false' not null;
 alter table if exists MEMBER_AUD add column noPics boolean;
 alter table if exists MEMBER_AUD add column noPics_MOD boolean;
+
+alter table if exists MEMBER add column memDecl boolean;
+alter table if exists MEMBER_AUD add column MEMDECL boolean;
+alter table if exists MEMBER_AUD add column MEMDECL_MOD boolean;
+alter table if exists MEMBER add column memDeclUrl varchar(255);
+alter table if exists MEMBER_AUD add column MEMDECLURL varchar(255);
+alter table if exists MEMBER_AUD add column MEMDECLURL_MOD boolean;

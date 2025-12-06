@@ -92,6 +92,10 @@ public class MemberAud implements java.io.Serializable {
     private Boolean noPics;
     private Boolean noPicsMod;
     private Boolean participationsMod;
+    private Boolean memDecl;
+    private Boolean memDeclMod;
+    private String memDeclUrl;
+    private Boolean memDeclUrlMod;
 
     public MemberAud() {
     }
@@ -951,6 +955,36 @@ public class MemberAud implements java.io.Serializable {
     }
     public void setNoPicsMod(Boolean noPicsMod) {
         this.noPicsMod = noPicsMod;
+    }
+
+    @Column(name = "MEMDECL")
+    public Boolean getMemDecl() {
+        return memDecl;
+    }
+    public void setMemDecl(Boolean memDecl) {
+        this.memDecl = memDecl;
+    }
+    @Column(name = "MEMDECL_MOD")
+    public Boolean getMemDeclMod() {
+        return memDeclMod;
+    }
+    public void setMemDeclMod(Boolean memDeclMod) {
+        this.memDeclMod = memDeclMod;
+    }
+
+    @Column(name = "MEMDECLURL")
+    public String getMemDeclUrl() {
+        return memDeclUrl;
+    }
+    public void setMemDeclUrl(String memDeclUrl) {
+        this.memDeclUrl = memDeclUrl;
+    }
+    @Column(name = "MEMDECLURL_MOD")
+    public Boolean getMemDeclUrlMod() {
+        return memDeclUrlMod;
+    }
+    public void setMemDeclUrlMod(Boolean memDeclUrlMod) {
+        this.memDeclUrlMod = memDeclUrlMod;
     }
 
     @Column(name = "PARTICIPATIONS_MOD")

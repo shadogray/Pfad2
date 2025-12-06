@@ -127,8 +127,10 @@
 									<f:ajax event="itemUnselect" render="filePanel"/>
 								</p:chips>
 								<p:fileUpload listener="#{mailerBean.handleFileUpload}" auto="true" update="filePanel"
-									sizeLimit="10000000" invalidSizeMessage="Datei zu groß!" skinSimple="true" chooseButtonStyleClass="btn btn-primary"
-									fileLimit="1024000" fileLimitMessage="Datei zu groß!"/>
+                                              skinSimple="true" chooseButtonStyleClass="btn btn-primary">
+                                        <p:validateFile sizeLimit="10000000" invalidSizeMessage="Datei zu groß!"
+									        fileLimit="1024000" fileLimitMessage="Datei zu groß!"/>
+                                </p:fileUpload>
 							</h:panelGrid>
 						</p:fieldset>
 					</h:panelGrid>

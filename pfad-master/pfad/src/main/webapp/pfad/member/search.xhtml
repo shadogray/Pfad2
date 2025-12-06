@@ -165,12 +165,20 @@
 								</h:selectOneMenu>
 
 								<h:outputLabel for="mbeNoPics" value="NoPics:" styleClass="pad0 mrg2"/>
-								<h:selectOneMenu id="mbeNoPics" value="#{memberBean.exampleNoPics}" style="max-width: 3em">
+								<h:selectOneMenu id="mbeNoPics" value="#{memberBean.exampleMemDecl}" style="max-width: 3em">
 									<f:selectItem noSelectionOption="true"/>
 									<f:selectItem itemLabel="J" itemValue="true"/>
 									<f:selectItem itemLabel="N" itemValue="false"/>
 									<f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
 								</h:selectOneMenu>
+
+                                <h:outputLabel for="mbeMemDecl" value="MitErkl:" styleClass="pad0 mrg2"/>
+                                <h:selectOneMenu id="mbeMemDecl" value="#{memberBean.exampleNoPics}" style="max-width: 3em">
+                                    <f:selectItem noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="J" itemValue="true"/>
+                                    <f:selectItem itemLabel="N" itemValue="false"/>
+                                    <f:ajax listener="#{memberBean.paginate()}" render="memberBeanPageItems"/>
+                                </h:selectOneMenu>
 
 								<h:outputLabel for="mbeDead" value="V:" styleClass="pad0 mrg2" title="Verstorben"/>
 								<h:selectOneMenu id="mbeDead" value="#{memberBean.exampleDead}" style="max-width: 3em">

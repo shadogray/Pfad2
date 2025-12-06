@@ -5,6 +5,13 @@
 /*	font-size: .7rem;*/
 /*	text-decoration: none;*/
 /*}*/
+
+/*** Primefaces ***/
+body .ui-button.ui-button-text-only .ui-button-text {
+    padding: .1rem 1rem;
+}
+/*** Primefaces ***/
+
 body .ui-datatable thead th .ui-column-title {
 	font-weight: 700;
 	vertical-align: middle;

@@ -30,6 +30,8 @@ public class Configuration extends BaseEntity implements Comparable<Configuratio
 	public static final String REGEND_KEY = "RegistrationEnd";
 	public static final String BADEN_IBANS = "BadenIBANs";
 	public static final Pattern DOWNLOAD_PATTERN = Pattern.compile("^.+?\\.download\\.(.+)$");
+    public static final String STORAGE_PATH = "storage.path";
+    public static final String STORAGE_PATH_DEFAULT = "/opt/pfad/files";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "configuration_seq")

@@ -9,6 +9,7 @@ package at.tfr.pfad.view;
 
 import at.tfr.pfad.ScoutRole;
 import at.tfr.pfad.Sex;
+import at.tfr.pfad.dao.ConfigurationRepository;
 import at.tfr.pfad.model.*;
 import at.tfr.pfad.processing.MemberValidator;
 import at.tfr.pfad.svc.MemberDao;
@@ -30,10 +31,16 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.IOUtils;
 import org.hibernate.Hibernate;
 import org.omnifaces.util.Faces;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.file.UploadedFile;
 
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,6 +71,7 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 	private Boolean exampleInfoMail;
 	private Boolean exampleTrail;
 	private Boolean exampleNoPics;
+    private Boolean exampleMemDecl;
 	private Boolean exampleDead;
 	private List<Function> exampleFunctions;
 	private List<Squad> exampleTrupps;
@@ -71,8 +79,11 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 	private List<Squad> assistantOf;
 	private Registration registration;
 	private Collection<ValidationResult> validationResults = new ArrayList<>();
+    private UploadedFile memberDeclaration;
+    @Inject
+    private ConfigurationRepository configurationRepository;
 
-	/*
+    /*
 	 * support creating and retrieving Member entities
 	 */
 
@@ -231,8 +242,30 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 	public Collection<ValidationResult> getValidationResults() {
 		return validationResults;
 	}
-	
-	/*
+
+    public UploadedFile getMemberDeclaration() {
+        return memberDeclaration;
+    }
+
+    public void setMemberDeclaration(UploadedFile memberDeclaration) {
+        this.memberDeclaration = memberDeclaration;
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        try {
+            Path storageDir = getMemberDeclarationsDir();
+            Files.createDirectories(storageDir);
+            final String fileName = event.getFile().getFileName();
+            IOUtils.copy(event.getFile().getInputStream(), Files.newOutputStream(storageDir.resolve(fileName), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
+            member.setMemDeclUrl(fileName);
+            info("MitgliedsDeklaration geladen: " + fileName);
+        } catch (Exception e) {
+            log.info("fileUpload: "+e, e);
+            error(e.getMessage());
+        }
+    }
+
+    /*
 	 * support searching Member entities with pagination
 	 */
 
@@ -344,6 +377,9 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 		if (exampleNoPics != null) {
 			predicatesList.add(builder.equal(root.get(Member_.noPics), exampleNoPics));
 		}
+        if (exampleMemDecl != null) {
+            predicatesList.add(builder.equal(root.get(Member_.memDecl), exampleMemDecl));
+        }
 		if (exampleDead != null) {
 			predicatesList.add(builder.equal(root.get(Member_.dead), exampleDead));
 		}
@@ -433,7 +469,15 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 		this.exampleNoPics = exampleNoPics;
 	}
 
-	public Boolean getExampleDead() {
+    public void setExampleMemDecl(Boolean exampleMemDecl) {
+        this.exampleMemDecl = exampleMemDecl;
+    }
+
+    public Boolean getExampleMemDecl() {
+        return exampleMemDecl;
+    }
+
+    public Boolean getExampleDead() {
 		return exampleDead;
 	}
 

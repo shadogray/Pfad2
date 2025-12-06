@@ -126,7 +126,10 @@ public class Membera extends BaseEntity implements Comparable<Membera>, Auditabl
 	@Column(columnDefinition = "boolean default 'false' not null")
 	protected boolean noPics;
 
-	@Enumerated(EnumType.STRING)
+    @Column
+    protected Boolean memDecl;
+
+    @Enumerated(EnumType.STRING)
 	protected ScoutRole rolle;
 
 	@Column
@@ -140,6 +143,9 @@ public class Membera extends BaseEntity implements Comparable<Membera>, Auditabl
 
 	@Column
 	protected String createdBy;
+
+    @Column
+    protected String memDeclUrl;
 
 	@Column(name = "status", insertable = false, updatable = false)
 	protected String status;
@@ -532,11 +538,29 @@ public class Membera extends BaseEntity implements Comparable<Membera>, Auditabl
 		return noPics;
 	}
 
-	public void setNoPics(boolean noPics) {
-		this.noPics = noPics;
-	}
+    public void setNoPics(boolean noPics) {
+        this.noPics = noPics;
+    }
 
-	public DateTime geburtstag() {
+    @Pfad
+    public boolean isMemDecl() {
+        return Boolean.TRUE.equals(memDecl);
+    }
+
+    public void setMemDecl(boolean memDecl) {
+        this.memDecl = memDecl;
+    }
+
+    @Pfad
+    public String getMemDeclUrl() {
+        return memDeclUrl;
+    }
+
+    public void setMemDeclUrl(String memDeclUrl) {
+        this.memDeclUrl = memDeclUrl;
+    }
+
+    public DateTime geburtstag() {
 		return new DateTime(gebJahr, gebMonat > 0 ? gebMonat : 1, gebTag > 0 ? gebTag : 1, 0, 0);
 	}
 	

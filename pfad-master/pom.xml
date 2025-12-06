@@ -20,7 +20,7 @@
         <org.wildfly.version>30.0.1.Final</org.wildfly.version>
         <weld.version>5.1.2.Final</weld.version>
         <resteasy.version>6.2.6.Final</resteasy.version>
-        <org.primefaces.version>14.0.12</org.primefaces.version>
+        <org.primefaces.version>15.0.10</org.primefaces.version>
         <jaxb.version>4.0.1</jaxb.version>
         <graalvm.version>23.1.1</graalvm.version>
         <log4j.version>2.22.1</log4j.version>

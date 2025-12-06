@@ -1,9 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:o="http://omnifaces.org/ui"
-	template="/resources/scaffold/pageTemplate.xhtml"
-                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:o="http://omnifaces.org/ui"
+                xmlns:pass="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/resources/scaffold/pageTemplate.xhtml">
 
 	<f:metadata>
 		<o:viewParam name="id" value="#{memberBean.id}" />
@@ -73,8 +72,15 @@
 			<h:outputLabel for="memberBeanMemberTelefon" value="Telefon:" />
 			<h:outputText id="memberBeanMemberTelefon" value="#{memberBean.member.telefon}" />
 
-			<h:outputText />
-			<h:outputText />
+            <h:outputLabel for="memberBeanMemberMemDeclUrl" value="MitglErklg:" />
+            <h:panelGroup id="memberBeanMemberMemDeclUrl">
+                <h:inputText value="#{memberBean.member.memDeclUrl}" disabled="false" rendered="#{!memberBean.member.memberDeclarationSet}" title="#{configurationBean.getDescription('memDeclUrl')}"/>
+                <h:form id="downloadForm">
+                    <p:commandButton value="#{memberBean.member.memDeclUrl}" ajax="false" rendered="#{memberBean.member.memberDeclarationSet}">
+                        <p:fileDownload value="#{downloadFileBean.getMemberDeclarationFile(memberBean.member.id)}"/>
+                    </p:commandButton>
+                </h:form>
+            </h:panelGroup>
 
 			<h:outputLabel for="memberBeanMemberTrupp" value="Trupp:" />
 			<h:link id="memberBeanMemberTrupp" outcome="/pfad/squad/view" rendered="#{!empty memberBean.member.trupp}"
@@ -203,7 +209,7 @@
 			</h:panelGroup>
 
 			<h:outputLabel value="Registrierung:" for="memberBeanMemberRegistration" rendered="#{not empty memberBean.registration}" />
-			<h:link outcome="/pfad/registration/create" rendered="#{not empty memberBean.registration.shortString}" >
+			<h:link id="memberBeanMemberRegistration" outcome="/pfad/registration/create" rendered="#{not empty memberBean.registration.shortString}" >
 				<f:param name="id" value="#{memberBean.registration.id}" />
 				<h:outputText value="#{memberBean.registration.vorname} #{memberBean.registration.name}, #{memberBean.registration.gebJahr}" />
 			</h:link>
@@ -279,10 +285,14 @@
 				<h:outputLabel value="Frei:" />
 				<h:outputText styleClass="#{memberBean.member.free ? 'boolean-true' : 'boolean-false'}" value="" />
 			</h:panelGroup>
-			<h:panelGroup>
-				<h:outputLabel value="NoPics:" />
-				<h:outputText styleClass="#{memberBean.member.noPics ? 'boolean-true' : 'boolean-false'}" value="" />
-			</h:panelGroup>
+            <h:panelGroup>
+                <h:outputLabel value="NoPics:" />
+                <h:outputText styleClass="#{memberBean.member.noPics ? 'boolean-true' : 'boolean-false'}" value="" />
+            </h:panelGroup>
+            <h:panelGroup>
+                <h:outputLabel value="MitErkl:" />
+                <h:outputText styleClass="#{memberBean.member.memDecl ? 'boolean-true' : 'boolean-false'}" value="" />
+            </h:panelGroup>
 			<h:panelGroup>
 				<h:outputLabel value="Verstorben:" />
 				<h:outputText styleClass="#{memberBean.member.dead ? 'boolean-true' : 'boolean-false'}" value="" />

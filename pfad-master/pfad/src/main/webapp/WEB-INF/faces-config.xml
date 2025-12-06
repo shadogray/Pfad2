@@ -5,7 +5,7 @@
         https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd"
     version="4.0">
 	<factory>
-	     <exception-handler-factory>org.omnifaces.exceptionhandler.FacesMessageExceptionHandlerFactory</exception-handler-factory>
+	     <exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
 		<!-- <exception-handler-factory>at.tfr.pfad.util.FacesExceptionHandlerFactory</exception-handler-factory> -->
 		<!-- <partial-view-context-factory>at.tfr.pfad.util.PfadPartialViewContextFactory</partial-view-context-factory> -->
 	</factory>
