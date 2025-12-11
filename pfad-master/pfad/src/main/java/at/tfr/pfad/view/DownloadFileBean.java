@@ -22,7 +22,7 @@ public class DownloadFileBean extends BaseBaseBean {
             Member member = memberRepo.findBy(memberId);
             final String fileName = member.getMemDeclUrl();
             final String fnl = fileName.toLowerCase();
-            Path storageDir = getMemberDeclarationsDir();
+            Path storageDir = getMemberDeclarationsDir(member.getId());
             final InputStream fileContent = Files.newInputStream(storageDir.resolve(fileName));
             StreamedContent file = DefaultStreamedContent.builder()
                     .name(fileName)

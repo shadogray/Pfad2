@@ -253,7 +253,7 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 
     public void handleFileUpload(FileUploadEvent event) {
         try {
-            Path storageDir = getMemberDeclarationsDir();
+            Path storageDir = getMemberDeclarationsDir(member.getId());
             Files.createDirectories(storageDir);
             final String fileName = event.getFile().getFileName();
             IOUtils.copy(event.getFile().getInputStream(), Files.newOutputStream(storageDir.resolve(fileName), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));

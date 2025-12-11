@@ -636,8 +636,8 @@ public abstract class BaseBaseBean {
         this.dialogSize = dialogSize;
     }
 
-    protected Path getMemberDeclarationsDir() {
-        return getDocumentsDir().resolve("memberDeclarations");
+    protected Path getMemberDeclarationsDir(Long memberId) {
+        return getDocumentsDir().resolve("memberDeclarations").resolve(memberId.toString());
     }
 
     protected Path getDocumentsDir() {
