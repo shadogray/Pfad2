@@ -5,6 +5,10 @@
         
 	<display-name>pfad</display-name>
 	<context-param>
+		<param-name>jakarta.faces.PROJECT_STAGE</param-name>
+		<param-value>Production</param-value>
+	</context-param>
+	<context-param>
 		<param-name>facelets.Encoding</param-name>
 		<param-value>UTF8</param-value>
 	</context-param>

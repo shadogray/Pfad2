@@ -24,14 +24,15 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DialogFrameworkOptions;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class BaseBaseBean {
+public abstract class BaseBaseBean implements Serializable {
 
-    protected Logger log = Logger.getLogger(getClass());
+    protected transient Logger log = Logger.getLogger(getClass());
 
     @Inject
     protected transient EntityManager entityManager;
@@ -82,7 +83,7 @@ public abstract class BaseBaseBean {
     protected final Map<String, String> falseOnly = new LinkedHashMap<>();
     protected final Map<String, String> trueFalse = new LinkedHashMap<>();
     @Inject
-    private ConfigurationRepository configurationRepository;
+    private transient ConfigurationRepository configurationRepository;
 
     public BaseBaseBean() {
         trueFalse.put("Ja", Boolean.TRUE.toString());
