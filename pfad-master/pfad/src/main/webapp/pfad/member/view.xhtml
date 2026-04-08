@@ -76,8 +76,8 @@
             <h:panelGroup id="memberBeanMemberMemDeclUrl">
                 <h:inputText value="#{memberBean.member.memDeclUrl}" disabled="false" rendered="#{!memberBean.member.memberDeclarationSet}" title="#{configurationBean.getDescription('memDeclUrl')}"/>
                 <h:form id="downloadForm">
-                    <p:commandButton value="#{memberBean.member.memDeclUrl}" ajax="false" rendered="#{memberBean.member.memberDeclarationSet}">
-                        <p:fileDownload value="#{downloadFileBean.getMemberDeclarationFile(memberBean.member.id)}"/>
+                    <p:commandButton id="fileDownloadButton" value="#{memberBean.member.memDeclUrl}" ajax="false" rendered="#{memberBean.member.memberDeclarationSet}">
+                        <p:fileDownload id="fileDownload" value="#{downloadFileBean.getMemberDeclarationFile(memberBean.member.id)}"/>
                     </p:commandButton>
                 </h:form>
             </h:panelGroup>

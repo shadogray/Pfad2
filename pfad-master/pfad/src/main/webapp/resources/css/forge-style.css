@@ -966,7 +966,7 @@ button::-moz-focus-inner {
 }
 
 .btn-primary {
-	background-color: #817B10; /* dk gold */
+	background-color: #817B10 !important; /* dk gold */
 	background-image: linear-gradient(top, #B0A826, #979026);
 	background-repeat: repeat-x;
 	border-color: #979026 #979026 #7C7301;
@@ -985,11 +985,11 @@ button::-moz-focus-inner {
 }
 
 .btn-primary:hover {
-	background-color: #979026;
+	background-color: #979026 !important;
 }
 
 .btn-primary.disabled, .btn-primary[disabled] {
-	background-color: gray;
+	background-color: gray !important;
 }
 
 span.btn-primary, span.btn-primary:hover {

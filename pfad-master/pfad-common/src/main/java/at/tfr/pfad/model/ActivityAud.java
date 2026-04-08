@@ -28,15 +28,11 @@ public class ActivityAud  implements java.io.Serializable {
      private Byte revtype;
      private String comment;
      private Boolean commentMod;
-     @Column(name = "endDate")
      private Date endDate;
-     @Column(name = "endDate_MOD")
      private Boolean endMod;
      private String name;
      private Boolean nameMod;
-     @Column(name = "startDate")
      private Date startDate;
-     @Column(name = "startDate_MOD")
      private Boolean startMod;
      private String type;
      private Boolean typeMod;
@@ -150,7 +146,7 @@ public class ActivityAud  implements java.io.Serializable {
     }
 
     @Temporal(TemporalType.DATE)
-    @Column(name="END", length=8)
+    @Column(name = "endDate")
     public Date getEnd() {
         return this.endDate;
     }
@@ -159,8 +155,8 @@ public class ActivityAud  implements java.io.Serializable {
         this.endDate = end;
     }
 
-    
-    @Column(name="END_MOD")
+
+    @Column(name = "endDate_MOD")
     public Boolean getEndMod() {
         return this.endMod;
     }
@@ -190,7 +186,7 @@ public class ActivityAud  implements java.io.Serializable {
     }
 
     @Temporal(TemporalType.DATE)
-    @Column(name="START", length=8)
+    @Column(name = "startDate")
     public Date getStart() {
         return this.startDate;
     }
@@ -199,8 +195,8 @@ public class ActivityAud  implements java.io.Serializable {
         this.startDate = start;
     }
 
-    
-    @Column(name="START_MOD")
+
+    @Column(name = "startDate_MOD")
     public Boolean getStartMod() {
         return this.startMod;
     }
