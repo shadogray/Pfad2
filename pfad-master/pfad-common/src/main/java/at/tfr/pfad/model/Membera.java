@@ -22,6 +22,10 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.joda.time.DateTime;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Date;
 
 @Audited(withModifiedFlag = true)
@@ -131,6 +135,12 @@ public class Membera extends BaseEntity implements Comparable<Membera>, Auditabl
 
     @Enumerated(EnumType.STRING)
 	protected ScoutRole rolle;
+
+	@Column
+	protected String login;
+
+	@Column
+	protected String password;
 
 	@Column
 	protected Date changed;
@@ -405,6 +415,42 @@ public class Membera extends BaseEntity implements Comparable<Membera>, Auditabl
 
 	public void setSupport(boolean support) {
 		this.support = support;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * /subsystem=elytron/jdbc-realm=PfadisDBRealm:add(principal-query=[{sql="select 1", data-source=PfadDS}])
+	 * /subsystem=elytron/jdbc-realm=PfadisDBRealm:write-attribute(name=principal-query,
+	 * 	value=[{sql="select m.password, l.groups from member m join login l on (m.id=l.member_id) where m.login=?",
+	 * 			data-source=PfadDS,
+	 * 			simple-digest-mapper={password-index=1,hash-encoding=base64,algorithm=simple-digest-sha-256},
+	 * 			attribute-mapping=[{index=2,to=groups}]}])
+	 * @param password
+	 * @throws Exception
+	 */
+	public void setPassword(String password) throws Exception {
+		if (StringUtils.isBlank(password)) {
+			this.password = null;
+		} else {
+			this.password = getEncoded(password);
+		}
+	}
+
+	public static String getEncoded(final String password) throws NoSuchAlgorithmException {
+		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+		digest.update(password.getBytes(StandardCharsets.UTF_8));
+		return Base64.getEncoder().encodeToString(digest.digest());
 	}
 
 	@Override

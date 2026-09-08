@@ -63,6 +63,9 @@
 				<li class="#{pfadUI.isMenuSelected('mail.message')}">
 					<h:link outcome="/pfad/mail/mailmessage?menu=mail.message" value="Gesendet" />
 				</li>
+				<li class="#{pfadUI.isMenuSelected('password')}">
+					<h:link outcome="/pfad/member/password" value="Passwort" />
+				</li>
 				<li ><a href="#{configurationBean.getValue('handbuchUrl')}">Handbuch</a></li>
 				<li ><h:commandLink action="#{loginBean.logout()}" value="Beenden"/></li>
 				<li><h:outputLink value="#{request.contextPath}/apidocs/" target="apidocs">API</h:outputLink></li>

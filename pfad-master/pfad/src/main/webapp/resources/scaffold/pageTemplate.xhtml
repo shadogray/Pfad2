@@ -23,7 +23,7 @@
 			<div class="container">
 				<h:link id="brandLink" outcome="/pfad/index.xhtml" styleClass="brand">
 					<h:outputText value="Willkommen in der Pfad-DB" rendered="#{request.userPrincipal !=null}" />
-					<h:outputText value=",  #{request.userPrincipal}" rendered="#{request.userPrincipal != null}" />
+					<h:outputText value=",  #{request.userPrincipal}:#{sessionBean.currentMember.toShortString()} - #{sessionBean.currentMember.rolesString}" rendered="#{request.userPrincipal != null}" />
 					<h:panelGroup rendered="#{sessionBean.registrationEndDate != null}" style="white-space: nowrap;">
 						<h:outputText value="  --  Registrierung Ende: " />
 						<h:outputText value="#{sessionBean.registrationEndDate}" converter="jakarta.faces.DateTime" />

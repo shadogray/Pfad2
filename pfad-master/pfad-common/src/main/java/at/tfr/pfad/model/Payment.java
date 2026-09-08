@@ -47,6 +47,7 @@ public class Payment extends BaseEntity implements Auditable, Presentable, Compa
 	private PaymentType type;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(foreignKey = @ForeignKey(name = "Payment_has_PayingMember"))
 	private Member payer;
 
 	@Column

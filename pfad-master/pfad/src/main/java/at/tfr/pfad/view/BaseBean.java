@@ -7,16 +7,19 @@
 
 package at.tfr.pfad.view;
 
+import at.tfr.pfad.Role;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.ejb.SessionContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
 import org.primefaces.PrimeFaces;
 import org.primefaces.util.Constants;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author u0x27vo
@@ -72,6 +75,10 @@ public abstract class BaseBean<T,D> extends BaseBaseBean implements Serializable
 
     public SessionContext getSessionContext() {
         return sessionContext;
+    }
+
+    public List<SelectItem> getAvailableRoles() {
+        return Stream.of(Role.values()).filter(r -> Role.none != r).map(g -> new SelectItem(g, g.name())).toList();
     }
 
 }

@@ -4,6 +4,7 @@
 	<persistence-unit name="pfadTest" transaction-type="RESOURCE_LOCAL">
 		<description>Forge Persistence Unit</description>
 		<class>at.tfr.pfad.model.Member</class>
+		<class>at.tfr.pfad.model.Login</class>
 		<class>at.tfr.pfad.model.Payment</class>
 		<class>at.tfr.pfad.model.Booking</class>
 		<class>at.tfr.pfad.model.Function</class>
@@ -40,6 +41,7 @@
 	<persistence-unit name="pfadTestLarge" transaction-type="RESOURCE_LOCAL">
 		<description>Forge Persistence Unit</description>
 		<class>at.tfr.pfad.model.Member</class>
+		<class>at.tfr.pfad.model.Login</class>
 		<class>at.tfr.pfad.model.Payment</class>
 		<class>at.tfr.pfad.model.Booking</class>
 		<class>at.tfr.pfad.model.Function</class>
@@ -65,6 +67,7 @@
 
 			<property name="hibernate.jpa.compliance.query" value="false"/>
 			<!--property name="hibernate.hbm2ddl.auto" value="create" /-->
+			<property name="hibernate.hbm2ddl.import_files" value="/doc/changes.sql"/>
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
 

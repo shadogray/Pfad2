@@ -1,3 +1,5 @@
+cd $(dirname $0) || exit -1
+
 java -cp /work/tools/h2/bin/h2-2.2.220.jar org.h2.tools.RunScript -url jdbc:h2:./thisTest -user sa -password sa -script sql/testPfad2_Backup_20240709.sql
 
 java -cp /work/tools/h2/bin/h2-2.2.220.jar org.h2.tools.RunScript -url jdbc:h2:./thisTest -user sa -password sa -continueOnError -script ../../../../doc/changes.sql

@@ -48,6 +48,7 @@ public class Booking extends BaseEntity implements Auditable, Presentable, Compa
 	private Set<Payment> payments = new HashSet<Payment>();
 
 	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "Booking_has_Member"))
 	private Member member;
 
 	@ManyToOne(optional = false)

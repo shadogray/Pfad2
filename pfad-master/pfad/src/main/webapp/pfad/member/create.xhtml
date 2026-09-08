@@ -40,7 +40,7 @@
 					<h:outputText value="#{vr.message}" styleClass="error"/>
 				</ui:repeat>
 			</h:panelGrid>
-			
+
 			<p:focus />
 
 			<h:panelGrid columnClasses="label2,component2,required,label2,component2,required" columns="6">
@@ -53,9 +53,12 @@
 				</h:panelGroup>
 				<h:outputText />
 
-				<h:outputText />
-				<h:outputText />
-				<h:outputText />
+				<h:outputLabel for="memberBeanMemberLogin" value="Login:" />
+				<h:panelGroup style="display: flex; justify-content: space-between;">
+					<h:outputText id="memberLoginPassword" value="#{memberBean.member.login} : #{memberBean.member.rolesString}"/>
+					<h:commandLink value="Ändern" render="#{!memberBean.isChangeLoginAllowed()}" onclick="PF('passwordDialog').show(); return false;" />
+				</h:panelGroup>
+				<h:outputText/>
 
 				<h:outputLabel for="memberBeanMemberAnrede" value="Anrede:" />
 				<h:panelGroup>
@@ -365,6 +368,61 @@
 					</c:otherwise>
 				</c:choose>
 			</div>
+
+			<p:dialog id="passwordDialog" widgetVar="passwordDialog" resizable="true" width="30em" modal="true" focus="memberBeanMemberLogin" closeOnEscape="true">
+
+				<p:ajax event="close" update=":createForm:memberLoginPassword"/>
+
+				<h:panelGroup id="passwordDialogContainer">
+
+					<p:growl id="growlDialog"/>
+					<p:messages id="messagesDialog" />
+
+					<p:panelGrid id="passwordDialogGrid" columns="2" >
+						<h:outputLabel for="memberBeanMemberLogin" value="Login:" />
+						<h:panelGroup id="memberBeanMemberLoginPanel">
+							<h:inputText id="memberBeanMemberLogin" value="#{memberBean.member.login}" validator="#{memberBean.validateLogin}"
+										 pass:placeholder="#{configurationBean.getValue('Login')}" title="#{configurationBean.getDescription('Login')}" >
+								<f:ajax render="passwordDialogContainer :createForm:memberLoginPassword"/>
+							</h:inputText>
+							<h:message for="memberBeanMemberLogin" styleClass="error" />
+						</h:panelGroup>
+
+						<h:outputLabel for="memberBeanMemberRoles" value="Rollen:" />
+						<p:selectCheckboxMenu id="memberBeanMemberRoles" value="#{memberBean.memberRoles}" showCheckbox="true" >
+							<f:selectItems value="#{memberBean.availableRoles}" />
+							<f:ajax execute="@this" render="passwordDialogContainer :createForm:memberLoginPassword"/>
+						</p:selectCheckboxMenu>
+
+						<h:outputLabel for="memberBeanMemberPassword" value="Passwort:" />
+						<h:inputSecret id="memberBeanMemberPassword" value="#{memberBean.newPassword}" style="width: 10em; text-overflow: ellipsis"
+									   pass:placeholder="#{configurationBean.getValue('Password')}" title="#{configurationBean.getDescription('Password')}" >
+								<f:ajax event="keyup" render="memberBeanMemberPasswordCheckMessage savePassword nullifyPassword messagesDialog"/>
+						</h:inputSecret>
+
+						<h:outputLabel for="memberBeanMemberPasswordCheck" value="Wiederholung:" />
+						<h:panelGroup id="memberBeanMemberPasswordCheckPanel">
+							<h:inputSecret id="memberBeanMemberPasswordCheck" value="#{memberBean.newPasswordCheck}"
+										   validator="#{memberBean.validatePasswords}" style="width: 10em; text-overflow: ellipsis"
+										   pass:placeholder="#{configurationBean.getValue('PasswordCheck')}" title="#{configurationBean.getDescription('PasswordCheck')}" >
+								<f:ajax event="keyup" render="memberBeanMemberPasswordCheckMessage savePassword nullifyPassword messagesDialog"/>
+								<f:ajax render="passwordDialogContainer"/>
+							</h:inputSecret>
+							<h:message id="memberBeanMemberPasswordCheckMessage" for="memberBeanMemberPasswordCheck" styleClass="error" />
+						</h:panelGroup>
+
+						<h:commandLink id="savePassword" value="Passwort ändern" styleClass="btn btn-primary" disabled="#{!memberBean.loginValid || memberBean.newPassword == null || !memberBean.newPasswordsMatch}">
+							<p:ajax execute="memberBeanMemberLogin memberBeanMemberPassword memberBeanMemberPasswordCheck"
+									listener="#{memberBean.updateNewPassword()}" update="passwordDialogContainer"/>
+						</h:commandLink>
+						<h:commandLink id="nullifyPassword" value="Passwort invalidieren!" styleClass="btn btn-primary" disabled="#{memberBean.newPassword != null}">
+							<p:ajax execute="memberBeanMemberLogin memberBeanMemberPassword memberBeanMemberPasswordCheck"
+									listener="#{memberBean.updateNewPassword()}" update="passwordDialogContainer"/>
+						</h:commandLink>
+					</p:panelGrid>
+				</h:panelGroup>
+			</p:dialog>
+
 		</h:form>
 	</ui:define>
 

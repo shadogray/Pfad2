@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import at.tfr.pfad.dao.MemberRepository;
+import at.tfr.pfad.model.Member;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
@@ -39,8 +41,11 @@ public class SessionBean implements Serializable {
 	private ConfigurationRepository configRepo;
 	@Inject
 	private SquadRepository squadRepo;
+	@Inject
+	private MemberRepository memberRepo;
 	private Squad squad;
 	private boolean squadTested;
+	private Member currentMember;
 	
 	@PostConstruct
 	public void init() {
@@ -59,7 +64,8 @@ public class SessionBean implements Serializable {
 						c.getOwners().toLowerCase().contains(userSession.getCallerPrincipal().getName().toLowerCase()))
 				.collect(Collectors.toList());
 		}
-		
+
+		currentMember = memberRepo.findByLogin(userSession.getCallerPrincipal().getName()).orElse(null);
 		for (Role role : Role.values()) {
 			if (userSession.isCallerInRole(role.name())) roles.add(role);
 		}
@@ -87,7 +93,11 @@ public class SessionBean implements Serializable {
 		}
 		return defaultValue;
 	}
-	
+
+	public Member getCurrentMember() {
+		return currentMember;
+	}
+
 	public Principal getUser() {
 		return userSession.getCallerPrincipal();
 	}
@@ -126,6 +136,10 @@ public class SessionBean implements Serializable {
 	
 	public boolean isTrainer() {
 		return isGruppe() || userSession.isCallerInRole(Role.training.name());
+	}
+
+	public boolean isGilde() {
+		return userSession.isCallerInRole(Role.gilde.name());
 	}
 	
 	public Squad isResponsibleFor() {

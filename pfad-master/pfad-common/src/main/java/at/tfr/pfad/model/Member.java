@@ -3,6 +3,7 @@ package at.tfr.pfad.model;
 import at.tfr.pfad.Pfad;
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlTransient;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -11,25 +12,26 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @NamedQueries({ 
-	@NamedQuery(name = "Member.distName", query = "select distinct m.name from Member m where m.name is not null order by m.name"),
-	@NamedQuery(name = "Member.distNameLike", query = "select distinct m.name from Member m where lower(m.name) like ?1 order by m.name"),
-	@NamedQuery(name = "Member.distVorname", query = "select distinct m.vorname from Member m where m.vorname is not null order by m.vorname"),
-	@NamedQuery(name = "Member.distVornameLike", query = "select distinct m.vorname from Member m where lower(m.vorname) like ?1 order by m.vorname"),
-	@NamedQuery(name = "Member.distPLZ", query = "select distinct m.plz from Member m where m.plz is not null order by m.plz"),
-	@NamedQuery(name = "Member.distPLZLike", query = "select distinct m.plz from Member m where lower(m.plz) like ?1 order by m.plz"),
-	@NamedQuery(name = "Member.distOrt", query = "select distinct m.ort from Member m where m.ort is not null order by m.ort"),
-	@NamedQuery(name = "Member.distOrtLike", query = "select distinct m.ort from Member m where lower(m.ort) like ?1 order by m.ort"),
-	@NamedQuery(name = "Member.distStrasse", query = "select distinct m.strasse from Member m where m.strasse is not null order by m.strasse"),
-	@NamedQuery(name = "Member.distStrasseLike", query = "select distinct m.strasse from Member m where lower(m.strasse) like ?1 order by m.strasse"),
-	@NamedQuery(name = "Member.distTitel", query = "select distinct m.titel from Member m where m.titel is not null order by m.titel"),
-	@NamedQuery(name = "Member.distTitelLike", query = "select distinct m.titel from Member m where lower(m.titel) like ?1 order by m.titel"),
-	@NamedQuery(name = "Member.distAnrede", query = "select distinct m.anrede from Member m where m.anrede is not null order by m.anrede"),
-	@NamedQuery(name = "Member.distAnredeLike", query = "select distinct m.anrede from Member m where lower(m.anrede) like ?1 order by m.anrede"),
-	@NamedQuery(name = "Member.distReligion", query = "select distinct m.religion from Member m where m.religion is not null order by m.religion"),
-	@NamedQuery(name = "Member.distReligionLike", query = "select distinct m.religion from Member m where lower(m.religion) like ?1 order by m.religion"), 
-	@NamedQuery(name = "Member.withFunction", query = "select m from Member m where ?1 member of m.funktionen"),
+		@NamedQuery(name = "Member.distName", query = "select distinct m.name from Member m where m.name is not null order by m.name"),
+		@NamedQuery(name = "Member.distNameLike", query = "select distinct m.name from Member m where lower(m.name) like ?1 order by m.name"),
+		@NamedQuery(name = "Member.distVorname", query = "select distinct m.vorname from Member m where m.vorname is not null order by m.vorname"),
+		@NamedQuery(name = "Member.distVornameLike", query = "select distinct m.vorname from Member m where lower(m.vorname) like ?1 order by m.vorname"),
+		@NamedQuery(name = "Member.distPLZ", query = "select distinct m.plz from Member m where m.plz is not null order by m.plz"),
+		@NamedQuery(name = "Member.distPLZLike", query = "select distinct m.plz from Member m where lower(m.plz) like ?1 order by m.plz"),
+		@NamedQuery(name = "Member.distOrt", query = "select distinct m.ort from Member m where m.ort is not null order by m.ort"),
+		@NamedQuery(name = "Member.distOrtLike", query = "select distinct m.ort from Member m where lower(m.ort) like ?1 order by m.ort"),
+		@NamedQuery(name = "Member.distStrasse", query = "select distinct m.strasse from Member m where m.strasse is not null order by m.strasse"),
+		@NamedQuery(name = "Member.distStrasseLike", query = "select distinct m.strasse from Member m where lower(m.strasse) like ?1 order by m.strasse"),
+		@NamedQuery(name = "Member.distTitel", query = "select distinct m.titel from Member m where m.titel is not null order by m.titel"),
+		@NamedQuery(name = "Member.distTitelLike", query = "select distinct m.titel from Member m where lower(m.titel) like ?1 order by m.titel"),
+		@NamedQuery(name = "Member.distAnrede", query = "select distinct m.anrede from Member m where m.anrede is not null order by m.anrede"),
+		@NamedQuery(name = "Member.distAnredeLike", query = "select distinct m.anrede from Member m where lower(m.anrede) like ?1 order by m.anrede"),
+		@NamedQuery(name = "Member.distReligion", query = "select distinct m.religion from Member m where m.religion is not null order by m.religion"),
+		@NamedQuery(name = "Member.distReligionLike", query = "select distinct m.religion from Member m where lower(m.religion) like ?1 order by m.religion"),
+		@NamedQuery(name = "Member.withFunction", query = "select m from Member m where ?1 member of m.funktionen"),
+		@NamedQuery(name = "Member.login", query = "select m from Member m where m.login = ?1"),
 	})
-@NamedEntityGraphs({
+	@NamedEntityGraphs({
 		@NamedEntityGraph(name = "fetchAll", 
 				attributeNodes = { @NamedAttributeNode("funktionen"),
 				@NamedAttributeNode("Vollzahler"), 
@@ -100,6 +102,9 @@ public class Member extends Membera {
 	@NotAudited
 	@OneToMany(mappedBy = "member")
 	private Set<MailMessage> mailMessages = new TreeSet<>();
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private Set<Login> logins = new TreeSet<>();
 	
 	public Squad getTrupp() {
 		return this.trupp;
@@ -229,6 +234,10 @@ public class Member extends Membera {
 		return mailMessages;
 	}
 
+	public Set<Login> getLogins() {
+		return logins;
+	}
+
 	public Member addParents(Collection<Member> parents) {
 		parents.iterator().forEachRemaining(p -> addParent(p));
 		return this;
@@ -326,4 +335,22 @@ public class Member extends Membera {
 		return result.toString();
 	}
 
+	public String getRolesString() {
+		return logins.stream().map(l->l.getGroup().name()).collect(Collectors.joining(","));
+	}
+
+	public static Member copyOf(Membera m) {
+		if (m == null) {
+			return null;
+		}
+		Member copy = new Member();
+		copy.bvKey = m.bvKey;
+		copy.id = m.id;
+		try {
+			BeanUtils.copyProperties(m, copy);
+		} catch (Exception e) {
+			System.out.println("cannot copy: " + m + " : " + e.getMessage());
+		}
+		return copy;
+	}
 }

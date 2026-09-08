@@ -2,6 +2,7 @@ package at.tfr.pfad.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.inject.Inject;
 
@@ -71,7 +72,10 @@ public abstract class MemberRepository extends AbstractFullEntityRepository<Memb
 	
 	@Query(named="Member.withFunction")
 	public abstract List<Member> findByFunction(Function function);
-	
+
+	@Query(named = "Member.login")
+	public abstract Optional<Member> findByLogin(String login);
+
 	protected QueryResult<Member> queryAllIntern(int start, int max) {
 		return queryAllIntern()
 				.firstResult(start)

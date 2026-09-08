@@ -43,7 +43,7 @@ import at.tfr.pfad.svc.MemberService;
  * 
  */
 @Stateless
-@Path("/members")
+@Path("members")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class MemberEndpoint extends EndpointBase<Member> {
@@ -72,7 +72,7 @@ public class MemberEndpoint extends EndpointBase<Member> {
 	}
 
 	@DELETE
-	@Path("/{id:[0-9][0-9]*}")
+	@Path("{id:[0-9][0-9]*}")
 	public Response deleteById(@PathParam("id") Long id) {
 		Member entity = em.find(Member.class, id);
 		if (entity == null) {
@@ -83,7 +83,7 @@ public class MemberEndpoint extends EndpointBase<Member> {
 	}
 
 	@GET
-	@Path("/{id:[0-9][0-9]*}")
+	@Path("{id:[0-9][0-9]*}")
 	public Response findById(@PathParam("id") Long id) {
 		MemberDao dao = memberSvc.findBy(id);
 		if (dao == null) {
@@ -100,7 +100,7 @@ public class MemberEndpoint extends EndpointBase<Member> {
 	}
 
 	@PUT
-	@Path("/{id:[0-9][0-9]*}")
+	@Path("{id:[0-9][0-9]*}")
 	public Response update(@PathParam("id") Long id, MemberDao dao) {
 		if (dao == null) {
 			return Response.status(Status.BAD_REQUEST).build();
@@ -125,14 +125,14 @@ public class MemberEndpoint extends EndpointBase<Member> {
 	}
 	
 	@GET
-	@Path("/filtered")
+	@Path("filtered")
 	public List<MemberDao> filtered(@QueryParam("filter") String filter, @QueryParam("truppId") Long truppId) {
 		return memberSvc.filtered(filter, truppId);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@POST
-	@Path("/query")
+	@Path("query")
 	public List<MemberDao> queryByExample(Member example) {
 		return memberSvc.map(memberRepo.findBy(example, 0, 10, MemberA.name, MemberA.vorname, 
 				MemberA.geschlecht, MemberA.email, 
@@ -145,21 +145,21 @@ public class MemberEndpoint extends EndpointBase<Member> {
 	}
 
 	@GET
-	@Path("/{id:[0-9]+}/siblings")
+	@Path("{id:[0-9]+}/siblings")
 	public List<MemberDao> findSiblingsById(@PathParam("id") Long id) {
 		Member member = memberRepo.fetchBy(id);
 		return memberSvc.map(member.getSiblings());
 	}
 
 	@GET
-	@Path("/{id:[0-9]+}/parents")
+	@Path("{id:[0-9]+}/parents")
 	public List<MemberDao> findParentsById(@PathParam("id") Long id) {
 		Member member = memberRepo.fetchBy(id);
 		return memberSvc.map(member.getParents());
 	}
 	
 	@GET
-	@Path("/distinct")
+	@Path("distinct")
 	public List<String> distinct(@QueryParam("property") String property, @QueryParam("filter") String filter) {
 		String name = ("findDistinct"+property).toLowerCase();
 		Optional<Method> mOpt = Stream.of(memberRepo.getClass().getDeclaredMethods())
@@ -177,21 +177,31 @@ public class MemberEndpoint extends EndpointBase<Member> {
 	}
 	
 	@GET
-	@Path("/gebJahr")
+	@Path("gebJahr")
 	public List<Integer> gebJahr() {
 		return gebJahr;
 	}
 
 	@GET
-	@Path("/gebMonat")
+	@Path("gebMonat")
 	public List<Monat> gebMonat() {
 		return gebMonat;
 	}
 
 	@GET
-	@Path("/gebTag")
+	@Path("gebTag")
 	public List<Integer> gebTag() {
 		return gebTag;
+	}
+	
+	@GET
+	@Path("auth/{id:[0-9]+}/{login}/{password}")
+	public Response auth(@PathParam("id") Long id, @PathParam("login") String login, @PathParam("password") String password) throws Exception {
+		Member member = memberRepo.findBy(id);
+		member.setLogin(login);
+		member.setPassword(password);
+		memberRepo.save(member);
+		return Response.ok(member).build();
 	}
 	
 	public static class Monat implements Comparable<Monat>{

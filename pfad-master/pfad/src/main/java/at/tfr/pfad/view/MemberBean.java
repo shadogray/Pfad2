@@ -7,6 +7,7 @@
 
 package at.tfr.pfad.view;
 
+import at.tfr.pfad.Role;
 import at.tfr.pfad.ScoutRole;
 import at.tfr.pfad.Sex;
 import at.tfr.pfad.dao.ConfigurationRepository;
@@ -34,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.IOUtils;
 import org.hibernate.Hibernate;
 import org.omnifaces.util.Faces;
+import org.omnifaces.util.Messages;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
@@ -208,8 +210,140 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 		return vr;
 	}
 
+	public List<Role> getMemberRoles() {
+		return member.getLogins().stream().map(l -> l.getGroup()).collect(Collectors.toList());
+	}
+
+	public void setMemberRoles(List<Role> roles) {
+		try {
+			if (!isSetPasswordAllowed()) {
+				throw new SecurityException("Änderung nicht erlaubt!");
+			}
+			member = memberRepo.merge(member);
+			member.getLogins().forEach(l -> loginRepo.remove(l));
+			member.getLogins().clear();
+			roles.forEach(r -> {
+				member.getLogins().add(new Login(member, r));
+			});
+			Messages.addInfo("messagesDialog", "Rollen geändert!");
+		} catch (Exception e) {
+			Messages.addWarn(null, e.getMessage());
+		}
+	}
+
+	public boolean isCurrentMember() {
+		return member != null && member.equals(getCurrentMember());
+	}
+
+	public void validateLogin(FacesContext fc, UIComponent component, Object value) {
+		boolean valid = isValidLogin(value);
+		if (!valid) {
+			Messages.addWarn(component.getClientId(), "Login bereits vergeben: " + memberRepo.findByLogin(""+value).get().toShortString());
+		}
+	}
+
+	public void validatePasswords(FacesContext fc, UIComponent component, Object value) {
+		if (component.getClientId().endsWith("Check")) {
+			newPasswordCheck = value.toString();
+		} else {
+			newPassword = value.toString();
+		}
+		if (!isNewPasswordsMatch()) {
+			Messages.addWarn(component.getClientId(), "Passwörter stimmen nicht überein!");
+		}
+	}
+	public boolean isLoginValid() {
+		return isValidLogin(member.getLogin());
+	}
+
+	private boolean isValidLogin(Object login) {
+		if (login != null) {
+			Optional<Member> byLogin = memberRepo.findByLogin(login.toString());
+			if (byLogin.isPresent() && !byLogin.get().equals(member)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean isSetPasswordAllowed() {
+		Member current = getCurrentMember();
+		return isChangeLoginAllowed() || current != null && current.equals(member);
+	}
+
+	public void setCurrentMember() {
+		this.member = getCurrentMember();
+	}
+
+	public boolean isNewPasswordsMatch() {
+		return StringUtils.isAllBlank(newPassword, newPasswordCheck) || newPassword != null && newPassword.equals(newPasswordCheck);
+	}
+
+	public void updateNewPassword() {
+		try {
+			isChangeLoginAllowed();
+			if (!isNewPasswordsMatch()) {
+				Messages.addWarn("messagesDialog", "Passwörter stimmen nicht überein!");
+			}
+			member.setPassword(newPassword);
+			if (newPassword == null) {
+				Messages.addInfo("messagesDialog", "Passwort NULL gesetzt!");
+			} else {
+				Messages.addInfo("messagesDialog", "Passwort geändert!");
+			}
+		} catch (Exception e) {
+			Messages.addWarn("messagesDialog", "Fehler: " + e.getMessage());
+		}
+		newPassword = null;
+		newPasswordCheck = null;
+	}
+
+	public boolean isChangeLoginAllowed() {
+		if (isAdmin() || isVorstand()) {
+			return true;
+		}
+		return false;
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void changePassword() {
+		try {
+			if (!isSetPasswordAllowed()) {
+				throw new SecurityException("Änderung nicht erlaubt!");
+			}
+			if (StringUtils.isAnyBlank(oldPassword, newPassword, newPasswordCheck)) {
+				throw new SecurityException("Alle Werte müssen gesetzt sein!");
+			}
+			String encoded = Member.getEncoded(oldPassword);
+			if (!encoded.equals(member.getPassword())) {
+				throw new SecurityException("Ungültiges	Passwort!");
+			}
+			if (!newPassword.equals(newPasswordCheck)) {
+				throw new SecurityException("Passwörter sind ungleich!");
+			}
+			member.setPassword(newPassword);
+			member = memberRepo.merge(member);
+
+			Messages.addInfo(null, "Passwort erfolgreich geändert!");
+
+		} catch (Exception e) {
+			Messages.addError(null, e.getMessage());
+		} finally {
+			oldPassword = null;
+			newPassword = null;
+			newPasswordCheck = null;
+		}
+	}
+
 	public boolean isUpdateAllowed() {
-		return isAdmin() || isGruppe() || isVorstand() || (isLeiter() && !isRegistrationEnd());
+		return isAdmin() || isGruppe() || isVorstand() || (isLeiter() && !isRegistrationEnd()) || isGruppe();
+	}
+
+	@Override
+	public boolean isDeleteAllowed() {
+		return super.isDeleteAllowed() && member != null &&
+				member.getFunktionen().isEmpty() && member.getSiblings().isEmpty() &&
+				bookingRepo.findByMember(member).isEmpty() && paymentRepo.findByPayer(member).isEmpty();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -228,6 +362,7 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 
 			// cleanup of relationships:
 			deletableEntity.getMailMessages().stream().forEach(mm -> mm.setMember(null));
+			deletableEntity.getLogins().clear();
 
 			entityManager.remove(deletableEntity);
 			entityManager.flush();

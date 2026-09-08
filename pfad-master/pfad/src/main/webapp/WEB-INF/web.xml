@@ -73,6 +73,7 @@
 			<role-name>registrierung</role-name>
 			<role-name>anmeldung</role-name>
 			<role-name>training</role-name>
+			<role-name>gilde</role-name>
 		</auth-constraint>
 		<user-data-constraint>
 			<description>SSL</description>

@@ -4,6 +4,7 @@
 	<persistence-unit name="pfadTest" transaction-type="RESOURCE_LOCAL">
 		<description>Forge Persistence Unit</description>
 		<class>at.tfr.pfad.model.Member</class>
+		<class>at.tfr.pfad.model.Login</class>
 		<class>at.tfr.pfad.model.Payment</class>
 		<class>at.tfr.pfad.model.Booking</class>
 		<class>at.tfr.pfad.model.Function</class>

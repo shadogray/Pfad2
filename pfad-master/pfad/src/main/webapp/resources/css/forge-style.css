@@ -429,14 +429,14 @@ footer p {
 	width: 20em;
 	text-align: left;
 	vertical-align: top;
-	max-width: 250px;
+	max-width: 40em;
 }
 
 .content table .component2l {
-	width: 30em;
+	width: 20em;
 	text-align: left;
 	vertical-align: top;
-	max-width: 330px;
+	max-width: 40em;
 }
 
 .content table .label3 {
@@ -856,12 +856,12 @@ p.logo {
 
 .navbar .brand {
 	font-weight: bold;
-	font-size: 20px;
+	font-size: 15px;
 	text-shadow: 0 1px 0 #000;
 	text-decoration: none;
 	display: block;
 	float: left;
-	padding: 3px 100px 12px;
+	padding: 3px 12px;
 	margin-left: -20px;
 	line-height: 1;
 	color: #999999;
@@ -978,7 +978,7 @@ button::-moz-focus-inner {
 	font-size: smaller;
 	text-align: center;
 	color: #fff !important;
-	padding: 1px 7px;
+	padding: 3px 7px;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 	border-radius: 4px;
 	box-shadow: 0px 1px 3px rgba(137, 137, 137, 0.8);

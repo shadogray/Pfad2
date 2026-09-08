@@ -51,6 +51,8 @@ public abstract class BaseBaseBean implements Serializable {
     @Inject
     protected transient MemberRepository memberRepo;
     @Inject
+    protected transient LoginRepository loginRepo;
+    @Inject
     protected transient BookingRepository bookingRepo;
     @Inject
     protected transient PaymentRepository paymentRepo;
@@ -92,6 +94,10 @@ public abstract class BaseBaseBean implements Serializable {
         falseOnly.put("Nein", Boolean.FALSE.toString());
     }
 
+    public Member getCurrentMember() {
+        return sessionBean.getCurrentMember();
+    }
+
     public boolean isAdmin() {
         return sessionBean.isAdmin();
     }
@@ -114,6 +120,10 @@ public abstract class BaseBaseBean implements Serializable {
 
     public boolean isTrainer() {
         return sessionBean.isTrainer();
+    }
+
+    public boolean isGilde() {
+        return sessionBean.isGilde();
     }
 
     public boolean isViewAllowed() {
@@ -151,6 +161,9 @@ public abstract class BaseBaseBean implements Serializable {
     protected Payment payment;
     protected Booking booking;
     protected Member member;
+    protected String oldPassword;
+    protected String newPassword;
+    protected String newPasswordCheck;
 
     protected Member memberExample = new Member();
     protected Booking bookingExample = new Booking(null);
@@ -646,5 +659,29 @@ public abstract class BaseBaseBean implements Serializable {
     }
     protected Path getStorageDir() {
         return Paths.get(configurationRepository.getValue(Configuration.STORAGE_PATH, Configuration.STORAGE_PATH_DEFAULT));
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getNewPasswordCheck() {
+        return newPasswordCheck;
+    }
+
+    public void setNewPasswordCheck(String newPasswordCheck) {
+        this.newPasswordCheck = newPasswordCheck;
     }
 }

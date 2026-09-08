@@ -40,7 +40,8 @@ public class TestProvider extends at.tfr.pfad.Provider {
 	private EntityManager entityManagerLarge;
 
 	private boolean large;
-	final String BACKUP_SQL = "sql/testPfad2_Backup_20240709.sql";
+	final String BACKUP_SQL = "sql/testPfad2_Backup.sql";
+	final String INSERT_SQL = "sql/testPfad2_DataInsert.sql";
 
 	//@PersistenceContext(unitName = "pfadTest")
 	//private EntityManager entityManager;
@@ -75,6 +76,12 @@ public class TestProvider extends at.tfr.pfad.Provider {
 				session.getTransaction().begin();
 				session.createNativeMutationQuery("RUNSCRIPT FROM '" + dbFileUrl.getFile()+"';")
 						.executeUpdate();
+
+				URL dataInsert =  getClass().getClassLoader().getResource(INSERT_SQL);
+				if (dataInsert != null) {
+					session.createNativeMutationQuery("RUNSCRIPT FROM '" + dataInsert.getFile()+"';")
+							.executeUpdate();
+				}
 				session.getTransaction().commit();
 			} catch (Exception e) {
 				e.printStackTrace();
