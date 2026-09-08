@@ -4,3 +4,8 @@
 /subsystem=elytron/security-domain=ApplicationDomain:write-attribute(name=realms,value=[{realm=PfadisDBRealm,role-decoder=groups-to-roles},{realm=PfadisRealm,role-decoder=groups-to-roles}])
 /subsystem=elytron/security-domain=ApplicationDomain:write-attribute(name=default-realm,value=PfadisDBRealm)
 
+
+echo -n password | openssl sha-256 -binary | base64
+update member set login = 'admin', password = '....' where name='Frühbeck' and vorname='Thomas';
+insert into login (id,member_id, groups) values (0,(select id from member where name='Frühbeck' and vorname='Thomas'), 'admin');
+
