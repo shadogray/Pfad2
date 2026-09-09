@@ -8,6 +8,7 @@
 package at.tfr.pfad.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.persistence.criteria.JoinType;
 
@@ -25,7 +26,10 @@ import at.tfr.pfad.model.Squad_;
 @Repository
 public abstract class SquadRepository implements EntityRepository<Squad, Long>, CriteriaSupport<Squad>, EntityManagerDelegate<Squad> {
 
-	public abstract List<Squad> findByName(String name);
+	@Query("select s.name from Squad s order by s.name")
+	public abstract List<String> getNames();
+
+	public abstract Optional<Squad> findByName(String name);
 	
 	public abstract List<Squad> findByLeaderFemaleEqual(Member leader);
 

@@ -8,5 +8,7 @@
 package at.tfr.pfad;
 
 public enum Role {
-	admin, gruppe, leiter, kassier, vorstand, registrierung, anmeldung, training, gilde, none;
+	admin, gruppe, leiter, kassier, vorstand, registrierung, anmeldung, training, gilde,
+	Aqua, Bandarlog, Graubruder, Grünaugen, Hydro, Königshöhle, RaRo, Rauheneck, Rauhenstein, Scharfzahn,
+	none;
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import at.tfr.pfad.dao.MemberRepository;
 import at.tfr.pfad.model.Member;
 import jakarta.annotation.PostConstruct;
+import jakarta.ejb.SessionContext;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -38,17 +39,31 @@ public class SessionBean implements Serializable {
 	protected UserSession userSession;
 	protected final List<Role> roles = new ArrayList<>();
 	@Inject
-	private ConfigurationRepository configRepo;
+	private transient ConfigurationRepository configRepo;
 	@Inject
-	private SquadRepository squadRepo;
+	private transient SquadRepository squadRepo;
 	@Inject
-	private MemberRepository memberRepo;
+	private transient MemberRepository memberRepo;
 	private Squad squad;
 	private boolean squadTested;
 	private Member currentMember;
+	private List<String> squadsLeadBy = new ArrayList<>();
 	
 	@PostConstruct
 	public void init() {
+		if (userSession.getCallerPrincipal().getName() == "anonymous") {
+			return;
+		}
+		currentMember = memberRepo.findByLogin(userSession.getCallerPrincipal().getName()).orElse(null);
+		if (getCurrentMember() != null) {
+			squadsLeadBy.addAll(squadRepo.findByLeaderFemaleEqualOrLeaderMaleEqual(getCurrentMember()).stream().map(Squad::getName).collect(Collectors.toList()));
+		}
+
+		for (Role role : Role.values()) {
+			if (userSession.isCallerInRole(role.name())) roles.add(role);
+			if (squadsLeadBy.contains(role.name())) roles.add(role);
+		}
+
 		config = configRepo.findAll();
 		if (!(isAdmin())) {
 			config = config.stream()
@@ -59,16 +74,12 @@ public class SessionBean implements Serializable {
 					Role.anmeldung.equals(c.getRole()) && isAnmeldung() ||
 					Role.registrierung.equals(c.getRole()) && isRegistrierung() ||
 					Role.training.equals(c.getRole()) && isTrainer() ||
-					userSession.isCallerInRole(c.getRole().name()))
-				.filter(c -> StringUtils.isEmpty(c.getOwners()) || 
-						c.getOwners().toLowerCase().contains(userSession.getCallerPrincipal().getName().toLowerCase()))
+					roles.contains(c.getRole()))
+				.filter(c -> StringUtils.isEmpty(c.getOwners()) ||
+						roles.stream().anyMatch(r -> c.getOwners().toLowerCase().contains(r.name().toLowerCase())))
 				.collect(Collectors.toList());
 		}
 
-		currentMember = memberRepo.findByLogin(userSession.getCallerPrincipal().getName()).orElse(null);
-		for (Role role : Role.values()) {
-			if (userSession.isCallerInRole(role.name())) roles.add(role);
-		}
 		registrationEndDate = getRegistrationEndDate();
 	}
 
@@ -144,10 +155,15 @@ public class SessionBean implements Serializable {
 	
 	public Squad isResponsibleFor() {
 		if (isLeiter()) {
-			String name = userSession.getCallerPrincipal().getName();
-			Optional<Squad> sOpt = squadRepo.findAll().stream().filter(s-> name.equalsIgnoreCase(s.getLogin())).findAny();
+			List<Squad> leadBy = squadRepo.findByLeaderFemaleEqualOrLeaderMaleEqual(getCurrentMember());
+			if (!leadBy.isEmpty()) {
+				return leadBy.get(0);
+			}
+			SessionContext ctx = getUserSession().getSessionContext();
+			Optional<String> sOpt = squadRepo.getNames().stream()
+					.filter(s-> ctx.isCallerInRole(s) || ctx.isCallerInRole(s.toLowerCase())).findAny();
 			if (sOpt.isPresent()) {
-				return sOpt.get();
+				return squadRepo.findByName(sOpt.get()).orElse(null);
 			}
 		}
 		return null;
