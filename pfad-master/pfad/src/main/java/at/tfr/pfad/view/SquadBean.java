@@ -142,8 +142,7 @@ public class SquadBean extends BaseBean<Squad,Squad> implements Serializable {
 	}
 
 	public boolean isUpdateAllowed(Squad squad) {
-		return isAdmin() || isGruppe() || isVorstand()
-				|| (sessionContext.getCallerPrincipal().getName().equals(squad.getLogin()) && !isRegistrationEnd());
+		return isAdmin() || isGruppe() || isVorstand() || (isDownloadAllowed(squad) && isRegistrationEnd());
 	}
 
 	public boolean isDownloadAllowed() {
@@ -152,7 +151,7 @@ public class SquadBean extends BaseBean<Squad,Squad> implements Serializable {
 	
 	public boolean isDownloadAllowed(Squad squad) {
 		return isAdmin() || isGruppe() || isVorstand()
-				|| sessionContext.getCallerPrincipal().getName().equalsIgnoreCase(squad.getLogin());
+				|| sessionBean.getRoles().stream().anyMatch(r -> r.name().equalsIgnoreCase(squad.getName()) || r.name().equalsIgnoreCase(squad.getLogin()));
 	}
 
 	public String update() {

@@ -336,7 +336,7 @@ public class MemberBean extends BaseBean<Member,Member> implements Serializable 
 	}
 
 	public boolean isUpdateAllowed() {
-		return isAdmin() || isGruppe() || isVorstand() || (isLeiter() && !isRegistrationEnd()) || isGruppe();
+		return isAdmin() || isGruppe() || isVorstand() || (isLeiter() && isRegistrationEnd()) || isGilde();
 	}
 
 	@Override

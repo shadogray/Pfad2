@@ -135,7 +135,7 @@ public abstract class BaseBaseBean implements Serializable {
     }
 
     public boolean isRegistrationEnd() {
-        return sessionBean.getRegistrationEndDate() != null && sessionBean.getRegistrationEndDate().before(new Date());
+        return sessionBean.getRegistrationEndDate() == null || sessionBean.getRegistrationEndDate().before(new Date());
     }
 
     public int getPageSize() {
